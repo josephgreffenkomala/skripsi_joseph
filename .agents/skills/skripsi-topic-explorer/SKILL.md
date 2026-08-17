@@ -1,215 +1,159 @@
 ---
 name: skripsi-topic-explorer
-description: Explore and sharpen topic ideas, research questions, product scope, internet/source needs, datasets, evaluation plans, diagrams, saved research notes, and writing material for this UGM Inovasi Produk proposal/skripsi repo. Use when the user asks to brainstorm, research online, compare, validate, outline, or gather anything needed before writing proposal or skripsi content about the GitOps deployment system for InvenioRDM on Kubernetes.
+description: Explore, sharpen, compare, and validate thesis topic ideas, research questions, product scope, novelty, internet sources, and evaluation plans for UGM proposal or skripsi projects. Use when the user asks to brainstorm topic ideas, compare multiple thesis/product titles, evaluate novelty, research literature online, or build structured topic exploration notes before writing LaTeX content.
 ---
 
 # Skripsi Topic Explorer
 
-Use this skill to turn vague thesis/proposal ideas into usable writing material for this repository. The default subject is a Skripsi Inovasi Produk: a GitOps deployment system for InvenioRDM on Kubernetes.
+Use this skill to explore, brainstorm, evaluate, and sharpen proposal or skripsi topics without assuming any hardcoded default topic. It handles both single-topic deep dives and multi-topic exploration, producing standardized, user-friendly, and novelty-focused documentation.
 
 ## Core References
 
 Start by reading these local files when relevant:
 
-- `AGENTS.md` for the official repo rules, proposal-vs-skripsi structure, and priority order.
+- `AGENTS.md` for official repo rules, proposal-vs-skripsi chapter structures, and priority order.
 - `README.md` for repository layout and build workflow.
-- `template/proposal/main.tex` and `template/proposal/chapters/*.tex` when the work targets the proposal.
-- `template/skripsi/main.tex` and `template/skripsi/chapters/*.tex` when the work targets the skripsi.
-- `references/repo-thesis-map.md` in this skill for a compact topic and writing map.
-- `notes/exploration/` for saved findings, source notes, topic comparisons, and writing handoffs produced during exploration.
+- `template/proposal/main.tex` and `template/skripsi/main.tex` when target structure needs verification.
+- `references/repo-thesis-map.md` in this skill for generic thesis topic framing and structure maps.
+- `notes/exploration/` for reading or saving topic catalogs, source notes, and detailed topic breakdowns.
 
-Use `examples/pedoman_ta.pdf` as the highest authority when a detail is uncertain. If examples and the guide differ, follow `pedoman_ta.pdf`.
+Use `examples/pedoman_ta.pdf` as the highest authority when guidance details differ.
 
-## First Move
+## Core Rules & Principles
 
-Identify which output the user needs:
+1. **No Default Topic Lock**: Never force or assume a specific default topic (e.g., InvenioRDM, GitOps, AI, etc.) unless the user specifies it or the existing project files explicitly demand it. Always discover or clarify the user's domain/interest.
+2. **Multi-Topic Ready**: Be ready to generate, analyze, and compare multiple topic candidates in parallel.
+3. **Novelty First**: Every topic candidate must explicitly state its novelty (kebaruan / state-of-the-art difference) compared to existing literature or existing software solutions.
+4. **User-Friendly Clarity**: Include plain-language, jargon-free explanations ("Penjelasan Sederhana") for every topic so the user quickly understands the core value and practical application.
+5. **Standardized Dual-Layer Output**:
+   - **Layer 1 (1 Catalog File)**: `notes/exploration/topic-catalog.md` — High-level summary catalog comparing all topics.
+   - **Layer 2 (Detailed Topic Files)**: `notes/exploration/topic-01-[slug].md`, `notes/exploration/topic-02-[slug].md` — In-depth breakdown per topic.
 
-- Topic exploration: several possible angles, novelty claims, feasibility notes.
-- Source/data discovery: papers, docs, standards, datasets, operational data, benchmark data, or product references.
-- Chapter planning: section-by-section material for proposal or skripsi.
-- Research design: methodology, architecture, test scenarios, metrics, Gantt plan.
-- Writing handoff: a concise brief ready for the LaTeX writing skill.
+---
 
-Internet exploration is part of this skill. If the user asks for current literature, software behavior, product versions, standards, security practices, examples, deployment practices, or Kubernetes/InvenioRDM/GitOps details that may have changed, browse or otherwise verify from primary sources when possible. Prefer official documentation, academic papers, standards, and project repositories over blogs.
+## Output Architecture
 
-## Exploration Workflow
+When performing topic exploration (especially for multiple topics), produce the following standardized artifacts in `notes/exploration/`:
 
-1. Read repo context before suggesting structure.
-2. State whether the target is `proposal/`, `skripsi/`, or both.
-3. Frame the product problem in UGM Inovasi Produk terms:
-   - real problem,
-   - proposed product,
-   - innovative idea,
-   - scientific/technical basis,
-   - prototype design,
-   - implementation,
-   - evaluation.
-4. Separate claims into:
-   - confirmed from repo/local sources,
-   - confirmed from external sources,
-   - reasonable inference,
-   - needs user confirmation.
-5. Convert exploration into concrete assets:
-   - candidate titles in Indonesian and English,
-   - problem statements or product formulation,
-   - scope boundaries,
-   - related-work buckets,
-   - methodology steps,
-   - diagram inventory,
-   - evaluation metrics,
-   - BibTeX/source TODOs.
-6. Save durable exploration findings in `notes/exploration/` when the work produces reusable research notes, source lists, topic comparisons, or a handoff for writing.
+### 1. Catalog File: `notes/exploration/topic-catalog.md`
 
-## Internet Research Workflow
-
-Use internet research proactively when the task benefits from current or citable information. This matters for InvenioRDM, Kubernetes, GitOps tools, Helm/Kustomize, security practices, and recent academic literature because versions and recommended practices change.
-
-When researching online:
-
-1. Start with source categories:
-   - official docs for technologies,
-   - peer-reviewed papers or proceedings for academic claims,
-   - official repositories or release notes for implementation details,
-   - standards or institutional documents for research data management context.
-2. Capture bibliographic details as you go:
-   - title,
-   - author or organization,
-   - year or access date,
-   - URL/DOI,
-   - why the source matters for the proposal/skripsi.
-3. Separate source notes from thesis claims. A source may justify background, design choice, evaluation metric, limitation, or related work; label that role clearly.
-4. Prefer concise paraphrase. Do not paste long copyrighted passages.
-5. End with citation TODOs or candidate BibTeX keys if the LaTeX writer will draft from the findings.
-
-## Saving Findings
-
-Use `notes/exploration/` for reusable exploration outputs. Create the folder if it does not exist.
-
-Recommended filenames:
-
-- `notes/exploration/topic-options.md`
-- `notes/exploration/source-notes.md`
-- `notes/exploration/evaluation-plan.md`
-- `notes/exploration/diagram-plan.md`
-- `notes/exploration/draft-handoff-YYYY-MM-DD.md`
-
-Use this shape for saved notes:
+Serves as the master index and comparative decision matrix.
 
 ```markdown
-# [Exploration Title]
+# Katalog Eksplorasi Topik Skripsi / Proposal
 
-Date: YYYY-MM-DD
-Target: proposal|skripsi|both
+Tanggal: YYYY-MM-DD
+Target Document: Proposal | Skripsi | Both
+Bidang Utama: [Domain/Subject Area]
 
-## Summary
+## Executive Summary
+[Ringkasan singkat mengenai arah eksplorasi dan rekomendasi utama]
 
-## Findings
+## Tabel Perbandingan Topik
 
-## Sources
+| No | Judul Topik (Bahasa Indonesia) | Ringkasan Kebaruan (Novelty) | Tingkat Kesulitan | Kelayakan (Feasibility) | Rekomendasi |
+|---|---|---|---|---|---|
+| 01 | [Judul 1] | [Kebaruan utama] | Sedang/Tinggi | Tinggi | ⭐⭐⭐⭐⭐ |
+| 02 | [Judul 2] | [Kebaruan utama] | Sedang | Sedang | ⭐⭐⭐ |
 
-## Writing Handoff
+## Ringkasan Singkat & Penjelasan Sederhana
 
-## Open Questions
+### Topik 01: [Judul 1]
+- **Penjelasan Sederhana**: [Penjelasan ringkas tanpa istilah rumit]
+- **Kebaruan Utama**: [Point-by-point novelty vs existing work]
+- **File Detail**: [`topic-01-slug.md`](topic-01-slug.md)
+
+### Topik 02: [Judul 2]
+- **Penjelasan Sederhana**: [Penjelasan ringkas tanpa istilah rumit]
+- **Kebaruan Utama**: [Point-by-point novelty vs existing work]
+- **File Detail**: [`topic-02-slug.md`](topic-02-slug.md)
+
+## Panduan Pemilihan untuk Mahasiswa
+[Saran konkret untuk memilih topik berdasarkan minat, ketersediaan data/infrastruktur, dan waktu]
 ```
 
-## Topic Heuristics
+### 2. Detailed Topic Files: `notes/exploration/topic-01-[slug].md`, `topic-02-[slug].md`
 
-Good ideas for this repo usually connect at least three of these:
+Each topic gets its own standalone detailed analysis file.
 
-- InvenioRDM deployment complexity.
-- Kubernetes-native operation.
-- GitOps workflow, reproducibility, auditability, rollback, and declarative configuration.
-- Institutional repository needs: reliability, preservation, metadata, access, and maintainability.
-- Product innovation: a usable deployment system, not only an analysis.
-- Evaluation: deployment success rate, recovery time, configuration drift, reproducibility, operational effort, and maintainability.
+```markdown
+# Detail Topik 01: [Judul Utama Topik]
 
-Avoid framing the work as a generic DevOps tutorial. Keep tying it back to a product/prototype and a real user or institution problem.
+Date: YYYY-MM-DD
+Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
-## Proposal Output Shape
+## 1. Opsi Judul (Title Candidates)
+- **Bahasa Indonesia**: [Judul formal Indonesia]
+- **English**: [Formal English Title]
 
-For proposal exploration, produce material that can become:
+## 2. Penjelasan Sederhana (Easy-to-Understand Breakdown)
+[Penjelasan konsep produk/penelitian dengan bahasa yang mudah dipahami oleh siapapun, menjelaskan apa masalahnya, apa yang dibuat, dan mengapa penting.]
 
-- Bab 1: Latar Belakang, Rumusan Masalah, Batasan Masalah, Tujuan, Manfaat.
-- Bab 2: Penelitian Terkait and state of the art.
-- Bab 3: Metode dan Rancangan Penelitian, architecture, methodology flow, testing plan.
-- Bab 4: Gantt chart by month.
+## 3. Analisis Kebaruan (Novelty & State-of-the-Art)
+- **Kondisi Saat Ini (Existing State/Literature)**: [Apa yang sudah ada di jurnal/tools saat ini]
+- **Keterbatasan / Gap**: [Apa kelemahan atau hal yang belum diselesaikan oleh solusi existing]
+- **Kebaruan Solusi Ini (Novelty Contribution)**: [Nilai kebaruan spesifik yang ditawarkan produk/penelitian ini]
+- **Matriks Perbandingan Novelty**:
+  | Fitur / Parameter | Solusi Conventional / Existing | Topik Ini (Proposed) |
+  |---|---|---|
+  | ... | ... | ... |
 
-Proposal content is planning-oriented. Do not invent results.
+## 4. Perumusan Produk & Masalah (UGM Inovasi Produk)
+- **Masalah Nyata**: [Problem statemen konkret]
+- **Solusi / Produk Inovatif**: [Bentuk produk/prototipe yang dikembangkan]
+- **Batasan Masalah/Produk**: [Scope boundaries]
 
-## Skripsi Output Shape
+## 5. Landasan Teknik & Ilmiah (Technical & Scientific Basis)
+- **Teknologi / Framework**: [Daftar stack dan tools]
+- **Metode / Algoritma / Arsitektur**: [Dasar ilmiah atau mekanisme kerja]
 
-For skripsi exploration, produce material that can become:
+## 6. Rencana Pengujian & Parameter Ukur (Evaluation Plan)
+- **Metode Pengujian**: [Eksperimen, benchmark, user evaluation, etc.]
+- **Metrik Evaluasi**: [Daftar metrik kuantitatif/kualitatif, e.g. latency, success rate, drift, recovery time]
 
-- Bab 1: Latar Belakang, Perumusan Produk, Batasan Produk, Tujuan, Manfaat.
-- Bab 2: Identifikasi Masalah dan Ide Inovatif.
-- Bab 3: Kajian Ilmiah.
-- Bab 4: Perancangan Prototipe/Produk.
-- Bab 5: Proses Pembuatan Produk.
-- Bab 6: Pengujian dan Evaluasi Produk, including Kesimpulan dan Saran.
+## 7. Pemetaan ke Bab Skripsi/Proposal (Chapter Mapping)
+- **Bab 1**: [Point-point isi Pendahuluan]
+- **Bab 2**: [Point-point Penelitian Terkait / Ide Inovatif]
+- **Bab 3-4**: [Point-point Metode & Perancangan]
 
-Skripsi content may discuss implementation and results, but label unknown values as TODO until the user supplies data.
+## 8. Catatan Sumber & Literatur (Source Notes & Citation Checklist)
+- [ ] Source 1: Title, Authors, Year, URL/DOI - Role: (Background/Novelty Baseline)
+- [ ] Source 2: Documentation / Standard - Role: (Technical Basis)
 
-## Source and Data Checklist
+## 9. Penyerahan ke Penulisan LaTeX (Draft Handoff)
+- **Target File**: `proposal/chapters/...` or `skripsi/chapters/...`
+- **Kebutuhan Gambar/Diagram**: [Daftar flowchart, arsitektur, diagram]
+- **Pertanyaan ke Pengguna**: [Hal yang perlu dikonfirmasi pengguna]
+```
 
-When asked to find sources or data, look for:
+---
 
-- InvenioRDM official documentation and deployment docs.
-- Kubernetes official documentation.
-- Argo CD or Flux official documentation, depending on the selected GitOps tool.
-- Helm, Kustomize, container registry, secrets management, and CI/CD docs when used.
-- Academic literature on GitOps, continuous deployment, reproducible infrastructure, repository systems, and research data management.
-- Evaluation data the user can collect locally: install duration, failed/successful deployments, rollback time, drift detection, resource usage, and operator steps.
+## Exploration & Internet Research Workflow
 
-For each source, capture the citation purpose: background, related work, technical basis, design decision, or evaluation method.
+When requested to brainstorm or explore topics:
+
+1. **Discover Domain & User Intent**:
+   - Check user prompt and existing repo context for domain guidelines.
+   - If no domain is specified, ask or suggest 2–3 relevant domains based on the user's field, or ask what area they prefer.
+
+2. **Conduct Internet / Literature Verification**:
+   - Perform search for existing literature, repositories, or tools related to the candidate topics.
+   - Verify that proposed novelty claims are valid and not already standard baseline practice.
+
+3. **Generate Standardized Output**:
+   - Always create/update `notes/exploration/topic-catalog.md`.
+   - Create individual `notes/exploration/topic-01-[slug].md` files for each candidate topic.
+   - Ensure every topic includes clear Indonesian/English titles, plain-language explanation, novelty evaluation, technical basis, and evaluation metrics.
+
+4. **Present Clean Summary to User**:
+   - In chat response, provide a brief overview of the topics explored, point to the generated Catalog file (`topic-catalog.md`), and highlight the top recommended topic.
+
+---
 
 ## Asking for Confirmation
 
-Ask before making strong assumptions about:
+Keep questions short and non-blocking. Ask when clarification is needed on:
+- Preferred domain/field if vague.
+- Target document type (`proposal` vs `skripsi`).
+- Selected topic candidate to proceed into LaTeX drafting.
 
-- GitOps tool choice: Argo CD, Flux, or another tool.
-- Deployment packaging: Helm chart, Kustomize overlays, plain manifests, or a hybrid.
-- InvenioRDM environment: local cluster, cloud Kubernetes, campus infrastructure, or lab server.
-- Evaluation metrics and target users.
-- Whether to browse for current sources when the user has not already requested online research.
-- Whether to save findings to `notes/exploration/` when exploration is quick or throwaway.
-- Whether to pass a completed brief to the LaTeX writing skill for direct drafting.
-
-Keep questions short. If the user wants momentum, proceed with clearly marked assumptions.
-
-## Deliverable Formats
-
-For brainstorming, use this compact format:
-
-```markdown
-**Arah Utama**
-[1-2 paragraphs]
-
-**Pilihan Topik**
-1. [Title] - [novelty, feasibility, risks]
-
-**Bahan Proposal/Skripsi**
-- Bab ...
-
-**Sumber/Data yang Dibutuhkan**
-- ...
-
-**Asumsi**
-- ...
-```
-
-For a writing handoff, end with:
-
-```markdown
-**Draft Handoff**
-Target: proposal|skripsi
-Files: ...
-Sections: ...
-Key claims:
-- ...
-Citations needed:
-- ...
-Figures/tables needed:
-- ...
-User confirmations:
-- ...
-```

@@ -37,42 +37,35 @@ Main chapters:
 5. `chapters/bab5-pembuatan.tex`: implementation and component integration.
 6. `chapters/bab6-pengujian.tex`: testing, evaluation, conclusion, and suggestions.
 
-## Default Product Topic
+## Product Topic Framing Guidelines
 
-GitOps deployment system for InvenioRDM on Kubernetes.
+Topics for UGM Skripsi Inovasi Produk should align with the student's area of interest and field of study.
 
-Possible product framing:
+Possible product framing elements:
 
-- A reproducible, declarative deployment package for InvenioRDM.
-- A GitOps workflow that separates desired state from manual cluster operations.
-- A prototype that improves auditability, repeatability, rollback, and operational maintainability.
+- A reproducible, declarative software/infrastructure system or prototype.
+- An automated workflow, algorithm, or platform that solves a practical institutional or domain problem.
+- A prototype that improves performance, security, maintainability, auditability, or user experience.
 
 Possible evaluation metrics:
 
-- Successful deployment rate across repeated trials.
-- Time from commit to synchronized deployment.
-- Rollback time after a deliberately introduced configuration error.
-- Configuration drift detection and reconciliation behavior.
-- Number of manual steps needed compared with a manual deployment baseline.
-- Resource usage of the deployed InvenioRDM components.
+- Success rate / accuracy / precision / throughput.
+- Latency / operational completion time / recovery time.
+- Resource consumption, error rate, configuration drift reconciliation, or user satisfaction.
 
 Possible diagrams:
 
 - Research methodology flowchart.
-- GitOps workflow diagram.
-- Kubernetes component architecture.
-- Deployment pipeline sequence diagram.
-- Configuration repository structure.
-- Optional ERD or data flow if the product changes data models.
+- System architecture & component interaction diagram.
+- Sequence / data flow / state transition diagram.
+- Entity-Relationship Diagram (ERD) or schema design.
 
-## Exploration Notes Folder
+## Exploration Output Structure
 
-Use `notes/exploration/` for outputs that should survive beyond the chat. Good candidates:
+Outputs are stored in `notes/exploration/`:
 
-- topic alternatives and chosen direction,
-- internet source notes with URLs/DOIs and citation purpose,
-- comparison of Argo CD vs Flux or Helm vs Kustomize,
-- evaluation metrics and test scenario plans,
-- diagram inventories,
-- draft handoffs for the LaTeX writer.
+- `notes/exploration/topic-catalog.md` (Master catalog & comparative matrix for all explored topics)
+- `notes/exploration/topic-01-[slug].md`, `topic-02-[slug].md` (Individual detailed topic breakdown per topic)
+- `notes/exploration/source-notes.md` (Internet literature research & BibTeX candidate notes)
+
 
