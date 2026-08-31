@@ -1,13 +1,56 @@
-# Exploration Notes
+# Memori Canonical Eksplorasi Skripsi
 
-This folder stores reusable findings for the proposal/skripsi before they become LaTeX draft text.
+Updated: 2026-08-22
 
-Suggested files:
+Folder ini sengaja hanya memiliki satu lapisan memori canonical. Jangan membuat file catatan tanggalan, snapshot grilling, atau arsip sementara baru. Informasi baru harus memperbarui `topic-catalog.md` atau salah satu file `topic-01-*.md` sampai `topic-05-*.md`.
 
-- `topic-options.md`: candidate topic framings, novelty, feasibility, and risks.
-- `source-notes.md`: internet/literature notes with URL/DOI, year, citation purpose, and BibTeX TODOs.
-- `evaluation-plan.md`: metrics, scenarios, data to collect, and expected tables/figures.
-- `diagram-plan.md`: methodology flowchart, system architecture, and sequence diagrams.
-- `draft-handoff-YYYY-MM-DD.md`: concise handoff from exploration to LaTeX drafting.
+## Canonical files
 
-Keep source notes separate from thesis claims. Mark unverified assumptions clearly so they can be checked before entering the proposal or skripsi.
+- [`topic-catalog.md`](topic-catalog.md): indeks utama, perbandingan kandidat, status keputusan, dan riwayat ide yang sudah terserap.
+- [`topic-01-indoagentbench.md`](topic-01-indoagentbench.md): benchmark coding agent dengan pasangan instruksi Indonesia–Inggris.
+- [`topic-02-foundation-shortcut-attribution.md`](topic-02-foundation-shortcut-attribution.md): studi shortcut learning foundation model versus supervised model.
+- [`topic-03-plant-xai-audit-toolkit.md`](topic-03-plant-xai-audit-toolkit.md): toolkit audit XAI untuk penyakit tanaman.
+- [`topic-04-vision-xai-audit-website.md`](topic-04-vision-xai-audit-website.md): website audit XAI untuk model klasifikasi citra.
+- [`topic-05-execution-context-management.md`](topic-05-execution-context-management.md): pengelolaan riwayat eksekusi coding agent.
+- [`topic-14-slm-quantization-indonesian-nlp.md`](topic-14-slm-quantization-indonesian-nlp.md): benchmark kuantisasi SLM untuk NLP Bahasa Indonesia dengan pengukuran kualitas dan efisiensi CPU.
+
+Tidak ada folder arsip canonical terpisah. Catatan lama yang sudah dipadatkan ke dalam file-file di atas boleh dihapus.
+
+## Selera dan preferensi pengguna yang perlu diingat
+
+Bagian ini adalah memori kerja lintas sesi, bukan klaim akademik.
+
+- Minat utama berada di AI engineering, software engineering, coding agent, Computer Vision, dan Explainable AI (XAI). Arah terbaru yang paling menarik adalah coding agent dan masalah yang muncul dari kerja agent secara iteratif.
+- Lebih menyukai penelitian computational yang dapat diuji dengan benchmark, eksperimen terkontrol, log, test suite, atau metrik kuantitatif. Human study sebaiknya dihindari jika tidak wajib; jika diperlukan, gunakan skala kecil dan jelaskan kebutuhan etiknya.
+- Menyukai produk/prototipe yang nyata untuk format Skripsi Inovasi Produk: benchmark harness, toolkit, website audit, pipeline reproducible, atau middleware yang dapat dipakai ulang.
+- Tetap mengutamakan kejujuran akademik. Jangan menjual wrapper library, dashboard generik, atau klaim “pertama” sebagai novelty jika literatur sudah memiliki solusi serupa.
+- Suka scope yang sempit, terukur, dapat selesai sekitar satu semester, memakai data/infrastruktur yang tersedia, dan memiliki fallback plan.
+- Untuk eksperimen coding agent, konfigurasi ideal adalah satu agent, environment dan tools yang sama, task yang sama, serta model/LLM family yang dibatasi. Satu LLM family dapat diterima jika pertanyaan riset memang mengenai kebijakan agent, bukan perbandingan model.
+- Judul sebaiknya tidak mengunci teknik terlalu dini. Gunakan framing seperti “studi empiris” atau “evaluasi” bila teknik terbaik baru akan ditemukan lewat eksperimen.
+- Catatan dan draft harus berbahasa Indonesia. Istilah teknis boleh tetap dalam bahasa Inggris pada penyebutan pertama; judul English hanya disediakan sebagai pasangan judul formal.
+- Pengguna menghargai penjelasan sederhana, tetapi tidak ingin scope dibuat dangkal. Setiap ide harus memuat masalah, produk, novelty, metrik, risiko, dan fallback.
+- Jangan menyarankan multi-modal atau multi-framework tanpa batasan format yang sangat jelas. Integrasi luas biasanya menjadi scope creep.
+
+## Aturan kerja eksplorasi
+
+1. Mulai dari masalah dan bentuk evaluasi, bukan dari nama model atau library.
+2. Verifikasi novelty sebelum menyebut topik “baru”. Catat pembanding yang menggugurkan klaim lama.
+3. Pisahkan novelty algoritmik, novelty produk, dan novelty protokol evaluasi.
+4. Untuk setiap kandidat, tuliskan batasan, metrik, kebutuhan data/infrastruktur, risiko, dan fallback.
+5. Bedakan ide yang disukai dari ide yang sudah dipilih. Status “tersimpan” bukan berarti “diterima”.
+6. Jika ide gugur, simpan alasan gugurnya di katalog agar tidak dieksplorasi ulang.
+7. Bila topik dipilih, tandai `✅ TERPILIH` di katalog sebelum mulai menulis LaTeX.
+
+## Keputusan yang sudah mengikat
+
+- IndoAgentBench bukan klaim pertama tentang pengaruh bahasa natural pada coding agent. Ren et al. sudah menjadi pembanding untuk efek bahasa Cina. Posisi yang aman adalah ekstensi terkontrol ke Bahasa Indonesia, kondisi translate-then-act, audit ekuivalensi bilingual, failure taxonomy, dan transformasi task anti-kontaminasi.
+- Topik plant XAI tidak boleh dibingkai sebagai penerapan ACE pada PlantVillage saja karena Amara et al. sudah mengerjakan hal yang sangat dekat. Fokus yang aman adalah audit shortcut learning, perturbasi latar/cahaya, stabilitas explanation, dan laporan audit.
+- Website XAI multi-modal generik tidak direkomendasikan karena Captum, SHAP, Alibi, ExplainerDashboard, dan LIT sudah menjadi pembanding kuat. Jika dipilih, batasi ke vision-first atau tabular-first dengan format model yang ketat.
+- Topik execution-context management tidak boleh mengklaim menemukan context management baru. CAT dan ContextBench sudah menjadi pembanding langsung. Kontribusi yang aman adalah harness dan controlled ablation study atas kebijakan retensi riwayat.
+
+## Prosedur pembaruan
+
+- Tambahkan kandidat baru sebagai baris baru di `topic-catalog.md`; buat file detail hanya jika kandidat melewati scan awal.
+- Perbarui file detail yang ada jika eksplorasi adalah kelanjutan topik yang sama. Jangan membuat `topic-XX-v2`, file tanggalan, atau snapshot duplikat.
+- Setelah pencarian literatur, masukkan sumber dan konsekuensi novelty langsung ke file detail dan katalog.
+- Sebelum menghapus catatan, pastikan masalah, judul, novelty, pembanding, metrik, keputusan, risiko, dan pertanyaan terbuka sudah terserap ke canonical files.
