@@ -1,20 +1,18 @@
 # Memori Canonical Eksplorasi Skripsi
 
-Updated: 2026-08-22
+Updated: 2026-09-01
 
-Folder ini sengaja hanya memiliki satu lapisan memori canonical. Jangan membuat file catatan tanggalan, snapshot grilling, atau arsip sementara baru. Informasi baru harus memperbarui `topic-catalog.md` atau salah satu file `topic-01-*.md` sampai `topic-05-*.md`.
+Folder ini memisahkan kandidat aktif dari kandidat yang telah diarsipkan. Informasi baru tentang shortlist harus memperbarui `topic-catalog.md` atau salah satu file detail aktif. Riwayat kandidat yang dikeluarkan dari shortlist disimpan di `archive/` agar keputusan lama tetap dapat ditelusuri.
 
 ## Canonical files
 
-- [`topic-catalog.md`](topic-catalog.md): indeks utama, perbandingan kandidat, status keputusan, dan riwayat ide yang sudah terserap.
+- [`topic-catalog.md`](topic-catalog.md): indeks utama dan status kandidat aktif.
 - [`topic-01-indoagentbench.md`](topic-01-indoagentbench.md): benchmark coding agent dengan pasangan instruksi Indonesia–Inggris.
 - [`topic-02-foundation-shortcut-attribution.md`](topic-02-foundation-shortcut-attribution.md): studi shortcut learning foundation model versus supervised model.
-- [`topic-03-plant-xai-audit-toolkit.md`](topic-03-plant-xai-audit-toolkit.md): toolkit audit XAI untuk penyakit tanaman.
-- [`topic-04-vision-xai-audit-website.md`](topic-04-vision-xai-audit-website.md): website audit XAI untuk model klasifikasi citra.
-- [`topic-05-execution-context-management.md`](topic-05-execution-context-management.md): pengelolaan riwayat eksekusi coding agent.
 - [`topic-14-slm-quantization-indonesian-nlp.md`](topic-14-slm-quantization-indonesian-nlp.md): benchmark kuantisasi SLM untuk NLP Bahasa Indonesia dengan pengukuran kualitas dan efisiensi CPU.
+- [`archive/`](archive/README.md): kandidat di luar shortlist dan snapshot katalog lama.
 
-Tidak ada folder arsip canonical terpisah. Catatan lama yang sudah dipadatkan ke dalam file-file di atas boleh dihapus.
+Shortlist aktif saat ini terdiri atas Topik 01, Topik 02, dan Topik 14. Topik 14 adalah kandidat nomor 10 dalam ringkasan percakapan, tetapi nomor canonical-nya tetap dipertahankan agar riwayat berkas tidak terputus.
 
 ## Selera dan preferensi pengguna yang perlu diingat
 
@@ -38,15 +36,13 @@ Bagian ini adalah memori kerja lintas sesi, bukan klaim akademik.
 3. Pisahkan novelty algoritmik, novelty produk, dan novelty protokol evaluasi.
 4. Untuk setiap kandidat, tuliskan batasan, metrik, kebutuhan data/infrastruktur, risiko, dan fallback.
 5. Bedakan ide yang disukai dari ide yang sudah dipilih. Status “tersimpan” bukan berarti “diterima”.
-6. Jika ide gugur, simpan alasan gugurnya di katalog agar tidak dieksplorasi ulang.
+6. Jika ide dikeluarkan dari shortlist, pindahkan berkas detailnya ke `archive/` dan simpan alasan atau statusnya agar tidak dieksplorasi ulang tanpa pertimbangan baru.
 7. Bila topik dipilih, tandai `✅ TERPILIH` di katalog sebelum mulai menulis LaTeX.
 
 ## Keputusan yang sudah mengikat
 
 - IndoAgentBench bukan klaim pertama tentang pengaruh bahasa natural pada coding agent. Ren et al. sudah menjadi pembanding untuk efek bahasa Cina. Posisi yang aman adalah ekstensi terkontrol ke Bahasa Indonesia, kondisi translate-then-act, audit ekuivalensi bilingual, failure taxonomy, dan transformasi task anti-kontaminasi.
-- Topik plant XAI tidak boleh dibingkai sebagai penerapan ACE pada PlantVillage saja karena Amara et al. sudah mengerjakan hal yang sangat dekat. Fokus yang aman adalah audit shortcut learning, perturbasi latar/cahaya, stabilitas explanation, dan laporan audit.
-- Website XAI multi-modal generik tidak direkomendasikan karena Captum, SHAP, Alibi, ExplainerDashboard, dan LIT sudah menjadi pembanding kuat. Jika dipilih, batasi ke vision-first atau tabular-first dengan format model yang ketat.
-- Topik execution-context management tidak boleh mengklaim menemukan context management baru. CAT dan ContextBench sudah menjadi pembanding langsung. Kontribusi yang aman adalah harness dan controlled ablation study atas kebijakan retensi riwayat.
+- Catatan keputusan yang hanya berlaku untuk kandidat di luar shortlist berada di [`archive/`](archive/README.md).
 
 ## Prosedur pembaruan
 

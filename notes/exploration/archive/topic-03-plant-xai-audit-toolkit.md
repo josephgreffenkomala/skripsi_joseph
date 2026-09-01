@@ -1,7 +1,7 @@
 # Detail Topik 03: Toolkit Audit XAI Penyakit Tanaman
 
 Date: 2026-08-21
-Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
+Catalog Reference: [`topic-catalog.md`](../topic-catalog.md)
 Status: Kandidat kuat untuk Skripsi Inovasi Produk
 
 ## 1. Opsi Judul (Title Candidates)

@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "notes/exploration/topic-02-foundation-shortcut-attribution.md",
+                "file": "notes/exploration/topic-14-slm-quantization-indonesian-nlp.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "topic-02-foundation-shortcut-attribution"
+              "title": "topic-14-slm-quantization-indonesian-nlp"
             }
           }
         ],
@@ -206,6 +206,15 @@
   },
   "active": "e8f84670f2671b78",
   "lastOpenFiles": [
+    "notes/exploration/archive/README.md",
+    "notes/exploration/topic-catalog.md",
+    "notes/exploration/archive/topic-catalog-full-2026-08-31.md",
+    "notes/exploration/archive/topic-05-execution-context-management.md",
+    "notes/exploration/archive/topic-04-vision-xai-audit-website.md",
+    "notes/exploration/archive/topic-03-plant-xai-audit-toolkit.md",
+    "notes/exploration/archive",
+    "notes/exploration/topic-01-indoagentbench.md",
+    "notes/exploration/topic-02-foundation-shortcut-attribution.md",
     "notes/exploration/topic-12-compression-xai-traffic-sign.md",
     "notes/exploration/topic-13-compression-xai-chest-xray.md",
     "notes/exploration/topic-14-slm-quantization-indonesian-nlp.md",
@@ -215,9 +224,6 @@
     "notes/exploration/topic-10-compression-xai-surface-defect.md",
     "deep research.md",
     "notes/exploration/topic-03-plant-xai-audit-toolkit.md",
-    "notes/exploration/topic-catalog.md",
-    "notes/exploration/topic-02-foundation-shortcut-attribution.md",
-    "notes/exploration/topic-01-indoagentbench.md",
     "notes/exploration/README.md",
     "notes/exploration/literature-comparison-2026-07-20.md",
     "notes/exploration/literature-comparison-clip-xai-shortcut-2026-07-20.md",
@@ -227,13 +233,8 @@
     "notes/next-session-prompt-explore-different-idea.md",
     "Kurikulum Joseph.md",
     "SQLite.md",
-    "Curriculum.md",
-    "SystemDesign/syllabus.md",
     "SystemDesign",
-    "RustLanguage/syllabus.md",
     "RustLanguage",
-    "HandsOn/syllabus.md",
-    "HandsOn",
-    "TabularML/TODO/TODO.md"
+    "HandsOn"
   ]
 }

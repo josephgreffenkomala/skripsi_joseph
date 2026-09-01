@@ -5,7 +5,7 @@ cssclasses:
 # Detail Topik 05: Studi Empiris Pengelolaan Riwayat Eksekusi pada Coding Agent Tingkat Repositori
 
 Date: 2026-08-21  
-Catalog Reference: [`topic-catalog.md`](topic-catalog.md)  
+Catalog Reference: [`topic-catalog.md`](../topic-catalog.md)
 Status: Kandidat baru — direkomendasikan secara bersyarat
 
 ## 1. Opsi Judul (Title Candidates)

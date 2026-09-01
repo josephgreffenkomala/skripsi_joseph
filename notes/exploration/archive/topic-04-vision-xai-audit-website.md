@@ -5,7 +5,7 @@ cssclasses:
 # Detail Topik 04: Website Audit XAI untuk Model Klasifikasi Citra
 
 Date: 2026-08-21
-Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
+Catalog Reference: [`topic-catalog.md`](../topic-catalog.md)
 Status: Kandidat produk; perlu scope ketat
 
 ## 1. Opsi Judul (Title Candidates)

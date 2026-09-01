@@ -1,3 +1,7 @@
+---
+cssclasses:
+  - full-width
+---
 # Detail Topik 02: Foundation-vs-Supervised Shortcut Attribution
 
 Date: 2026-08-21
