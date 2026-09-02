@@ -6,7 +6,7 @@ cssclasses:
 
 Date: 2026-08-31
 
-Updated: 2026-09-01
+Updated: 2026-09-03
 
 Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
@@ -16,7 +16,7 @@ Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
 Model utama yang direncanakan adalah dua ukuran dalam keluarga Qwen3, yaitu Qwen3-0.6B dan Qwen3-1.7B. Penggunaan satu keluarga model mengurangi variasi arsitektur dan runtime sehingga pengaruh ukuran model dan kuantisasi dapat dianalisis dengan lebih terarah. Penelitian tidak akan melakukan pelatihan model besar, *fine-tuning*, *quantization-aware training* (QAT), atau evaluasi model 4B ke atas.
 
-Kebaruan yang ditargetkan bersifat **empiris, metodologis, dan rekayasa produk**, bukan algoritma kuantisasi baru. Klaim sebagai penelitian “pertama” belum boleh digunakan sebelum pencarian literatur sistematis selesai.
+Kebaruan yang ditargetkan bersifat **empiris dan metodologis**, bukan berupa algoritma kuantisasi baru. Klaim sebagai penelitian “pertama” belum boleh digunakan sebelum pencarian literatur sistematis selesai.
 
 ## 1. Opsi Judul
 
@@ -25,10 +25,10 @@ Kebaruan yang ditargetkan bersifat **empiris, metodologis, dan rekayasa produk**
 - **Bahasa Indonesia**: *Studi Empiris Interaksi Ukuran Model dan Tingkat Kuantisasi terhadap Kualitas NLP Bahasa Indonesia dan Efisiensi Inferensi CPU*
 - **Bahasa Inggris**: *An Empirical Study of Model Size and Quantization Level Interactions on Indonesian NLP Quality and CPU Inference Efficiency*
 
-### Alternatif berorientasi produk
+### Alternatif berorientasi eksperimen
 
-- **Bahasa Indonesia**: *Pengembangan Benchmark Reproducible untuk Evaluasi Small Language Model Terkuantisasi pada Tugas NLP Bahasa Indonesia di Lingkungan CPU-Only*
-- **Bahasa Inggris**: *Developing a Reproducible Benchmark for Evaluating Quantized Small Language Models on Indonesian NLP Tasks in CPU-Only Environments*
+- **Bahasa Indonesia**: *Analisis Faktorial Ukuran Model dan Tingkat Kuantisasi pada Tugas NLP Bahasa Indonesia di Lingkungan CPU-Only*
+- **Bahasa Inggris**: *A Factorial Analysis of Model Size and Quantization Level on Indonesian NLP Tasks in CPU-Only Environments*
 
 ### Alternatif lebih ringkas
 
@@ -41,7 +41,7 @@ Model bahasa berukuran kecil dapat dijalankan pada perangkat konsumen, tetapi uk
 
 Penelitian ini tidak hanya membandingkan model sebelum dan sesudah dikuantisasi. Eksperimen akan menguji kombinasi dua ukuran Qwen3, tiga tingkat representasi bobot, dan dua tugas NLP Bahasa Indonesia. Hasilnya akan digunakan untuk menjawab apakah terdapat interaksi antara ukuran model dan tingkat kuantisasi, tugas mana yang paling sensitif, serta konfigurasi mana yang memberikan keseimbangan terbaik antara kualitas, latensi, penggunaan memori, dan ukuran model.
 
-Produk yang direncanakan adalah **benchmark harness CPU-only** yang membaca konfigurasi eksperimen, menjalankan model dan dataset secara konsisten, mencatat metadata lingkungan, menyimpan hasil mentah, menghitung metrik, dan menghasilkan laporan *Pareto frontier* secara otomatis. Nilai produk terletak pada proses evaluasi yang dapat digunakan ulang, bukan hanya tabel hasil eksperimen satu kali.
+Penelitian dilaksanakan sebagai **eksperimen komputasional terkontrol**. Skrip evaluasi digunakan sebagai instrumen penelitian untuk menjalankan model dan dataset secara konsisten, mencatat metadata lingkungan, menyimpan hasil mentah, serta menghitung metrik. Luaran utamanya adalah temuan empiris dan analisis ilmiah mengenai pengaruh serta interaksi faktor-faktor yang diuji.
 
 ## 3. Fokus dan Pertanyaan Penelitian
 
@@ -79,7 +79,7 @@ Gap sementara yang akan diverifikasi adalah belum ditemukannya evaluasi terkontr
 2. membandingkan beberapa tingkat kuantisasi dengan runtime dan perangkat keras yang sama;
 3. mengevaluasi lebih dari satu karakteristik tugas NLP Bahasa Indonesia;
 4. menganalisis interaksi ukuran model, tingkat kuantisasi, dan jenis tugas; serta
-5. menghubungkan kualitas tugas dengan latensi, *throughput*, RAM, dan ukuran berkas pada deployment CPU-only.
+5. menghubungkan kualitas tugas dengan latensi, *throughput*, RAM, dan ukuran berkas pada inferensi CPU-only.
 
 Kombinasi tersebut adalah **hipotesis kebaruan**, bukan fakta final. Pencarian literatur sistematis tetap wajib dilakukan sebelum topik diterima dan sebelum frasa “belum ada” digunakan dalam proposal.
 
@@ -87,15 +87,16 @@ Kombinasi tersebut adalah **hipotesis kebaruan**, bukan fakta final. Pencarian l
 
 Rumusan kontribusi sementara yang defensible adalah:
 
-> Penelitian ini menawarkan evaluasi faktorial terkontrol atas hubungan antara ukuran model, tingkat kuantisasi, dan karakteristik tugas NLP Bahasa Indonesia, dengan mengukur kualitas serta biaya inferensi pada lingkungan CPU-only yang konsisten melalui sebuah benchmark harness yang dapat direproduksi.
+> Penelitian ini menawarkan evaluasi faktorial terkontrol atas hubungan antara ukuran model, tingkat kuantisasi, dan karakteristik tugas NLP Bahasa Indonesia, dengan mengukur kualitas serta biaya inferensi pada lingkungan CPU-only yang konsisten dan prosedur eksperimen yang dapat direproduksi.
 
-Kebaruan dibagi menjadi tiga lapisan:
+Kontribusi ilmiah yang ditargetkan dibagi menjadi dua lapisan utama:
 
 | Lapisan kontribusi | Bentuk kontribusi |
 |---|---|
 | Empiris | Bukti mengenai degradasi kualitas Qwen3 kecil pada beberapa tingkat kuantisasi dan tugas Bahasa Indonesia |
 | Metodologis | Desain faktorial dan analisis interaksi ukuran model × tingkat kuantisasi × jenis tugas |
-| Rekayasa produk | Benchmark harness CPU-only yang menyimpan konfigurasi, hasil mentah, metadata lingkungan, dan laporan Pareto |
+
+Skrip eksperimen, konfigurasi, hasil mentah, dan metadata lingkungan akan disertakan sebagai artefak pendukung reprodusibilitas, bukan sebagai sumber kebaruan tersendiri.
 
 ### 4.4 Batas Klaim
 
@@ -107,25 +108,26 @@ Penelitian tidak akan mengklaim:
 - bahwa kuantisasi selalu mempercepat inferensi atau selalu menurunkan kualitas;
 - bahwa perbedaan Q8_0 dan Q4_K_M hanya disebabkan oleh nominal bit-width tanpa mempertimbangkan implementasi format GGUF.
 
-## 5. Perumusan Produk dan Masalah
+## 5. Posisi Penelitian dan Batasan
 
-### Masalah nyata
+### Masalah penelitian
 
-Pengguna dengan perangkat terbatas belum dapat memilih konfigurasi model hanya berdasarkan jumlah parameter atau ukuran berkas. Model yang lebih kecil belum tentu memberikan keseimbangan kualitas dan kecepatan terbaik, sedangkan kuantisasi yang lebih agresif dapat menimbulkan degradasi yang berbeda antarukuran model dan tugas Bahasa Indonesia.
+Belum tersedia bukti empiris yang memadai untuk menjelaskan bagaimana ukuran model dan tingkat kuantisasi berinteraksi dalam memengaruhi kualitas tugas NLP Bahasa Indonesia serta biaya inferensi pada CPU konsumen. Jumlah parameter atau ukuran berkas saja tidak cukup untuk menerangkan konfigurasi yang memberikan keseimbangan kualitas dan efisiensi, sedangkan kuantisasi yang lebih agresif dapat menimbulkan degradasi yang berbeda antarukuran model dan karakteristik tugas.
 
-### Solusi atau produk
+### Pendekatan penelitian
 
-Benchmark harness berbasis CLI akan menyediakan:
+Penelitian menggunakan eksperimen faktorial terkontrol dengan prosedur berikut:
 
-- berkas konfigurasi model, kuantisasi, dataset, dan parameter inferensi;
-- adapter untuk runtime `llama.cpp` dan dataset;
-- eksekusi eksperimen dengan *warm-up*, jumlah thread, panjang konteks, dan konfigurasi decoding yang tetap;
-- pencatatan hasil mentah dalam JSONL/CSV;
-- pencatatan versi model, dataset, runtime, CPU, seed, dan konfigurasi eksperimen;
-- perhitungan kualitas, latensi, *throughput*, penggunaan RAM, dan ukuran model;
-- pembuatan tabel, grafik, serta laporan *Pareto frontier*.
+- memvariasikan ukuran model, tingkat kuantisasi, dan jenis tugas sebagai faktor eksperimen;
+- mengendalikan runtime, perangkat keras, *warm-up*, jumlah *thread*, panjang konteks, dan konfigurasi *decoding*;
+- menggunakan contoh uji dan protokol evaluasi yang sama pada konfigurasi yang dibandingkan;
+- mencatat versi model, dataset, runtime, CPU, *seed*, dan konfigurasi eksperimen;
+- mengukur kualitas, latensi, *throughput*, penggunaan RAM, dan ukuran berkas; serta
+- menganalisis efek utama, efek interaksi, degradasi relatif terhadap baseline, interval kepercayaan, dan *Pareto frontier*.
 
-### Batasan produk
+Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk mengotomatisasi prosedur di atas dan menjaga konsistensi pengukuran.
+
+### Batasan penelitian
 
 1. Lingkungan utama hanya satu laptop: AMD Ryzen 3 5300U, RAM 9 GB, tanpa GPU, dan ruang penyimpanan kosong awal sekitar 8,5 GB.
 2. Model inti dibatasi pada Qwen3-0.6B dan Qwen3-1.7B dalam tahap *post-training* yang sama.
@@ -182,15 +184,18 @@ Dataset final belum dikunci. Kandidat akan dipilih berdasarkan lisensi, stabilit
 
 Analisis tidak boleh menyimpulkan hubungan kausal di luar faktor yang dikontrol. Perbedaan hasil hanya berlaku untuk konfigurasi eksperimen yang diuji.
 
-## 8. Pemetaan ke Bab Skripsi dan Proposal
+## 8. Pemetaan ke Bab Proposal dan Skripsi Ilmiah Akademik
 
-- **Proposal Bab 1**: keterbatasan deployment SLM pada perangkat konsumen, masalah pemilihan konfigurasi, rumusan masalah interaksi ukuran dan kuantisasi, tujuan, batasan, serta manfaat benchmark.
+- **Proposal Bab 1**: keterbatasan inferensi SLM pada perangkat konsumen, kesenjangan bukti mengenai pengaruh ukuran dan kuantisasi, rumusan masalah, tujuan, batasan, serta manfaat ilmiah dan praktis penelitian.
 - **Proposal Bab 2**: SLM multibahasa, Qwen3, kuantisasi bobot, GGUF/`llama.cpp`, benchmark NLP Bahasa Indonesia, penelitian kuantisasi IndoBERT, evaluasi sistem CPU, dan gap penelitian.
-- **Proposal Bab 3**: desain faktorial, arsitektur harness, pemilihan model/dataset, kontrol lingkungan, prosedur pengujian, metrik, serta metode analisis.
-- **Proposal Bab 4**: jadwal verifikasi literatur, pilot hardware, implementasi harness, eksperimen, analisis, dan penulisan.
-- **Skripsi Bab 4**: arsitektur produk, format konfigurasi, adapter model/dataset, penyimpanan hasil, dan generator laporan.
-- **Skripsi Bab 5**: implementasi runner, integrasi `llama.cpp`, pengukuran sumber daya, validasi parser, dan otomatisasi eksperimen.
-- **Skripsi Bab 6**: validasi produk, hasil faktorial, analisis interaksi, *Pareto frontier*, keterbatasan, kesimpulan, dan saran.
+- **Proposal Bab 3**: deskripsi umum penelitian, data, desain faktorial, rancangan metode, kontrol lingkungan, prosedur pengujian, metrik, serta metode analisis.
+- **Proposal Bab 4**: jadwal verifikasi literatur, studi pendahuluan pada perangkat keras, penyiapan instrumen eksperimen, pelaksanaan eksperimen, analisis, dan penulisan.
+- **Skripsi Bab 1**: latar belakang, perumusan masalah, batasan penelitian, tujuan, dan manfaat penelitian.
+- **Skripsi Bab 2**: tinjauan pustaka mengenai SLM, kuantisasi, evaluasi NLP Bahasa Indonesia, inferensi CPU, dan penelitian terdahulu yang menjadi dasar gap.
+- **Skripsi Bab 3**: metodologi penelitian yang mencakup data, faktor dan variabel eksperimen, rancangan metode, kontrol eksperimen, serta rancangan pengujian dan analisis.
+- **Skripsi Bab 4**: implementasi lingkungan dan instrumen eksperimen, integrasi model/dataset dengan `llama.cpp`, prosedur pengukuran sumber daya, dan validasi parser.
+- **Skripsi Bab 5**: hasil eksperimen faktorial, analisis efek utama dan interaksi, degradasi kualitas, *Pareto frontier*, pembahasan terhadap penelitian terdahulu, serta keterbatasan temuan.
+- **Skripsi Bab 6**: simpulan yang menjawab perumusan masalah dan tujuan penelitian serta saran untuk penelitian lanjutan.
 
 ## 9. Risiko dan Kelayakan Akademik
 
@@ -199,7 +204,7 @@ Analisis tidak boleh menyimpulkan hubungan kausal di luar faktor yang dikontrol.
 - **Risiko komputasi**: baseline BF16/F16 atau Qwen3-1.7B dapat berjalan lambat pada CPU. Mitigasinya adalah konteks pendek, keluaran terbatas, evaluasi model secara berurutan, dan pemisahan subset pilot dari test set final.
 - **Risiko penyimpanan**: seluruh varian model dapat melebihi ruang kosong jika disimpan bersamaan. Mitigasinya adalah evaluasi berurutan, pembersihan cache yang aman, dan penyimpanan permanen hanya untuk konfigurasi serta hasil mentah.
 - **Risiko metodologis**: format GGUF menggunakan skema campuran sehingga nominal bit-width tidak sepenuhnya menggambarkan representasi setiap tensor. Mitigasinya adalah melaporkan nama skema aktual, ukuran berkas, metadata model, dan versi quantizer.
-- **Risiko generalisasi**: hasil satu CPU tidak mewakili seluruh perangkat. Posisi penelitian adalah studi kasus deployment terkontrol pada CPU konsumen, bukan benchmark hardware universal.
+- **Risiko generalisasi**: hasil satu CPU tidak mewakili seluruh perangkat. Posisi penelitian adalah eksperimen terkontrol pada satu CPU konsumen, bukan benchmark perangkat keras universal.
 - **Risiko scope**: penambahan banyak metode, model, atau tugas akan meningkatkan kombinasi secara cepat. Scope inti dikunci pada 12 kombinasi; eksperimen tambahan hanya dilakukan setelah eksperimen inti selesai.
 
 ### Fallback plan
@@ -239,15 +244,15 @@ Sebelum kandidat diterima, pencarian literatur harus memeriksa setidaknya kombin
 - `GGUF quantization Indonesian NLP`;
 - `quantization task sensitivity multilingual LLM`.
 
-Pencarian harus mencatat studi yang membandingkan beberapa ukuran model, beberapa tingkat kuantisasi, evaluasi bahasa non-Inggris, evaluasi per tugas, dan deployment CPU. Gap baru boleh dinyatakan final setelah pembanding terdekat ditemukan dan perbedaannya dijelaskan secara eksplisit.
+Pencarian harus mencatat studi yang membandingkan beberapa ukuran model, beberapa tingkat kuantisasi, evaluasi bahasa non-Inggris, evaluasi per tugas, dan inferensi CPU. Gap baru boleh dinyatakan final setelah pembanding terdekat ditemukan dan perbedaannya dijelaskan secara eksplisit.
 
 ### 10.3 Kesimpulan Gap Sementara
 
-Gap yang ditargetkan bukan penggunaan Qwen, kuantisasi SLM, atau inferensi CPU secara terpisah. Kontribusi yang hendak diuji adalah **analisis interaksi ukuran model × tingkat kuantisasi × jenis tugas NLP Bahasa Indonesia** dalam satu lingkungan CPU-only yang terkontrol, disertai artefak benchmark yang dapat direproduksi.
+Gap yang ditargetkan bukan penggunaan Qwen, kuantisasi SLM, atau inferensi CPU secara terpisah. Kontribusi yang hendak diuji adalah **analisis interaksi ukuran model × tingkat kuantisasi × jenis tugas NLP Bahasa Indonesia** dalam satu lingkungan CPU-only yang terkontrol. Konfigurasi, skrip, metadata, dan hasil mentah disertakan untuk mendukung reprodusibilitas penelitian.
 
 ## 11. Penyerahan ke Penulisan LaTeX
 
 - **Target file**: `template/proposal/chapters/bab1-pendahuluan.tex`, `template/proposal/chapters/bab2-penelitian-terkait.tex`, dan `template/proposal/chapters/bab3-metodologi.tex` setelah verifikasi literatur, dataset, dan baseline runtime dikunci.
-- **Gambar/diagram**: arsitektur benchmark harness; alur konfigurasi → model → kuantisasi → tugas → inferensi CPU → evaluasi; matriks 2 × 3 × 2; dan contoh *Pareto frontier* kualitas–latensi–memori.
+- **Gambar/diagram**: bagan alir metodologi penelitian; alur data → model → kuantisasi → inferensi CPU → evaluasi; matriks eksperimen 2 × 3 × 2; dan contoh *Pareto frontier* kualitas–latensi–memori.
 - **Keputusan yang masih terbuka**: dua dataset final, definisi keluaran dan parser untuk setiap tugas, baseline BF16/F16 yang benar-benar stabil, serta apakah perbandingan Indonesia–Inggris akan menjadi eksperimen tambahan.
 - **Syarat sebelum drafting proposal**: pilot Qwen3-0.6B dan Qwen3-1.7B pada hardware target, estimasi durasi 12 kombinasi, dan verifikasi literatur mandiri terhadap klaim gap.
