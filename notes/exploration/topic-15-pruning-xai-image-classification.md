@@ -6,7 +6,7 @@ cssclasses:
 
 Date: 2026-09-02
 
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
@@ -18,7 +18,7 @@ Task inti yang direkomendasikan adalah klasifikasi citra, bukan deteksi objek. Y
 
 Model utama yang direncanakan adalah ResNet-18 dan ResNet-50, yaitu dua ukuran dalam satu keluarga arsitektur. Keduanya akan mengalami structured channel pruning pada beberapa target pengurangan operasi komputasi. Penelitian akan membedakan tiga konsep yang sering tercampur: **pergeseran penjelasan terhadap model padat** (*explanation drift*), **kesetiaan penjelasan terhadap model yang sedang dijelaskan** (*faithfulness*), dan **kesesuaian spasial penjelasan dengan objek beranotasi** (*localization/plausibility*).
 
-Kebaruan yang ditargetkan bersifat **empiris, metodologis, dan rekayasa produk**, bukan metode pruning atau metode XAI baru. Pertanyaan umum "apakah pruning memengaruhi explainability" telah diteliti; karena itu, kandidat ini hanya layak jika kontribusinya dipertahankan pada evaluasi berpasangan dan multidimensi yang lebih spesifik.
+Kebaruan yang ditargetkan bersifat **empiris dan metodologis**, bukan metode pruning atau metode XAI baru. Pertanyaan umum "apakah pruning memengaruhi explainability" telah diteliti; karena itu, kandidat ini hanya layak jika kontribusinya dipertahankan pada evaluasi berpasangan dan multidimensi yang lebih spesifik.
 
 ## 1. Opsi Judul
 
@@ -32,10 +32,10 @@ Kebaruan yang ditargetkan bersifat **empiris, metodologis, dan rekayasa produk**
 - **Bahasa Indonesia**: *Evaluasi Pergeseran, Faithfulness, dan Lokalisasi Penjelasan XAI pada Model Klasifikasi Citra Terpangkas*
 - **Bahasa Inggris**: *Evaluating Explanation Drift, Faithfulness, and Localization in Pruned Image Classification Models*
 
-### Alternatif berorientasi produk
+### Alternatif yang menonjolkan desain eksperimen
 
-- **Bahasa Indonesia**: *Pengembangan Benchmark Reproducible untuk Audit Performa dan Penjelasan Model Klasifikasi Citra Terpangkas*
-- **Bahasa Inggris**: *Developing a Reproducible Benchmark for Auditing the Performance and Explanations of Pruned Image Classifiers*
+- **Bahasa Indonesia**: *Analisis Faktorial Performa dan Kualitas Penjelasan pada Model Klasifikasi Citra dengan Structured Pruning*
+- **Bahasa Inggris**: *A Factorial Analysis of Performance and Explanation Quality in Structured-Pruned Image Classifiers*
 
 Judul sebaiknya tidak menyebut Grad-CAM, ResNet, atau nama dataset sebelum pilot membuktikan seluruh komponen dapat dijalankan secara stabil.
 
@@ -47,7 +47,7 @@ Sebagai contoh, model padat dan model terpangkas dapat sama-sama memprediksi ras
 
 Penelitian ini akan menguji model padat dan model terpangkas menggunakan citra yang sama. Pada sampel yang label prediksinya tetap sama, penelitian akan mengukur apakah penjelasannya bergeser. Selanjutnya, penelitian akan memeriksa apakah penjelasan tersebut tetap setia pada perilaku masing-masing model melalui uji perturbasi, serta apakah area pentingnya masih berada pada objek berdasarkan mask anotasi. Dengan demikian, penelitian tidak menyamakan "heatmap mirip" dengan "penjelasan berkualitas".
 
-Produk yang direncanakan adalah **benchmark harness audit pruning--XAI** yang menjalankan pruning, evaluasi model, pembuatan attribution map, perhitungan metrik XAI, pengukuran biaya inferensi, dan pembuatan laporan trade-off secara konsisten.
+Penelitian dilaksanakan sebagai **eksperimen komputasional terkontrol**. Skrip eksperimen digunakan untuk menerapkan pruning, mengevaluasi model, menghasilkan attribution map, menghitung metrik XAI, dan mengukur biaya inferensi secara konsisten. Luaran utamanya adalah temuan empiris mengenai perubahan performa serta kualitas penjelasan dan analisis ilmiah atas hubungan antarvariabel tersebut.
 
 ## 3. Fokus dan Pertanyaan Penelitian
 
@@ -98,15 +98,16 @@ Elemen-elemen tersebut membentuk **hipotesis gap**, bukan dasar untuk klaim "per
 
 Rumusan kontribusi sementara yang defensible adalah:
 
-> Penelitian ini menawarkan protokol evaluasi berpasangan untuk mengukur apakah structured pruning mengubah bukti visual yang digunakan model klasifikasi ketika prediksinya tetap sama, dengan membedakan explanation drift, faithfulness, dan localization serta menghubungkannya dengan trade-off efisiensi deployment.
+> Penelitian ini menawarkan protokol evaluasi berpasangan untuk mengukur apakah structured pruning mengubah bukti visual yang digunakan model klasifikasi ketika prediksinya tetap sama, dengan membedakan explanation drift, faithfulness, dan localization serta menghubungkannya dengan trade-off efisiensi inferensi.
 
-Kebaruan dapat dibagi menjadi tiga lapisan:
+Kontribusi ilmiah yang ditargetkan dibagi menjadi dua lapisan utama:
 
 | Lapisan kontribusi | Bentuk kontribusi |
 |---|---|
 | Empiris | Bukti instance-level tentang kapan akurasi/prediksi tetap stabil tetapi penjelasan mulai bergeser atau kehilangan localization |
 | Metodologis | Evaluasi berpasangan dan agreement-conditioned yang memisahkan drift, faithfulness, dan plausibility/localization |
-| Rekayasa produk | Benchmark harness yang merekam lineage model padat--terpangkas, konfigurasi pruning, attribution map, hasil mentah, dan laporan Pareto |
+
+Skrip, konfigurasi, attribution map, dan hasil mentah disertakan sebagai artefak pendukung reprodusibilitas, bukan sebagai sumber kebaruan tersendiri.
 
 ### 4.4 Mengapa Tiga Dimensi XAI Harus Dipisahkan
 
@@ -130,27 +131,26 @@ Penelitian tidak akan mengklaim:
 - pengurangan parameter atau sparsity nominal pasti menghasilkan percepatan aktual;
 - hasil berlaku untuk semua arsitektur, dataset, metode pruning, metode XAI, dan perangkat keras.
 
-## 5. Perumusan Produk dan Masalah
+## 5. Posisi Penelitian dan Batasan
 
-### Masalah nyata
+### Masalah penelitian
 
-Praktik deployment model sering memilih konfigurasi pruning berdasarkan akurasi dan ukuran model. Prosedur tersebut dapat melewatkan perubahan perilaku pada contoh tertentu dan perubahan bukti visual yang digunakan model. Di sisi lain, pemeriksaan heatmap secara manual bersifat subjektif, sulit direproduksi, dan tidak membedakan kemiripan penjelasan dari faithfulness.
+Evaluasi model terpangkas yang hanya menggunakan akurasi dan ukuran model dapat melewatkan perubahan perilaku pada contoh tertentu serta perubahan bukti visual yang digunakan model. Di sisi lain, pemeriksaan heatmap secara manual bersifat subjektif, sulit direproduksi, dan tidak membedakan kemiripan penjelasan dari faithfulness.
 
-### Solusi atau produk
+### Pendekatan penelitian
 
-Benchmark harness berbasis CLI akan menyediakan:
+Penelitian menggunakan eksperimen berpasangan dan faktorial dengan prosedur berikut:
 
-- berkas konfigurasi model, dataset, metode pruning, target MACs, fine-tuning, dan XAI;
-- penyimpanan checkpoint serta hubungan lineage antara model padat dan setiap model terpangkas;
-- structured pruning dengan target biaya komputasi yang tercatat;
-- evaluasi akurasi, macro-F1, negative log-likelihood, expected calibration error, dan prediction agreement;
-- pembuatan Grad-CAM dan satu metode pembanding, misalnya Integrated Gradients;
-- perhitungan explanation drift, faithfulness, dan localization;
-- pengukuran parameter, MACs, ukuran checkpoint, latensi CPU, throughput, dan peak RAM;
-- penyimpanan hasil per sampel dalam format JSONL/Parquet serta ringkasan CSV;
-- pembuatan grafik kurva pruning, contoh kasus drift, interval kepercayaan, dan Pareto frontier.
+- memvariasikan ukuran arsitektur, kriteria pruning, dan target pengurangan MACs;
+- membandingkan model padat dan model terpangkas pada input serta kelas target yang sama;
+- mengelompokkan sampel berdasarkan perubahan kebenaran dan kesamaan prediksi;
+- mengukur performa prediktif, explanation drift, faithfulness, localization, serta efisiensi inferensi;
+- mengendalikan sumber bobot awal, split data, preprocessing, fine-tuning, target layer XAI, dan perangkat pengujian; serta
+- menganalisis efek utama, efek interaksi, interval kepercayaan, effect size, dan Pareto frontier.
 
-### Batasan produk
+Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk menjalankan prosedur tersebut secara konsisten serta menyimpan konfigurasi dan hasil per sampel.
+
+### Batasan penelitian
 
 1. Task inti hanya klasifikasi citra single-label.
 2. Dataset utama direkomendasikan Oxford-IIIT Pet karena menyediakan 37 kelas, sekitar 200 citra per kelas, bounding box kepala, dan trimap foreground--background.
@@ -187,7 +187,7 @@ Benchmark harness berbasis CLI akan menyediakan:
 | Target pengurangan MACs | 25%, 50%, 70% dari baseline, ditambah model padat 0% |
 | Dataset/task | Oxford-IIIT Pet, klasifikasi 37 ras |
 | Metode XAI | Grad-CAM, Integrated Gradients |
-| Deployment | Satu CPU dan konfigurasi runtime yang tetap |
+| Lingkungan inferensi | Satu CPU dan konfigurasi runtime yang tetap |
 
 Karena baseline tidak bergantung pada kriteria pruning, desain menghasilkan dua model padat dan 2 × 2 × 3 = 12 model terpangkas, atau **14 varian model**. Setiap varian akan dievaluasi dengan dua metode XAI. Fine-tuning pascapruning menggunakan budget epoch, optimizer, scheduler, augmentasi, dan kriteria penghentian yang sama pada setiap sel eksperimen.
 
@@ -235,15 +235,18 @@ Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dia
 - Gunakan mask setelah transformasi geometris yang identik dengan citra agar metrik localization tidak salah alignment.
 - Simpan attribution map mentah sebelum thresholding agar hasil dapat dihitung ulang.
 
-## 8. Pemetaan ke Bab Skripsi dan Proposal
+## 8. Pemetaan ke Bab Proposal dan Skripsi Ilmiah Akademik
 
-- **Proposal Bab 1**: kebutuhan deployment model vision yang efisien, keterbatasan evaluasi berbasis akurasi, rumusan masalah perubahan bukti visual setelah pruning, tujuan, batasan, dan manfaat benchmark.
+- **Proposal Bab 1**: kebutuhan model vision yang efisien, keterbatasan evaluasi berbasis akurasi, kesenjangan bukti mengenai perubahan penjelasan setelah pruning, rumusan masalah, tujuan, batasan, serta manfaat ilmiah dan praktis penelitian.
 - **Proposal Bab 2**: structured pruning, magnitude/Taylor importance, dampak kompresi di luar akurasi, Grad-CAM dan Integrated Gradients, evaluasi XAI, prediction agreement, penelitian pruning--explainability, dan gap penelitian.
-- **Proposal Bab 3**: desain faktorial, arsitektur harness, dataset dan mask, prosedur training--pruning--fine-tuning, protokol pasangan sampel, metrik, kontrol eksperimen, serta analisis statistik.
-- **Proposal Bab 4**: jadwal verifikasi literatur, pilot dataset/model, implementasi harness, eksperimen pruning, audit XAI, analisis, dan penulisan.
-- **Skripsi Bab 4**: arsitektur produk, model lineage, format konfigurasi, penyimpanan attribution map, skema hasil per sampel, dan generator laporan.
-- **Skripsi Bab 5**: implementasi runner, integrasi pruning, fine-tuning, evaluasi model, integrasi XAI/Quantus, profiling CPU, dan validasi reproducibility.
-- **Skripsi Bab 6**: validasi produk, hasil faktorial, explanation drift pada stable-correct, faithfulness, localization, Pareto frontier, failure taxonomy, keterbatasan, kesimpulan, dan saran.
+- **Proposal Bab 3**: deskripsi data dan mask, desain faktorial, prosedur training--pruning--fine-tuning, protokol pasangan sampel, metrik, kontrol eksperimen, serta rancangan analisis statistik.
+- **Proposal Bab 4**: jadwal verifikasi literatur, studi pendahuluan dataset/model, penyiapan instrumen eksperimen, eksperimen pruning, evaluasi XAI, analisis, dan penulisan.
+- **Skripsi Bab 1**: latar belakang, perumusan masalah, batasan penelitian, tujuan, dan manfaat penelitian.
+- **Skripsi Bab 2**: tinjauan pustaka tentang structured pruning, kompresi model, XAI, evaluasi kualitas penjelasan, dan penelitian pruning--explainability.
+- **Skripsi Bab 3**: metodologi yang mencakup data, faktor dan variabel eksperimen, rancangan pruning dan fine-tuning, protokol pasangan sampel, metrik, kontrol, dan analisis statistik.
+- **Skripsi Bab 4**: implementasi lingkungan dan instrumen eksperimen, model lineage, pruning, fine-tuning, integrasi XAI/Quantus, penyimpanan hasil per sampel, dan profiling CPU.
+- **Skripsi Bab 5**: hasil faktorial, explanation drift pada stable-correct, faithfulness, localization, Pareto frontier, failure taxonomy, pembahasan terhadap penelitian terdahulu, dan keterbatasan.
+- **Skripsi Bab 6**: simpulan yang menjawab perumusan masalah dan tujuan penelitian serta saran penelitian lanjutan.
 
 ## 9. Risiko dan Kelayakan Akademik
 
@@ -300,7 +303,7 @@ Pencarian harus mencatat untuk setiap studi: task, dataset, arsitektur, structur
 
 ### 10.3 Kesimpulan Gap Sementara
 
-Versi ide yang hanya "membandingkan akurasi sebelum dan sesudah pruning lalu melihat Grad-CAM" memiliki novelty lemah dan tidak direkomendasikan. Versi yang masih layak adalah **audit perubahan bukti visual pada prediksi yang dipertahankan**, dengan evaluasi berpasangan yang memisahkan drift, faithfulness, serta localization dan menghubungkannya dengan efisiensi deployment.
+Versi ide yang hanya "membandingkan akurasi sebelum dan sesudah pruning lalu melihat Grad-CAM" memiliki novelty lemah dan tidak direkomendasikan. Versi yang masih layak adalah **analisis perubahan bukti visual pada prediksi yang dipertahankan**, dengan evaluasi berpasangan yang memisahkan drift, faithfulness, serta localization dan menghubungkannya dengan efisiensi inferensi.
 
 ### 10.4 Alternatif Jalur YOLO
 

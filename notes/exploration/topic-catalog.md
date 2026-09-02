@@ -6,7 +6,7 @@ cssclasses:
 
 Tanggal: 2026-08-31
 
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 Status: EKSPLORASI — belum ada topik yang dipilih secara final
 
@@ -28,6 +28,6 @@ Status: EKSPLORASI — belum ada topik yang dipilih secara final
 
 ## Ringkasan Pemilihan
 
-**IndoAgentBench** paling matang untuk diturunkan menjadi proposal dan paling dekat dengan produk perangkat lunak berbentuk benchmark harness. **Foundation-vs-Supervised Shortcut Attribution** menawarkan kontribusi eksperimen yang kuat, tetapi lebih cocok untuk jalur skripsi ilmiah akademik. **Kuantisasi SLM untuk NLP Bahasa Indonesia** relevan untuk AI systems/NLP, tetapi scope model, tugas, runtime, dan klaim kebaruannya masih perlu dipersempit serta diverifikasi. **Structured Pruning dan Kualitas XAI** sesuai dengan minat Computer Vision--XAI dan memiliki rancangan eksperimen yang jelas, tetapi hanya layak bila novelty difokuskan pada evaluasi berpasangan prediction-preserving serta pemisahan drift, faithfulness, dan localization; pertanyaan umum pengaruh pruning terhadap explainability sudah diteliti.
+**IndoAgentBench** paling matang untuk diturunkan menjadi proposal karena memiliki desain evaluasi berpasangan, audit ekuivalensi bilingual, dan analisis kegagalan yang jelas. **Foundation-vs-Supervised Shortcut Attribution** menawarkan kontribusi eksperimen yang kuat untuk menguji ketergantungan shortcut lintas paradigma pretraining. **Kuantisasi SLM untuk NLP Bahasa Indonesia** relevan untuk AI systems/NLP, tetapi scope model, tugas, runtime, dan klaim kebaruannya masih perlu dipersempit serta diverifikasi. **Structured Pruning dan Kualitas XAI** sesuai dengan minat Computer Vision--XAI dan memiliki rancangan eksperimen yang jelas, tetapi hanya layak bila novelty difokuskan pada evaluasi berpasangan prediction-preserving serta pemisahan drift, faithfulness, dan localization; pertanyaan umum pengaruh pruning terhadap explainability sudah diteliti. Seluruh kandidat aktif diposisikan sebagai skripsi ilmiah akademik dengan luaran utama berupa temuan empiris dan analisis ilmiah.
 
 Kandidat lain telah dipindahkan ke [`archive/`](archive/README.md). Arsip dipertahankan sebagai riwayat keputusan agar ide dan hasil eksplorasi lama tidak hilang atau dieksplorasi ulang tanpa alasan.
