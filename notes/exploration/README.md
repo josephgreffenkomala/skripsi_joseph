@@ -1,6 +1,6 @@
 # Memori Canonical Eksplorasi Skripsi
 
-Updated: 2026-09-01
+Updated: 2026-09-02
 
 Folder ini memisahkan kandidat aktif dari kandidat yang telah diarsipkan. Informasi baru tentang shortlist harus memperbarui `topic-catalog.md` atau salah satu file detail aktif. Riwayat kandidat yang dikeluarkan dari shortlist disimpan di `archive/` agar keputusan lama tetap dapat ditelusuri.
 
@@ -10,9 +10,10 @@ Folder ini memisahkan kandidat aktif dari kandidat yang telah diarsipkan. Inform
 - [`topic-01-indoagentbench.md`](topic-01-indoagentbench.md): benchmark coding agent dengan pasangan instruksi Indonesia–Inggris.
 - [`topic-02-foundation-shortcut-attribution.md`](topic-02-foundation-shortcut-attribution.md): studi shortcut learning foundation model versus supervised model.
 - [`topic-14-slm-quantization-indonesian-nlp.md`](topic-14-slm-quantization-indonesian-nlp.md): benchmark kuantisasi SLM untuk NLP Bahasa Indonesia dengan pengukuran kualitas dan efisiensi CPU.
+- [`topic-15-pruning-xai-image-classification.md`](topic-15-pruning-xai-image-classification.md): benchmark structured pruning untuk klasifikasi citra dengan audit explanation drift, faithfulness, localization, dan efisiensi deployment.
 - [`archive/`](archive/README.md): kandidat di luar shortlist dan snapshot katalog lama.
 
-Shortlist aktif saat ini terdiri atas Topik 01, Topik 02, dan Topik 14. Topik 14 adalah kandidat nomor 10 dalam ringkasan percakapan, tetapi nomor canonical-nya tetap dipertahankan agar riwayat berkas tidak terputus.
+Shortlist aktif saat ini terdiri atas Topik 01, Topik 02, Topik 14, dan Topik 15. Topik 14 adalah kandidat nomor 10 dalam ringkasan percakapan, tetapi nomor canonical-nya tetap dipertahankan agar riwayat berkas tidak terputus.
 
 ## Selera dan preferensi pengguna yang perlu diingat
 
