@@ -12,11 +12,11 @@ Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
 ## Status Singkat
 
-**Kandidat layak bersyarat dan menarik untuk jalur Computer Vision--XAI; belum dipilih secara final.** Ide awal mengenai penggunaan beberapa model Computer Vision, pemangkasan model, pengujian klasifikasi, dan XAI telah dipersempit menjadi evaluasi faktorial terkontrol atas hubungan antara **ukuran arsitektur**, **tingkat structured pruning**, dan **kualitas penjelasan** pada satu tugas klasifikasi citra.
+**Kandidat layak bersyarat dan menarik untuk jalur Computer Vision--XAI; belum dipilih secara final.** Ide awal mengenai penggunaan beberapa model Computer Vision, pemangkasan model, pengujian klasifikasi, dan XAI telah dipersempit menjadi audit terkontrol atas perubahan performa dan penjelasan pada lintasan **model padat → segera setelah structured pruning → setelah fine-tuning/recovery** dalam satu tugas klasifikasi citra.
 
 Task inti yang direkomendasikan adalah klasifikasi citra, bukan deteksi objek. YOLO tidak dimasukkan ke eksperimen inti karena YOLO terutama merupakan keluarga model deteksi objek; mencampurkan YOLO dengan ResNet untuk klasifikasi akan mencampurkan task, bentuk keluaran, metrik performa, dan metode penjelasan. Jika deteksi objek lebih diminati, keseluruhan rancangan harus dipindahkan menjadi studi khusus deteksi dan bukan sekadar menambahkan YOLO sebagai model ketiga.
 
-Model utama yang direncanakan adalah ResNet-18 dan ResNet-50, yaitu dua ukuran dalam satu keluarga arsitektur. Keduanya akan mengalami structured channel pruning pada beberapa target pengurangan operasi komputasi. Penelitian akan membedakan tiga konsep yang sering tercampur: **pergeseran penjelasan terhadap model padat** (*explanation drift*), **kesetiaan penjelasan terhadap model yang sedang dijelaskan** (*faithfulness*), dan **kesesuaian spasial penjelasan dengan objek beranotasi** (*localization/plausibility*).
+Model inti yang direncanakan adalah ResNet-18 dengan magnitude-based structured channel pruning pada beberapa target pengurangan operasi komputasi. ResNet-50 dan Taylor importance hanya menjadi ekstensi setelah eksperimen inti selesai dan anggaran komputasi dinyatakan aman. Penelitian akan membedakan tiga konsep yang sering tercampur: **pergeseran penjelasan terhadap model padat** (*explanation drift*), **kesetiaan penjelasan terhadap model yang sedang dijelaskan** (*faithfulness*), dan **kesesuaian spasial penjelasan dengan objek beranotasi** (*localization/plausibility*).
 
 Kebaruan yang ditargetkan bersifat **empiris dan metodologis**, bukan metode pruning atau metode XAI baru. Pertanyaan umum "apakah pruning memengaruhi explainability" telah diteliti; karena itu, kandidat ini hanya layak jika kontribusinya dipertahankan pada evaluasi berpasangan dan multidimensi yang lebih spesifik.
 
@@ -32,10 +32,10 @@ Kebaruan yang ditargetkan bersifat **empiris dan metodologis**, bukan metode pru
 - **Bahasa Indonesia**: *Evaluasi Pergeseran, Faithfulness, dan Lokalisasi Penjelasan XAI pada Model Klasifikasi Citra Terpangkas*
 - **Bahasa Inggris**: *Evaluating Explanation Drift, Faithfulness, and Localization in Pruned Image Classification Models*
 
-### Alternatif yang menonjolkan desain eksperimen
+### Alternatif yang menonjolkan lintasan recovery
 
-- **Bahasa Indonesia**: *Analisis Faktorial Performa dan Kualitas Penjelasan pada Model Klasifikasi Citra dengan Structured Pruning*
-- **Bahasa Inggris**: *A Factorial Analysis of Performance and Explanation Quality in Structured-Pruned Image Classifiers*
+- **Bahasa Indonesia**: *Audit Perubahan Performa dan Penjelasan XAI Sebelum dan Sesudah Recovery pada Model Klasifikasi Citra Terpangkas*
+- **Bahasa Inggris**: *Auditing Predictive and XAI Explanation Changes Before and After Recovery in Pruned Image Classifiers*
 
 Judul sebaiknya tidak menyebut Grad-CAM, ResNet, atau nama dataset sebelum pilot membuktikan seluruh komponen dapat dijalankan secara stabil.
 
@@ -45,7 +45,7 @@ Pruning mengecilkan jaringan saraf dengan menghapus bobot, kanal, atau struktur 
 
 Sebagai contoh, model padat dan model terpangkas dapat sama-sama memprediksi ras kucing dengan benar. Namun, model padat mungkin berfokus pada wajah dan bentuk telinga, sedangkan model terpangkas beralih ke latar belakang atau tekstur yang kebetulan berkorelasi dengan kelas. Jika hanya akurasi yang diperiksa, perubahan tersebut tidak terlihat. Heatmap XAI dapat membantu mengauditnya, tetapi heatmap juga tidak boleh langsung dianggap benar.
 
-Penelitian ini akan menguji model padat dan model terpangkas menggunakan citra yang sama. Pada sampel yang label prediksinya tetap sama, penelitian akan mengukur apakah penjelasannya bergeser. Selanjutnya, penelitian akan memeriksa apakah penjelasan tersebut tetap setia pada perilaku masing-masing model melalui uji perturbasi, serta apakah area pentingnya masih berada pada objek berdasarkan mask anotasi. Dengan demikian, penelitian tidak menyamakan "heatmap mirip" dengan "penjelasan berkualitas".
+Penelitian ini akan menguji tiga keadaan model menggunakan citra yang sama: model padat, model segera setelah kanal dipangkas, dan model setelah menjalani fine-tuning/recovery. Pemisahan ini diperlukan agar kerusakan langsung akibat penghapusan kanal dapat dibedakan dari perubahan akibat proses recovery. Pada sampel yang label prediksinya tetap sama, penelitian akan mengukur apakah penjelasannya bergeser. Selanjutnya, penelitian akan memeriksa apakah penjelasan tersebut tetap setia pada perilaku masing-masing model melalui uji perturbasi, serta apakah area pentingnya masih berada pada objek berdasarkan mask anotasi. Dengan demikian, penelitian tidak menyamakan "akurasi pulih" dengan "perilaku model pulih" maupun "heatmap mirip" dengan "penjelasan berkualitas".
 
 Penelitian dilaksanakan sebagai **eksperimen komputasional terkontrol**. Skrip eksperimen digunakan untuk menerapkan pruning, mengevaluasi model, menghasilkan attribution map, menghitung metrik XAI, dan mengukur biaya inferensi secara konsisten. Luaran utamanya adalah temuan empiris mengenai perubahan performa serta kualitas penjelasan dan analisis ilmiah atas hubungan antarvariabel tersebut.
 
@@ -55,17 +55,17 @@ Penelitian dilaksanakan sebagai **eksperimen komputasional terkontrol**. Skrip e
 
 Hubungan utama yang akan diuji adalah:
 
-> ukuran model × metode pruning × tingkat pengurangan MACs → performa prediktif + efisiensi inferensi + explanation drift + faithfulness + localization
+> tingkat pengurangan MACs × tahap evaluasi (immediate/recovered) → performa prediktif + efisiensi inferensi + explanation drift + faithfulness + localization
 
-Eksperimen akan menggunakan evaluasi berpasangan pada input yang sama. Analisis explanation drift utama hanya dilakukan pada subset sampel yang diprediksi benar oleh model padat dan model terpangkas dengan kelas yang sama. Pembatasan ini mencegah perubahan heatmap akibat perubahan kelas target disalahartikan sebagai perubahan cara model bernalar.
+Eksperimen akan menggunakan evaluasi berpasangan pada input yang sama untuk membandingkan baseline--immediate, baseline--recovered, dan immediate--recovered. Analisis explanation drift utama hanya dilakukan pada subset sampel yang diprediksi benar oleh kedua checkpoint yang dibandingkan dengan kelas yang sama. Pembatasan ini mencegah perubahan heatmap akibat perubahan kelas target disalahartikan sebagai perubahan cara model bernalar.
 
 ### Pertanyaan penelitian sementara
 
-1. Bagaimana tingkat structured pruning memengaruhi akurasi, kalibrasi, latensi, penggunaan memori, ukuran model, dan jumlah operasi ResNet-18 serta ResNet-50?
-2. Pada sampel dengan prediksi yang tetap sama, apakah peningkatan tingkat pruning menyebabkan explanation drift terhadap model padat?
-3. Apakah penjelasan model terpangkas tetap faithful terhadap modelnya sendiri dan tetap terlokalisasi pada objek, meskipun akurasi agregat masih dipertahankan?
-4. Apakah dampak pruning terhadap kualitas penjelasan berbeda menurut ukuran model atau kriteria pruning?
-5. Konfigurasi mana yang memberikan trade-off Pareto terbaik antara akurasi, pengurangan MACs, latensi CPU, faithfulness, dan localization?
+1. Bagaimana tingkat structured pruning memengaruhi akurasi, kalibrasi, latensi, penggunaan memori, ukuran model, dan jumlah operasi ResNet-18 sebelum dan sesudah recovery?
+2. Pada sampel dengan prediksi yang tetap sama, seberapa besar explanation drift yang muncul segera setelah pruning dan setelah recovery terhadap model padat?
+3. Apakah recovery memulihkan akurasi, faithfulness, dan localization dengan tingkat yang sama, atau akurasi pulih sementara kualitas penjelasan tetap berubah?
+4. Apakah terdapat *accuracy-preserving region* ketika akurasi masih berada dalam batas yang diterima tetapi explanation drift, faithfulness, atau localization telah berubah secara berarti?
+5. Konfigurasi hasil recovery mana yang memberikan trade-off Pareto terbaik antara akurasi, pengurangan MACs, latensi CPU, faithfulness, dan localization?
 
 Pertanyaan "apakah XAI berpengaruh pada hasil pruning" perlu dibedakan dari fokus di atas. Dalam scope inti, XAI digunakan untuk **mengaudit dampak pruning**, bukan sebagai masukan untuk menentukan unit yang dipangkas. Jika XAI dipakai sebagai kriteria pruning, penelitian berubah menjadi pengembangan atau perbandingan *explainability-aware pruning* dan berhadapan langsung dengan *Pruning by Explaining*, X-Pruner, serta C-SWAP.
 
@@ -85,10 +85,10 @@ Pertanyaan "apakah XAI berpengaruh pada hasil pruning" perlu dibedakan dari foku
 
 Gap yang masih masuk akal dan perlu diverifikasi lebih sistematis adalah keterbatasan studi terdahulu dalam menggabungkan seluruh elemen berikut pada klasifikasi citra dalam satu protokol terkontrol:
 
-1. perbandingan model padat dan terpangkas secara berpasangan pada input yang sama;
+1. perbandingan tiga checkpoint, yaitu model padat, model segera setelah pruning, dan model setelah recovery, secara berpasangan pada input yang sama;
 2. analisis explanation drift yang dikondisikan pada **prediction agreement**, sehingga perubahan kelas target tidak mencemari perbandingan heatmap;
 3. pemisahan antara similarity/drift, faithfulness terhadap model, dan localization terhadap mask objek;
-4. perbandingan dua ukuran dalam satu keluarga arsitektur dan dua kriteria structured pruning pada target pengurangan MACs yang disamakan;
+4. analisis lintasan recovery untuk membedakan dampak langsung penghapusan kanal dari perubahan yang timbul selama fine-tuning;
 5. pengaitan kualitas penjelasan dengan akurasi, kalibrasi, ukuran model, MACs, latensi CPU, dan memori aktual; serta
 6. pelaporan kurva dan titik patah ketika akurasi masih tampak stabil tetapi salah satu dimensi kualitas penjelasan mulai menurun.
 
@@ -98,14 +98,14 @@ Elemen-elemen tersebut membentuk **hipotesis gap**, bukan dasar untuk klaim "per
 
 Rumusan kontribusi sementara yang defensible adalah:
 
-> Penelitian ini menawarkan protokol evaluasi berpasangan untuk mengukur apakah structured pruning mengubah bukti visual yang digunakan model klasifikasi ketika prediksinya tetap sama, dengan membedakan explanation drift, faithfulness, dan localization serta menghubungkannya dengan trade-off efisiensi inferensi.
+> Penelitian ini menawarkan protokol evaluasi berpasangan untuk mengukur perubahan bukti visual pada lintasan model padat, model segera setelah structured pruning, dan model setelah recovery ketika prediksinya tetap sama, dengan membedakan explanation drift, faithfulness, dan localization serta menghubungkannya dengan trade-off efisiensi inferensi.
 
 Kontribusi ilmiah yang ditargetkan dibagi menjadi dua lapisan utama:
 
 | Lapisan kontribusi | Bentuk kontribusi |
 |---|---|
-| Empiris | Bukti instance-level tentang kapan akurasi/prediksi tetap stabil tetapi penjelasan mulai bergeser atau kehilangan localization |
-| Metodologis | Evaluasi berpasangan dan agreement-conditioned yang memisahkan drift, faithfulness, dan plausibility/localization |
+| Empiris | Bukti instance-level tentang kapan akurasi/prediksi tetap stabil atau kembali pulih, tetapi penjelasan bergeser atau kehilangan localization |
+| Metodologis | Evaluasi berpasangan dan agreement-conditioned pada tiga checkpoint yang memisahkan drift, faithfulness, dan plausibility/localization |
 
 Skrip, konfigurasi, attribution map, dan hasil mentah disertakan sebagai artefak pendukung reprodusibilitas, bukan sebagai sumber kebaruan tersendiri.
 
@@ -139,14 +139,15 @@ Evaluasi model terpangkas yang hanya menggunakan akurasi dan ukuran model dapat 
 
 ### Pendekatan penelitian
 
-Penelitian menggunakan eksperimen berpasangan dan faktorial dengan prosedur berikut:
+Penelitian menggunakan eksperimen berpasangan dengan prosedur berikut:
 
-- memvariasikan ukuran arsitektur, kriteria pruning, dan target pengurangan MACs;
-- membandingkan model padat dan model terpangkas pada input serta kelas target yang sama;
+- memvariasikan target pengurangan MACs pada satu arsitektur dan satu kriteria pruning inti;
+- menyimpan checkpoint model padat, model segera setelah pruning, dan model setelah recovery;
+- membandingkan baseline--immediate, baseline--recovered, serta immediate--recovered pada input dan kelas target yang sama;
 - mengelompokkan sampel berdasarkan perubahan kebenaran dan kesamaan prediksi;
 - mengukur performa prediktif, explanation drift, faithfulness, localization, serta efisiensi inferensi;
 - mengendalikan sumber bobot awal, split data, preprocessing, fine-tuning, target layer XAI, dan perangkat pengujian; serta
-- menganalisis efek utama, efek interaksi, interval kepercayaan, effect size, dan Pareto frontier.
+- menganalisis pengaruh tingkat pruning dan tahap recovery, interval kepercayaan, effect size, serta Pareto frontier.
 
 Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk menjalankan prosedur tersebut secara konsisten serta menyimpan konfigurasi dan hasil per sampel.
 
@@ -154,9 +155,9 @@ Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk menjalankan prosedur 
 
 1. Task inti hanya klasifikasi citra single-label.
 2. Dataset utama direkomendasikan Oxford-IIIT Pet karena menyediakan 37 kelas, sekitar 200 citra per kelas, bounding box kepala, dan trimap foreground--background.
-3. Arsitektur inti dibatasi pada ResNet-18 dan ResNet-50 dengan bobot awal dari sumber dan tahap pretraining yang sama.
+3. Arsitektur inti dibatasi pada ResNet-18; ResNet-50 hanya menjadi ekstensi setelah eksperimen inti selesai.
 4. Pruning inti berupa structured channel pruning. Unstructured pruning tidak menjadi eksperimen utama karena sparsity bobot tidak otomatis menghasilkan percepatan pada CPU umum.
-5. Kriteria pruning dibatasi pada magnitude berbasis norm dan satu kriteria berbasis sensitivitas, misalnya Taylor importance.
+5. Kriteria pruning inti adalah magnitude berbasis norm; Taylor importance hanya menjadi ekstensi setelah pilot dan eksperimen inti berhasil.
 6. Target pruning ditentukan berdasarkan pengurangan MACs, bukan hanya persentase parameter nol.
 7. Metode XAI dibatasi pada Grad-CAM dan satu pembanding yang kompatibel, misalnya Integrated Gradients.
 8. Evaluasi utama dilakukan pada satu test split tetap dengan preprocessing dan target kelas yang konsisten.
@@ -167,7 +168,8 @@ Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk menjalankan prosedur 
 
 - **Structured channel pruning**: penghapusan kanal atau kelompok parameter beserta struktur yang bergantung padanya sehingga bentuk tensor benar-benar mengecil dan berpotensi mempercepat inferensi pada hardware umum.
 - **Magnitude importance**: skor kepentingan berdasarkan besar norm parameter. Metode ini sederhana dan menjadi baseline yang mudah direproduksi.
-- **Taylor importance**: pendekatan sensitivitas orde pertama yang memperkirakan perubahan objektif akibat penghapusan parameter atau kelompok parameter.
+- **Recovery**: fine-tuning dengan anggaran tetap setelah pruning untuk memulihkan performa model. Checkpoint sebelum dan sesudah recovery disimpan agar pengaruh penghapusan kanal dapat dibedakan dari pengaruh optimisasi lanjutan.
+- **Taylor importance**: pendekatan sensitivitas orde pertama yang memperkirakan perubahan objektif akibat penghapusan parameter atau kelompok parameter; digunakan hanya sebagai ekstensi bila anggaran eksperimen memungkinkan.
 - **MACs**: jumlah operasi multiply--accumulate sebagai proksi biaya komputasi. MACs harus dilaporkan bersama latensi aktual karena keduanya tidak selalu berbanding lurus.
 - **Grad-CAM**: metode attribution berbasis gradien dan activation map pada convolutional layer untuk menghasilkan peta lokasi yang relevan terhadap kelas target.
 - **Integrated Gradients**: metode attribution yang mengintegrasikan gradien sepanjang jalur dari baseline input menuju input aktual.
@@ -182,20 +184,21 @@ Skrip berbasis CLI hanya berfungsi sebagai instrumen untuk menjalankan prosedur 
 
 | Faktor | Level yang direncanakan |
 |---|---|
-| Ukuran model | ResNet-18, ResNet-50 |
-| Kriteria structured pruning | Magnitude/norm, Taylor importance |
+| Ukuran model | ResNet-18 |
+| Kriteria structured pruning | Magnitude/norm |
 | Target pengurangan MACs | 25%, 50%, 70% dari baseline, ditambah model padat 0% |
+| Tahap evaluasi | Model padat, segera setelah pruning (*immediate*), setelah fine-tuning (*recovered*) |
 | Dataset/task | Oxford-IIIT Pet, klasifikasi 37 ras |
 | Metode XAI | Grad-CAM, Integrated Gradients |
 | Lingkungan inferensi | Satu CPU dan konfigurasi runtime yang tetap |
 
-Karena baseline tidak bergantung pada kriteria pruning, desain menghasilkan dua model padat dan 2 × 2 × 3 = 12 model terpangkas, atau **14 varian model**. Setiap varian akan dievaluasi dengan dua metode XAI. Fine-tuning pascapruning menggunakan budget epoch, optimizer, scheduler, augmentasi, dan kriteria penghentian yang sama pada setiap sel eksperimen.
+Desain inti menghasilkan satu model padat, tiga checkpoint *immediate*, dan tiga checkpoint *recovered*, atau **7 checkpoint per seed**. Setiap checkpoint akan dievaluasi dengan dua metode XAI. Recovery menggunakan budget epoch, optimizer, scheduler, augmentasi, dan kriteria penghentian yang sama pada setiap tingkat pruning. Evaluasi *immediate* dilakukan sebelum pembaruan bobot pascapruning sehingga kerusakan langsung akibat penghapusan kanal dapat diamati.
 
-Jika biaya komputasi terlalu tinggi, desain minimum fallback adalah ResNet-18 dengan dua kriteria pruning dan tiga target pengurangan MACs. Pengurangan jumlah arsitektur lebih baik daripada mengurangi validitas metrik XAI atau menambah dataset kecil tanpa replikasi yang memadai.
+ResNet-50 dan Taylor importance bukan bagian matriks inti. Keduanya dapat ditambahkan secara bertahap sebagai ekstensi setelah seluruh eksperimen ResNet-18 dengan magnitude pruning selesai. Jika biaya komputasi terlalu tinggi, desain fallback mempertahankan tiga checkpoint dan tiga dimensi XAI, tetapi membatasi target pengurangan MACs menjadi 25% dan 50% serta menjalankan Integrated Gradients pada subset berstratifikasi yang ditentukan sebelum analisis.
 
 ### 7.2 Protokol Pasangan Sampel
 
-Untuk setiap pasangan model padat--terpangkas dan setiap metode XAI, test set dibagi menjadi:
+Untuk setiap perbandingan baseline--immediate, baseline--recovered, dan immediate--recovered pada setiap tingkat pruning dan metode XAI, test set dibagi menjadi:
 
 1. **stable-correct**: keduanya benar dan memprediksi kelas yang sama;
 2. **stable-wrong**: keduanya salah tetapi memprediksi kelas yang sama;
@@ -204,6 +207,8 @@ Untuk setiap pasangan model padat--terpangkas dan setiap metode XAI, test set di
 5. **changed-wrong**: prediksi berubah dan keduanya salah.
 
 Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dianalisis terpisah sebagai failure taxonomy. Attribution map harus dihitung terhadap kelas target yang sama ketika dua model dibandingkan; kelas prediksi masing-masing dapat disajikan sebagai analisis tambahan.
+
+Karena anggota kelompok stable-correct dapat berubah menurut tingkat pruning, hasil dilaporkan pada dua himpunan. **Pair-specific stable-correct** mencakup semua citra yang memenuhi kriteria pada setiap pasangan checkpoint dan menggambarkan kondisi aktual pasangan tersebut. **Common stable-correct core** mencakup citra yang tetap benar dengan prediksi sama pada seluruh checkpoint yang dibandingkan, sehingga perubahan antartingkat pruning dapat dibandingkan pada komposisi sampel yang tetap. Jumlah serta proporsi sampel pada kedua himpunan wajib dilaporkan.
 
 ### 7.3 Metrik
 
@@ -221,8 +226,8 @@ Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dia
 
 1. Gunakan unit analisis per citra dan per seed, bukan hanya satu nilai agregat per model.
 2. Jalankan minimal tiga seed untuk training/fine-tuning jika waktu memungkinkan; jika tidak, batasi klaim dan gunakan bootstrap per sampel untuk ketidakpastian evaluasi.
-3. Hitung interval kepercayaan bootstrap berpasangan untuk selisih metrik model padat--terpangkas.
-4. Analisis pengaruh arsitektur, kriteria pruning, dan target MACs beserta interaksinya menggunakan model statistik yang sesuai distribusi metrik.
+3. Hitung interval kepercayaan bootstrap berpasangan untuk selisih metrik baseline--immediate, baseline--recovered, dan immediate--recovered.
+4. Analisis pengaruh target pengurangan MACs, tahap evaluasi, dan interaksinya menggunakan model statistik yang sesuai distribusi metrik.
 5. Koreksi perbandingan jamak bila melakukan banyak uji pasangan.
 6. Laporkan effect size, bukan hanya nilai p.
 7. Tentukan *accuracy-preserving region* sebelum melihat hasil, misalnya degradasi akurasi absolut tidak lebih dari ambang yang disepakati. Kemudian uji apakah metrik XAI sudah berubah di dalam region tersebut.
@@ -238,14 +243,14 @@ Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dia
 ## 8. Pemetaan ke Bab Proposal dan Skripsi Ilmiah Akademik
 
 - **Proposal Bab 1**: kebutuhan model vision yang efisien, keterbatasan evaluasi berbasis akurasi, kesenjangan bukti mengenai perubahan penjelasan setelah pruning, rumusan masalah, tujuan, batasan, serta manfaat ilmiah dan praktis penelitian.
-- **Proposal Bab 2**: structured pruning, magnitude/Taylor importance, dampak kompresi di luar akurasi, Grad-CAM dan Integrated Gradients, evaluasi XAI, prediction agreement, penelitian pruning--explainability, dan gap penelitian.
-- **Proposal Bab 3**: deskripsi data dan mask, desain faktorial, prosedur training--pruning--fine-tuning, protokol pasangan sampel, metrik, kontrol eksperimen, serta rancangan analisis statistik.
+- **Proposal Bab 2**: structured pruning, magnitude importance, recovery pascapruning, dampak kompresi di luar akurasi, Grad-CAM dan Integrated Gradients, evaluasi XAI, prediction agreement, penelitian pruning--explainability, dan gap penelitian.
+- **Proposal Bab 3**: deskripsi data dan mask, desain tiga checkpoint, prosedur training--pruning--evaluasi immediate--recovery, protokol pasangan sampel, metrik, kontrol eksperimen, serta rancangan analisis statistik.
 - **Proposal Bab 4**: jadwal verifikasi literatur, studi pendahuluan dataset/model, penyiapan instrumen eksperimen, eksperimen pruning, evaluasi XAI, analisis, dan penulisan.
 - **Skripsi Bab 1**: latar belakang, perumusan masalah, batasan penelitian, tujuan, dan manfaat penelitian.
 - **Skripsi Bab 2**: tinjauan pustaka tentang structured pruning, kompresi model, XAI, evaluasi kualitas penjelasan, dan penelitian pruning--explainability.
-- **Skripsi Bab 3**: metodologi yang mencakup data, faktor dan variabel eksperimen, rancangan pruning dan fine-tuning, protokol pasangan sampel, metrik, kontrol, dan analisis statistik.
-- **Skripsi Bab 4**: implementasi lingkungan dan instrumen eksperimen, model lineage, pruning, fine-tuning, integrasi XAI/Quantus, penyimpanan hasil per sampel, dan profiling CPU.
-- **Skripsi Bab 5**: hasil faktorial, explanation drift pada stable-correct, faithfulness, localization, Pareto frontier, failure taxonomy, pembahasan terhadap penelitian terdahulu, dan keterbatasan.
+- **Skripsi Bab 3**: metodologi yang mencakup data, faktor dan variabel eksperimen, rancangan tiga checkpoint, protokol pasangan sampel, metrik, kontrol, dan analisis statistik.
+- **Skripsi Bab 4**: implementasi lingkungan dan instrumen eksperimen, model lineage baseline--immediate--recovered, pruning, recovery, integrasi XAI/Quantus, penyimpanan hasil per sampel, dan profiling CPU.
+- **Skripsi Bab 5**: hasil lintasan pruning--recovery, explanation drift pada stable-correct, faithfulness, localization, Pareto frontier, failure taxonomy, pembahasan terhadap penelitian terdahulu, dan keterbatasan.
 - **Skripsi Bab 6**: simpulan yang menjawab perumusan masalah dan tujuan penelitian serta saran penelitian lanjutan.
 
 ## 9. Risiko dan Kelayakan Akademik
@@ -253,7 +258,7 @@ Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dia
 - **Risiko kebaruan**: sudah ada studi langsung mengenai pruning dan explainability. Mitigasinya adalah tidak memakai klaim umum, menonjolkan evaluasi agreement-conditioned, memisahkan tiga dimensi XAI, dan melakukan literature review sistematis sebelum topik diterima.
 - **Risiko interpretasi XAI**: similarity, faithfulness, dan localization dapat memberikan kesimpulan yang berbeda. Mitigasinya adalah melaporkan ketiganya tanpa membuat satu skor gabungan yang arbitrer.
 - **Risiko metric gaming/OOD**: deletion dan insertion metric sensitif terhadap cara perturbasi. Mitigasinya adalah memakai lebih dari satu metrik, mengunci perturbation baseline, dan menyatakan keterbatasan OOD.
-- **Risiko komputasi training**: 14 varian dengan beberapa seed memerlukan GPU untuk fine-tuning yang praktis. Mitigasinya adalah melakukan pilot ResNet-18, memakai transfer learning, dan mengaktifkan desain fallback satu arsitektur.
+- **Risiko komputasi training**: tujuh checkpoint per seed tetap memerlukan GPU untuk recovery dan evaluasi XAI yang praktis. Mitigasinya adalah memakai ResNet-18, transfer learning, satu kriteria pruning, dan Integrated Gradients pada subset berstratifikasi.
 - **Risiko latensi**: penurunan MACs belum tentu menghasilkan percepatan karena operator, memory access, dan runtime. Mitigasinya adalah mengukur latensi dan memori aktual pada perangkat target.
 - **Risiko perbandingan layer XAI**: structured pruning mengubah jumlah kanal dan dapat memengaruhi layer target. Mitigasinya adalah membandingkan stage semantik yang sama dan mendokumentasikan resolusi feature map.
 - **Risiko dataset**: mask seluruh tubuh tidak selalu menjadi ground truth fitur untuk membedakan ras. Mitigasinya adalah memakai localization sebagai plausibility, menambahkan ROI kepala, dan tidak menyamakannya dengan faithfulness.
@@ -261,9 +266,9 @@ Explanation drift utama dihitung pada kelompok stable-correct. Kelompok lain dia
 
 ### Fallback plan
 
-1. Jika ResNet-50 terlalu mahal, gunakan ResNet-18 saja dan pertahankan dua kriteria pruning serta tiga dimensi XAI.
+1. Jika target pengurangan 70% menghasilkan graph tidak valid atau kerusakan performa ekstrem, gunakan target 25% dan 50% sebagai eksperimen final serta dokumentasikan hasil pilot 70%.
 2. Jika Integrated Gradients terlalu lambat untuk seluruh test set, jalankan pada subset berstratifikasi yang ditentukan sebelum analisis dan gunakan Grad-CAM untuk cakupan penuh.
-3. Jika Taylor importance tidak stabil, gunakan magnitude sebagai eksperimen inti dan Taylor sebagai pilot yang kegagalannya didokumentasikan; jangan mengganti metode setelah melihat hasil final tanpa protokol baru.
+3. Jika anggaran tiga seed tidak tersedia, gunakan satu baseline training yang dikunci dan bootstrap berpasangan per sampel, lalu batasi klaim generalisasi terhadap variasi training.
 4. Jika latency profiling bervariasi tinggi, tingkatkan warm-up dan pengulangan, kunci thread serta power mode, lalu laporkan median dan interval kuantil.
 5. Jika klasifikasi 37 kelas tidak stabil, gunakan task species dua kelas hanya untuk debug; task final sebaiknya tetap fine-grained agar ROI kepala dan perubahan bukti visual bermakna.
 
@@ -316,6 +321,6 @@ Task, dataset, dan metrik harus diganti menjadi object detection, misalnya mAP, 
 ## 11. Penyerahan ke Penulisan LaTeX
 
 - **Target file**: `template/proposal/chapters/bab1-pendahuluan.tex`, `template/proposal/chapters/bab2-penelitian-terkait.tex`, dan `template/proposal/chapters/bab3-metodologi.tex` setelah systematic mapping, pilot pruning, dan target komputasi dikunci.
-- **Gambar/diagram**: pipeline model padat → structured pruning → fine-tuning → paired prediction audit → XAI → evaluasi drift/faithfulness/localization → profiling → Pareto frontier; matriks eksperimen; dan ilustrasi lima kategori perubahan prediksi.
-- **Keputusan yang masih terbuka**: ketersediaan GPU, dua kriteria pruning final, target pengurangan MACs yang realistis, metode XAI kedua, definisi accuracy-preserving region, jumlah seed, dan perangkat CPU target.
-- **Syarat sebelum drafting proposal**: pilot satu baseline ResNet-18, satu model terpangkas 50% MACs, validasi mask alignment, pengukuran satu metrik dari tiap dimensi XAI, estimasi waktu seluruh eksperimen, serta systematic mapping terhadap pembanding langsung.
+- **Gambar/diagram**: pipeline model padat → structured pruning → evaluasi immediate → fine-tuning/recovery → evaluasi recovered → paired prediction audit → XAI → evaluasi drift/faithfulness/localization → profiling → Pareto frontier; matriks eksperimen; dan ilustrasi lima kategori perubahan prediksi.
+- **Keputusan yang masih terbuka**: ketersediaan GPU, target pengurangan MACs yang realistis, budget recovery, metode XAI kedua, definisi accuracy-preserving region, jumlah seed, dan perangkat CPU target.
+- **Syarat sebelum drafting proposal**: pilot satu baseline ResNet-18, satu checkpoint immediate dan satu checkpoint recovered pada target 50% MACs, validasi mask alignment, pengukuran satu metrik dari tiap dimensi XAI, estimasi waktu seluruh eksperimen, serta systematic mapping terhadap pembanding langsung.
