@@ -1,6 +1,6 @@
 # Memori Canonical Eksplorasi Skripsi
 
-Updated: 2026-09-02
+Updated: 2026-09-03
 
 Folder ini memisahkan kandidat aktif dari kandidat yang telah diarsipkan. Informasi baru tentang shortlist harus memperbarui `topic-catalog.md` atau salah satu file detail aktif. Riwayat kandidat yang dikeluarkan dari shortlist disimpan di `archive/` agar keputusan lama tetap dapat ditelusuri.
 
@@ -9,7 +9,7 @@ Folder ini memisahkan kandidat aktif dari kandidat yang telah diarsipkan. Inform
 - [`topic-catalog.md`](topic-catalog.md): indeks utama dan status kandidat aktif.
 - [`topic-01-indoagentbench.md`](topic-01-indoagentbench.md): benchmark coding agent dengan pasangan instruksi Indonesia–Inggris.
 - [`topic-02-foundation-shortcut-attribution.md`](topic-02-foundation-shortcut-attribution.md): studi shortcut learning foundation model versus supervised model.
-- [`topic-14-slm-quantization-indonesian-nlp.md`](topic-14-slm-quantization-indonesian-nlp.md): benchmark kuantisasi SLM untuk NLP Bahasa Indonesia dengan pengukuran kualitas dan efisiensi CPU.
+- [`topic-14-slm-quantization-indonesian-nlp.md`](topic-14-slm-quantization-indonesian-nlp.md): evaluasi ketahanan kuantisasi lintas-SLM untuk Bahasa Indonesia, mencakup degradasi relatif, transisi kesalahan, dan efisiensi CPU.
 - [`topic-15-pruning-xai-image-classification.md`](topic-15-pruning-xai-image-classification.md): benchmark structured pruning untuk klasifikasi citra dengan audit explanation drift, faithfulness, localization, dan efisiensi deployment.
 - [`archive/`](archive/README.md): kandidat di luar shortlist dan snapshot katalog lama.
 
