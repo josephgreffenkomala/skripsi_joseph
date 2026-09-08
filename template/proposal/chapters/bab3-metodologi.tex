@@ -19,6 +19,12 @@ Tahapan penelitian dilakukan secara sistematis sebagai berikut:
     \item \textbf{Tahap 6:} Menganalisis degradasi relatif dan menentukan konfigurasi pada Pareto frontier kualitas--efisiensi.
 \end{enumerate}
 
+\section{Dataset dan Protokol Inferensi}
+
+Dataset yang digunakan adalah SmSA (Sentence-level Sentiment Analysis) dari benchmark IndoNLU. Dataset ini berisi komentar dan ulasan Bahasa Indonesia dengan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative}. Pembagian resmi IndoNLU terdiri atas 11.000 data pelatihan, 1.260 data validasi, dan 500 data pengujian \citep{wilie2020indonlu}.
+
+Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupun pembaruan bobot model. Evaluasi utama menggunakan 500 sampel pada berkas uji resmi SmSA dari direktori dataset IndoNLU. Seluruh varian model menerima sampel dan prompt yang sama secara \textit{zero-shot}. Prompt, aturan keluaran, prosedur parsing, dan parameter decoding ditetapkan sebelum evaluasi utama sehingga perubahan hasil dapat dibandingkan terhadap baseline model yang sama.
+
 \section{Rancangan Eksperimen}
 
 \subsection{Alur Eksperimen}
@@ -27,9 +33,10 @@ Rancangan eksperimen terdiri dari beberapa komponen utama:
 
 \begin{itemize}
     \item \textbf{Checkpoint model:} empat model utama yang dipilih berdasarkan hasil pilot.
+    \item \textbf{Dataset:} SmSA dari benchmark IndoNLU, menggunakan test set resmi berisi 500 sampel dengan tiga label sentimen.
     \item \textbf{Konversi dan kuantisasi:} pembentukan baseline F16/BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, Q4\_K\_M, dan IQ4\_XS atau IQ4\_NL.
     \item \textbf{Runtime inferensi:} satu versi atau commit \texttt{llama.cpp} dengan konfigurasi yang sama.
-    \item \textbf{Evaluator:} modul prompt, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
+    \item \textbf{Evaluator:} modul prompt zero-shot tetap, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
 \end{itemize}
 
 % TODO: Ganti dengan diagram arsitektur sistem Anda.

@@ -12,7 +12,7 @@ Salah satu pendekatan yang dapat digunakan untuk mengurangi kebutuhan penyimpana
 
 Dampak kuantisasi tidak dapat dinilai hanya dari ukuran berkas atau satu metrik kualitas. Model dengan berkas yang lebih kecil belum tentu memiliki latensi yang lebih rendah karena kinerja inferensi juga dipengaruhi oleh runtime, kernel komputasi, instruksi CPU, panjang masukan, jumlah utas, dan overhead dekuantisasi. Demikian pula, perubahan nilai akurasi atau $F_1$ tidak sepenuhnya menunjukkan sampel dan kelas yang berpotensi menjadi lebih rentan setelah kuantisasi. Oleh sebab itu, penelitian ini perlu mengukur kualitas prediksi, kepatuhan format, ukuran artefak, penggunaan memori, latensi, dan throughput pada kondisi perangkat keras serta perangkat lunak yang dikendalikan.
 
-Format GGUF dan runtime \texttt{llama.cpp} dipilih sebagai salah satu jalur yang dapat digunakan untuk menjalankan model bahasa terkuantisasi pada CPU. Beberapa tingkat kuantisasi akan dibandingkan untuk mengamati trade-off antara kualitas dan efisiensi. Perbandingan tersebut dirancang menggunakan model, data, prompt, prosedur parsing, runtime, dan perangkat keras yang sama. Selain metrik agregat, prediksi pada sampel yang sama akan dibandingkan untuk mengetahui perpindahan prediksi, misalnya perubahan dari prediksi benar menjadi salah atau perubahan antarkelas sentimen.
+Format GGUF dan runtime \texttt{llama.cpp} dipilih sebagai salah satu jalur yang dapat digunakan untuk menjalankan model bahasa terkuantisasi pada CPU. Beberapa tingkat kuantisasi akan dibandingkan untuk mengamati trade-off antara kualitas dan efisiensi. Perbandingan tersebut dirancang menggunakan model, dataset SmSA resmi dari IndoNLU, prompt, prosedur parsing, runtime, dan perangkat keras yang sama. Selain metrik agregat, prediksi pada sampel yang sama akan dibandingkan untuk mengetahui perpindahan prediksi, misalnya perubahan dari prediksi benar menjadi salah atau perubahan antarkelas sentimen.
 
 % TODO: Tambahkan sitasi penelitian terdahulu tentang dampak kuantisasi dan evaluasi efisiensi.
 Penelitian terdahulu telah membahas kuantisasi model bahasa dan pengaruhnya terhadap kualitas maupun kebutuhan sumber daya. Namun, hasil pada model, tugas, bahasa, atau perangkat keras tertentu tidak dapat langsung digunakan untuk menyimpulkan perilaku model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia berbasis CPU. Dengan demikian, diperlukan rancangan evaluasi empiris yang menyatukan pengukuran kualitas dan efisiensi dalam satu protokol eksperimen yang dapat direproduksi.
@@ -36,11 +36,12 @@ Agar penelitian tetap fokus dan dapat dilaksanakan secara terukur, batasan masal
 \begin{enumerate}
   \item Penelitian berfokus pada klasifikasi sentimen Bahasa Indonesia dengan keluaran klasifikasi berformat singkat.
   \item Model yang direncanakan untuk dievaluasi adalah beberapa \textit{small language model}. Rincian model dan alasan pemilihannya akan dijelaskan pada Bab 3.
+  \item Dataset yang digunakan adalah SmSA dari benchmark IndoNLU, dengan evaluasi utama pada berkas \texttt{test\_preprocess.tsv} berisi 500 sampel dan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative} \citep{wilie2020indonlu}.
   \item Kondisi model mencakup baseline dengan presisi tinggi dan beberapa tingkat kuantisasi GGUF yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
   \item Inferensi direncanakan dilakukan pada perangkat CPU konsumen yang sama tanpa menggunakan GPU sebagai perangkat komputasi utama.
   \item Evaluasi kualitas akan mencakup metrik klasifikasi, kepatuhan format keluaran, serta analisis perubahan prediksi pada sampel yang sama.
   \item Evaluasi efisiensi akan mencakup ukuran berkas model, \textit{peak} RAM, latensi, dan throughput.
-  \item Penelitian tidak mencakup pengembangan algoritma kuantisasi baru, pelatihan ulang model, atau perbandingan menyeluruh terhadap seluruh metode kompresi model.
+  \item Inferensi dilakukan secara \textit{zero-shot} menggunakan prompt tetap. Penelitian tidak mencakup pelatihan, \textit{fine-tuning}, pengembangan algoritma kuantisasi baru, atau perbandingan menyeluruh terhadap seluruh metode kompresi model.
   \item Kesimpulan penelitian akan dibatasi pada model, dataset, runtime, konfigurasi eksperimen, dan perangkat keras yang diuji.
 \end{enumerate}
 

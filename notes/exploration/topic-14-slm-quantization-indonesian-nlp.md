@@ -56,6 +56,19 @@ Penelitian ini akan menjalankan beberapa SLM pada soal Bahasa Indonesia sebelum 
 
 Eksperimen akan menggunakan model sumber, prosedur konversi, versi runtime, perangkat keras, prompt, dan konfigurasi decoding yang terdokumentasi. Kandidat utama adalah format GGUF dan runtime `llama.cpp`; keputusan akhir ditetapkan setelah pilot kompatibilitas. Luaran utama adalah temuan empiris dan analisis ilmiah. Pipeline evaluasi, konfigurasi, dan hasil per sampel berfungsi sebagai artefak reprodusibilitas, bukan sumber kebaruan yang berdiri sendiri.
 
+### Keputusan Dataset
+
+Dataset final untuk penelitian ini adalah **SmSA (Sentence-level Sentiment Analysis) dari benchmark IndoNLU**. Penelitian menggunakan satu dataset saja agar perubahan kualitas dapat diatribusikan secara lebih terkontrol pada model dan tingkat kuantisasi, tanpa menambah confounder akibat perbedaan domain atau definisi label.
+
+- Sumber: repositori resmi [IndoNLP/indonlu](https://github.com/IndoNLP/indonlu), direktori `dataset/smsa_doc-sentiment-prosa`.
+- Berkas evaluasi: `test_preprocess.tsv`.
+- Ukuran: 500 sampel test; split resmi juga menyediakan 11.000 train dan 1.260 validasi.
+- Label: `positive`, `neutral`, dan `negative`.
+- Prosedur: seluruh model dievaluasi secara zero-shot dengan prompt tetap; tidak ada training, fine-tuning, distilasi, atau pembaruan bobot.
+- Reproduksibilitas: repositori dikunci pada commit `ce728f6926a36174b9923dfe49d6a6839b6e9bb7` dan checksum setiap berkas dicatat.
+
+Train dan validasi tidak digunakan untuk melatih model. Jika prompt perlu diuji sebelum evaluasi utama, pengujian dilakukan sebagai pilot terpisah dan prompt final dibekukan sebelum test set digunakan. Rujukan dataset adalah Wilie et al. (2020), *IndoNLU* ([ACL Anthology](https://aclanthology.org/2020.aacl-main.85/)).
+
 ## 3. Fokus dan Pertanyaan Penelitian
 
 ### Fokus utama
@@ -152,8 +165,8 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 3. Model utama adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat; semuanya harus lulus pilot.
 4. Representasi inti dibatasi pada F16/BF16 sebagai baseline operasional, Q8_0, Q6_K, Q5_K_M, Q4_K_M, dan IQ4_XS atau IQ4_NL.
 5. Runtime dibatasi pada satu commit atau versi `llama.cpp` dengan opsi kompilasi yang sama.
-6. Eksperimen inti dibatasi pada satu atau dua dataset klasifikasi sentimen Bahasa Indonesia dengan keluaran yang dapat dinilai otomatis.
-7. Jika digunakan lebih dari satu dataset, hasil dilaporkan per dataset dan tidak digeneralisasi sebagai efek umum seluruh tugas NLP.
+6. Eksperimen inti dibatasi pada satu dataset klasifikasi sentimen Bahasa Indonesia, yaitu SmSA dari IndoNLU, dengan keluaran yang dapat dinilai otomatis.
+7. Evaluasi kualitas utama menggunakan 500 sampel test resmi SmSA yang sama untuk seluruh model dan tingkat kuantisasi.
 8. Mode *thinking* dinonaktifkan jika tersedia; panjang konteks, token keluaran, template chat, dan decoding dikendalikan.
 9. Model dijalankan serta disimpan secara berurutan untuk membatasi penggunaan disk.
 10. Penelitian tidak merancang tipe kuantisasi baru dari kode sumber runtime. Fine-tuning, QAT, GPTQ, AWQ, BitsAndBytes, INT2/INT3, model 3B ke atas, dan perbandingan banyak runtime tidak termasuk scope inti.
@@ -180,13 +193,13 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 | Model | Empat model: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, Sailor2-1B-Chat |
 | Orientasi deskriptif | Multibahasa umum dan berorientasi Asia Tenggara |
 | Representasi bobot | F16/BF16, Q8_0, Q6_K, Q5_K_M, Q4_K_M, IQ4_XS/IQ4_NL |
-| Kondisi tugas/dataset | Satu atau dua dataset klasifikasi sentimen Bahasa Indonesia |
+| Kondisi tugas/dataset | SmSA IndoNLU, test set resmi 500 sampel |
 | Runtime | Satu commit/versi `llama.cpp` |
 | Perangkat | Satu CPU dan konfigurasi sistem tetap |
 
 Jika empat model lulus pilot, desain menghasilkan 4 × 6 = **24 konfigurasi utama**, termasuk baseline F16/BF16. Kualitas dihitung pada contoh uji yang sama. Pengukuran sistem diulang 3--5 kali setelah warm-up; pengulangan ini mengukur variabilitas latensi dan throughput, bukan menambah observasi independen untuk kualitas model.
 
-Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabilitas test split, ukuran, representasi Bahasa Indonesia, kompatibilitas dengan model generatif, dan metrik otomatis. IndoMMLU dapat menjadi salah satu kandidat, tetapi tidak boleh menjadi satu-satunya bukti jika risiko kontaminasi tidak dapat dikendalikan.
+Dataset final telah ditetapkan sebagai SmSA IndoNLU berdasarkan ketersediaan split resmi, definisi label yang sesuai dengan tugas sentimen, dokumentasi benchmark, dan kompatibilitas dengan evaluasi generatif zero-shot. Risiko kontaminasi dataset publik tetap didokumentasikan sebagai keterbatasan, tetapi tidak diatasi dengan menambah dataset kedua pada scope inti.
 
 ### 7.2 Metrik
 
@@ -230,7 +243,7 @@ Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabi
 - **Risiko floor effect**: model yang lemah dalam Bahasa Indonesia dapat memperoleh skor baseline terlalu rendah sehingga degradasi sulit ditafsirkan. Mitigasinya adalah menetapkan ambang kelayakan baseline pada pilot.
 - **Risiko kompatibilitas**: salah satu arsitektur atau chat template dapat bermasalah pada versi `llama.cpp` yang dipilih. Mitigasinya adalah pilot konversi, prompt, dan parser sebelum model dikunci.
 - **Risiko lisensi/akses**: Gemma memerlukan penerimaan ketentuan akses. Mitigasinya adalah memeriksa izin sejak awal dan mengganti model tanpa mengubah kategori desain bila akses tidak tersedia.
-- **Risiko kontaminasi data**: dataset publik dapat muncul dalam data pelatihan model. Mitigasinya adalah mendokumentasikan provenance, menambah dataset yang lebih baru atau terkontrol, dan membatasi klaim.
+- **Risiko kontaminasi data**: dataset publik dapat muncul dalam data pelatihan model. Mitigasinya adalah mendokumentasikan provenance dan membatasi klaim; penelitian tidak mengklaim bebas kontaminasi.
 - **Risiko komputasi**: 24 konfigurasi tetap dapat memerlukan waktu panjang pada CPU. Mitigasinya adalah keluaran pendek, subset pilot terpisah, evaluasi berurutan, dan empat model tetap.
 - **Risiko penyimpanan**: seluruh checkpoint dan varian dapat melebihi ruang kosong. Mitigasinya adalah mengonversi serta mengevaluasi satu model pada satu waktu dan menyimpan permanen hanya metadata, checksum, konfigurasi, dan hasil.
 - **Risiko generalisasi**: satu CPU tidak mewakili semua perangkat. Posisi penelitian adalah eksperimen terkontrol pada satu CPU konsumen.
@@ -239,10 +252,9 @@ Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabi
 
 1. Jika hanya dua model yang lulus seluruh pilot, pertahankan satu model multibahasa umum dan satu model berorientasi Asia Tenggara sehingga desain menjadi 2 × 6 = 12 konfigurasi.
 2. Jika BF16/F16 tidak stabil, gunakan representasi tertinggi yang didukung sebagai baseline operasional dan dokumentasikan konsekuensinya.
-3. Jika dataset utama tidak menghasilkan keluaran yang dapat dinilai stabil, gunakan dataset klasifikasi sentimen alternatif tanpa mengubah tugas inti.
-4. Jika dua dataset tidak layak diselesaikan dalam batas waktu atau komputasi, gunakan satu dataset yang telah ditetapkan sebelum analisis utama.
-5. Jika ruang penyimpanan terbatas, hapus artefak model antara batch hanya setelah checksum, konfigurasi, dan sumber unduhan tersimpan.
-6. Jika perbandingan Indonesia–Inggris terlalu mahal atau ekuivalensinya lemah, keluarkan dari scope final tanpa memengaruhi eksperimen inti.
+3. Jika keluaran tidak stabil pada SmSA, perbaiki prompt, parser, atau kriteria pilot tanpa mengganti dataset pada eksperimen utama.
+4. Jika ruang penyimpanan terbatas, hapus artefak model antara batch hanya setelah checksum, konfigurasi, dan sumber unduhan tersimpan.
+5. Jika perbandingan Indonesia–Inggris terlalu mahal atau ekuivalensinya lemah, keluarkan dari scope final tanpa memengaruhi eksperimen inti.
 
 ## 10. Catatan Sumber dan Literatur
 
@@ -293,5 +305,5 @@ Topik generik “membandingkan beberapa SLM terkuantisasi” tidak cukup novel. 
 
 - **Target file**: bab proposal baru ditulis setelah model, dataset, baseline, dan gap literatur dikunci.
 - **Gambar/diagram**: alur checkpoint sumber → konversi F16 → tingkat kuantisasi GGUF → inferensi CPU → evaluasi per sampel → transisi kesalahan → profiling → Pareto frontier; matriks model × representasi bobot × dataset; dan diagram kategori transisi jawaban.
-- **Keputusan terbuka**: model mana yang lulus pilot, dataset klasifikasi sentimen final, jumlah dataset, ambang baseline minimum, baseline presisi tertinggi yang stabil, serta metode pengukuran peak RAM.
+- **Keputusan terbuka**: model mana yang lulus pilot, ambang baseline minimum, baseline presisi tertinggi yang stabil, serta metode pengukuran peak RAM. Dataset telah dikunci pada SmSA test set resmi.
 - **Syarat sebelum drafting proposal**: systematic mapping pembanding langsung; pilot empat kandidat pada hardware target; verifikasi seluruh varian berasal dari checkpoint sumber dan quantizer yang sama; estimasi durasi 24 konfigurasi; validasi parser; dan audit awal risiko kontaminasi dataset.

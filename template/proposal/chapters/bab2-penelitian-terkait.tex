@@ -4,7 +4,7 @@
 
 Ketersediaan sumber daya bahasa merupakan salah satu dasar penting dalam pengembangan dan evaluasi model bahasa untuk Bahasa Indonesia. Wilie et al. memperkenalkan IndoNLU sebagai kumpulan sumber daya untuk pelatihan, evaluasi, dan pembandingan pemahaman bahasa Indonesia. IndoNLU mencakup dua belas tugas dengan variasi domain, gaya bahasa, dan tingkat kompleksitas, serta menyediakan model pralatih IndoBERT sebagai model pembanding \citep{wilie2020indonlu}.
 
-Penelitian ini menggunakan tugas klasifikasi sentimen dari IndoNLU sebagai salah satu dasar evaluasi. Penggunaan dataset dan pembagian data yang telah ditetapkan memungkinkan perbandingan yang konsisten antara model sebelum dan sesudah kuantisasi. Metrik utama yang direncanakan adalah akurasi dan macro-F1 karena distribusi kelas sentimen tidak sepenuhnya seimbang.
+Penelitian ini menggunakan SmSA sebagai satu-satunya dataset evaluasi. SmSA terdiri atas komentar dan ulasan Bahasa Indonesia dengan tiga label sentimen, yaitu positif, netral, dan negatif. Benchmark IndoNLU menyediakan pembagian resmi sebanyak 11.000 sampel untuk pelatihan, 1.260 sampel untuk validasi, dan 500 sampel untuk pengujian \citep{wilie2020indonlu}. Karena penelitian ini tidak melakukan pelatihan atau \textit{fine-tuning}, evaluasi utama menggunakan 500 sampel pada berkas \texttt{test\_preprocess.tsv} dari repositori resmi IndoNLU. Penggunaan pembagian data yang telah ditetapkan memungkinkan perbandingan yang konsisten antara model sebelum dan sesudah kuantisasi. Metrik utama yang direncanakan adalah akurasi dan macro-F1 karena distribusi kelas sentimen tidak sepenuhnya seimbang.
 
 \section{Kuantisasi pada Model Bahasa Indonesia}
 
