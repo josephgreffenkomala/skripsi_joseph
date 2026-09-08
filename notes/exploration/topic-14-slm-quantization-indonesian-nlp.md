@@ -16,7 +16,7 @@ Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
 Penelitian menggunakan empat model generatif yang relatif sekelas dan diuji melalui pipeline yang sama: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat. Dua varian Qwen memungkinkan pengamatan perubahan kapasitas dalam satu keluarga; Gemma dan Sailor2 memberi pembanding lintas keluarga. Gemma 3 270M-IT menjadi kandidat tambahan opsional, bukan bagian minimum, karena rentang kapasitasnya lebih jauh. Seluruh model tetap harus lulus pilot kompatibilitas `llama.cpp`, kemampuan dasar Bahasa Indonesia, stabilitas format jawaban, kebutuhan RAM, dan waktu inferensi.
 
-Kebaruan tidak berasal dari penggunaan banyak model atau kuantisasi itu sendiri. SLMQuant telah membandingkan kuantisasi lintas arsitektur SLM, penelitian Qwen3 telah membandingkan ukuran serta metode kuantisasi, dan penelitian multilingual telah menunjukkan bahwa dampak kuantisasi berbeda menurut bahasa dan tugas. Posisi yang masih defensible adalah **perbandingan degradasi relatif dan transisi kesalahan per sampel pada SLM multibahasa umum versus SLM berorientasi Asia Tenggara untuk tugas Bahasa Indonesia**, dengan kualitas dan biaya inferensi diukur melalui satu pipeline GGUF/CPU yang konsisten.
+Kebaruan tidak berasal dari penggunaan banyak model atau kuantisasi itu sendiri. SLMQuant telah membandingkan kuantisasi lintas arsitektur SLM, penelitian Qwen3 telah membandingkan ukuran serta metode kuantisasi, dan penelitian multilingual telah menunjukkan bahwa dampak kuantisasi berbeda menurut bahasa dan tugas. Posisi yang masih defensible adalah **perbandingan degradasi relatif dan transisi kesalahan per sampel pada SLM multibahasa umum versus SLM berorientasi Asia Tenggara untuk tugas Bahasa Indonesia**, dengan seluruh kondisi diproses melalui satu pipeline format dan runtime yang konsisten.
 
 ## 1. Opsi Judul
 
@@ -54,7 +54,7 @@ SLM dapat dijalankan pada perangkat konsumen, tetapi kuantisasi yang memperkecil
 
 Penelitian ini akan menjalankan beberapa SLM pada soal Bahasa Indonesia sebelum dan sesudah kuantisasi. Setiap varian kuantisasi dibandingkan dengan baseline presisi tertinggi dari model yang sama. Selain skor agregat, penelitian akan memeriksa contoh mana yang berubah dari benar menjadi salah, salah menjadi benar, atau mengalami kegagalan format. Pendekatan ini mencegah model dengan baseline lebih tinggi otomatis dianggap lebih tahan terhadap kuantisasi.
 
-Eksperimen akan menggunakan model sumber, prosedur konversi, versi `llama.cpp`, perangkat keras, prompt, dan konfigurasi decoding yang terdokumentasi. Luaran utama adalah temuan empiris dan analisis ilmiah. Pipeline evaluasi, konfigurasi, dan hasil per sampel berfungsi sebagai artefak reprodusibilitas, bukan sumber kebaruan yang berdiri sendiri.
+Eksperimen akan menggunakan model sumber, prosedur konversi, versi runtime, perangkat keras, prompt, dan konfigurasi decoding yang terdokumentasi. Kandidat utama adalah format GGUF dan runtime `llama.cpp`; keputusan akhir ditetapkan setelah pilot kompatibilitas. Luaran utama adalah temuan empiris dan analisis ilmiah. Pipeline evaluasi, konfigurasi, dan hasil per sampel berfungsi sebagai artefak reprodusibilitas, bukan sumber kebaruan yang berdiri sendiri.
 
 ## 3. Fokus dan Pertanyaan Penelitian
 
@@ -93,7 +93,7 @@ Penelusuran awal belum menemukan satu penelitian akademik yang menggabungkan sel
 
 1. perbandingan SLM multibahasa umum dan SLM berorientasi Asia Tenggara;
 2. evaluasi yang berfokus pada tugas Bahasa Indonesia;
-3. baseline presisi tinggi, Q8_0, dan Q4_K_M yang dibuat melalui pipeline GGUF konsisten;
+3. baseline presisi tinggi dan beberapa tipe kuantisasi standar yang dibuat melalui pipeline GGUF konsisten;
 4. pengukuran kualitas dan biaya inferensi aktual pada satu CPU konsumen;
 5. degradasi absolut dan relatif terhadap baseline masing-masing model;
 6. analisis berpasangan per sampel berupa *prediction agreement*, benar-ke-salah, salah-ke-benar, perubahan jawaban salah, dan kegagalan format; serta
@@ -156,7 +156,7 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 7. Jika digunakan lebih dari satu dataset, hasil dilaporkan per dataset dan tidak digeneralisasi sebagai efek umum seluruh tugas NLP.
 8. Mode *thinking* dinonaktifkan jika tersedia; panjang konteks, token keluaran, template chat, dan decoding dikendalikan.
 9. Model dijalankan serta disimpan secara berurutan untuk membatasi penggunaan disk.
-10. Fine-tuning, QAT, GPTQ, AWQ, BitsAndBytes, INT2/INT3, model 3B ke atas, dan perbandingan banyak runtime tidak termasuk scope inti.
+10. Penelitian tidak merancang tipe kuantisasi baru dari kode sumber runtime. Fine-tuning, QAT, GPTQ, AWQ, BitsAndBytes, INT2/INT3, model 3B ke atas, dan perbandingan banyak runtime tidak termasuk scope inti.
 11. QA singkat dan perbandingan Indonesia–Inggris bukan scope minimum.
 
 ## 6. Landasan Teknik dan Ilmiah
@@ -165,6 +165,7 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 - **Orientasi bahasa model**: pengelompokan deskriptif berdasarkan dokumentasi pengembang, misalnya multibahasa umum atau berorientasi Asia Tenggara; bukan variabel kausal yang berdiri sendiri.
 - **Post-training weight quantization**: pengurangan presisi bobot setelah pelatihan untuk menurunkan kebutuhan penyimpanan dan memori.
 - **GGUF**: format model ekosistem `llama.cpp` yang memuat bobot, tokenizer, metadata, dan konfigurasi inferensi.
+- **Importance matrix (imatrix)**: berkas kalibrasi yang dapat membantu proses kuantisasi memprioritaskan bagian model yang lebih sensitif; penggunaannya opsional dan harus konsisten pada kondisi yang dibandingkan.
 - **Q8_0, Q6_K, Q5_K_M, Q4_K_M, dan IQ4_XS/IQ4_NL**: tipe kuantisasi GGUF yang dilaporkan dengan nama format aktual; kelimanya adalah kondisi kuantisasi dalam satu ekosistem `llama.cpp`, bukan lima runtime berbeda.
 - **Degradasi relatif**: perubahan skor varian terkuantisasi terhadap baseline presisi tinggi dari model yang sama.
 - **Transisi kesalahan**: perubahan status atau isi jawaban pada sampel yang sama antara baseline dan varian kuantisasi.
@@ -286,7 +287,7 @@ Untuk setiap pembanding, catat model, ukuran, orientasi bahasa, dataset, bahasa 
 
 ### 10.4 Kesimpulan Gap Sementara
 
-Topik generik “membandingkan beberapa SLM terkuantisasi” tidak cukup novel. Gap yang masih layak adalah **evaluasi degradasi relatif dan transisi kesalahan pada SLM multibahasa umum versus SLM berorientasi Asia Tenggara dalam tugas Bahasa Indonesia**, menggunakan pipeline GGUF dan CPU yang konsisten. Klaim ini baru boleh difinalkan setelah systematic mapping dan pilot selesai.
+Topik generik “membandingkan beberapa SLM terkuantisasi” tidak cukup novel. Gap yang masih layak adalah **evaluasi degradasi relatif dan transisi kesalahan pada SLM multibahasa umum versus SLM berorientasi Asia Tenggara dalam tugas Bahasa Indonesia**, menggunakan format/runtime dan prosedur eksperimen yang konsisten. Klaim ini baru boleh difinalkan setelah systematic mapping dan pilot selesai.
 
 ## 11. Penyerahan ke Penulisan LaTeX
 

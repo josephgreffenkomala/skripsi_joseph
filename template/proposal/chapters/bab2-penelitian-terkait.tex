@@ -14,6 +14,14 @@ Abdurrahman et al. mengevaluasi kuantisasi pada IndoBERT untuk tujuh tugas hilir
 
 Penelitian tersebut penting bagi penelitian ini karena menunjukkan bahwa kuantisasi model Bahasa Indonesia telah diteliti, terutama pada arsitektur encoder. Oleh karena itu, penelitian ini tidak mengklaim sebagai penelitian pertama mengenai kuantisasi model bahasa Indonesia. Perbedaannya terletak pada evaluasi beberapa model generatif berukuran kecil, penggunaan tingkat kuantisasi yang konsisten, dan analisis perubahan prediksi pada setiap sampel.
 
+\section{Format GGUF dan Runtime \texttt{llama.cpp}}
+
+GGUF merupakan format berkas yang digunakan dalam ekosistem \texttt{llama.cpp} untuk menyimpan bobot model, tokenizer, metadata, dan konfigurasi yang diperlukan saat inferensi. Dalam alur kuantisasi ini, checkpoint model dikonversi terlebih dahulu ke format GGUF berpresisi tinggi, kemudian dibuat beberapa varian kuantisasi dari berkas tersebut \citep{llamacpp2026}.
+
+\texttt{llama.cpp} digunakan sebagai runtime inferensi yang sama untuk seluruh model dan tingkat kuantisasi dalam eksperimen utama. Penggunaan satu runtime membantu mengendalikan pengaruh perangkat lunak sehingga perbandingan lebih berfokus pada model dan representasi bobot. Tipe kuantisasi GGUF yang digunakan merupakan tipe standar yang tersedia pada runtime, bukan algoritma kuantisasi baru.
+
+Penelitian ini tidak merancang tipe kuantisasi baru dari kode sumber \texttt{llama.cpp}. Jika hasil pilot menunjukkan manfaat dan kompatibilitas yang memadai, berkas *importance matrix* dapat digunakan sebagai konfigurasi kalibrasi tambahan. Penggunaan tersebut akan diterapkan secara konsisten pada model dan kondisi eksperimen yang dibandingkan.
+
 \section{Dampak Kuantisasi pada Model Multibahasa}
 
 Dampak kuantisasi dapat berbeda antarbahasa. Marchisio et al. mengevaluasi model bahasa multibahasa pada berbagai bahasa, skala model, dan tugas. Penelitian tersebut menunjukkan bahwa metrik otomatis dapat meremehkan dampak kuantisasi yang terlihat pada evaluasi manusia. Selain itu, tingkat degradasi tidak seragam antarbahasa dan tugas, dengan beberapa bahasa serta tugas yang lebih sensitif terhadap pengurangan presisi \citep{marchisio2024multilingual}.

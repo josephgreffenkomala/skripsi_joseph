@@ -2,38 +2,34 @@
 
 \section{Deskripsi Umum Penelitian}
 
-% TODO: Jelaskan gambaran besar penelitian yang akan dilakukan.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Penelitian ini menggunakan metode eksperimen terkontrol untuk mengevaluasi pengaruh kuantisasi terhadap kualitas dan efisiensi beberapa Small Language Model pada klasifikasi sentimen Bahasa Indonesia. Setiap varian kuantisasi dibandingkan dengan baseline presisi tinggi dari model yang sama. Dengan demikian, analisis utama tidak hanya membandingkan skor absolut antarmodel, tetapi juga perubahan relatif dan transisi prediksi pada sampel yang sama.
 
 \section{Metodologi}
 
-% TODO: Jelaskan metode penelitian yang digunakan.
-% Contoh: Research and Development (R&D), Eksperimental, Studi Kasus, dll.
+Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 \begin{enumerate}
-    \item \textbf{Tahap 1:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    \item \textbf{Tahap 2:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    \item \textbf{Tahap 3:} Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-    \item \textbf{Tahap 4:} Duis aute irure dolor in reprehenderit in voluptate velit esse.
-    \item \textbf{Tahap 5:} Excepteur sint occaecat cupidatat non proident.
+    \item \textbf{Tahap 1:} Melakukan penelusuran penelitian terkait dan menetapkan kriteria pemilihan model serta dataset.
+    \item \textbf{Tahap 2:} Melakukan pilot kompatibilitas model, tokenizer, chat template, parser, dan kebutuhan sumber daya.
+    \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF presisi tinggi dan menghasilkan varian kuantisasi standar secara konsisten.
+    \item \textbf{Tahap 4:} Menjalankan inferensi pada dataset klasifikasi sentimen dengan prompt, decoding, dan runtime yang dikendalikan.
+    \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput.
+    \item \textbf{Tahap 6:} Menganalisis degradasi relatif dan menentukan konfigurasi pada Pareto frontier kualitas--efisiensi.
 \end{enumerate}
 
-\section{Perancangan Sistem}
+\section{Rancangan Eksperimen}
 
-\subsection{Arsitektur Umum}
+\subsection{Alur Eksperimen}
 
-% TODO: Jelaskan komponen-komponen utama sistem yang dirancang.
-% Sertakan diagram arsitektur jika ada.
-
-Arsitektur sistem yang dirancang terdiri dari beberapa komponen utama:
+Rancangan eksperimen terdiri dari beberapa komponen utama:
 
 \begin{itemize}
-    \item \textbf{Komponen A:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    \item \textbf{Komponen B:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    \item \textbf{Komponen C:} Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+    \item \textbf{Checkpoint model:} empat model utama yang dipilih berdasarkan hasil pilot.
+    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline F16/BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, Q4\_K\_M, dan IQ4\_XS atau IQ4\_NL.
+    \item \textbf{Runtime inferensi:} satu versi atau commit \texttt{llama.cpp} dengan konfigurasi yang sama.
+    \item \textbf{Evaluator:} modul prompt, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
 \end{itemize}
 
 % TODO: Ganti dengan diagram arsitektur sistem Anda.
@@ -56,26 +52,24 @@ Arsitektur sistem yang dirancang terdiri dari beberapa komponen utama:
 %   \label{fig:bagan-alir}
 % \end{figure}
 
-\section{Lingkungan Pengembangan}
+\section{Lingkungan Penelitian}
 
-% TODO: Jelaskan spesifikasi perangkat keras dan lunak yang digunakan.
-
-Lingkungan pengembangan yang digunakan dalam penelitian ini adalah:
+Lingkungan penelitian yang digunakan dalam eksperimen utama adalah:
 
 \begin{itemize}
-    \item \textbf{Sistem Operasi:} Lorem ipsum dolor sit amet.
-    \item \textbf{Perangkat Lunak:} Sed do eiusmod tempor incididunt.
-    \item \textbf{Perangkat Keras:} Ut enim ad minim veniam.
+    \item \textbf{Perangkat lunak:} satu versi atau commit \texttt{llama.cpp}, tokenizer dan evaluator yang terdokumentasi.
+    \item \textbf{Perangkat keras:} AMD Ryzen 3 5300U, RAM 9 GB, tanpa GPU.
+    \item \textbf{Konfigurasi:} jumlah thread, panjang konteks, panjang keluaran, seed, prompt, dan parameter decoding dikendalikan.
 \end{itemize}
 
-\section{Metode Pengujian}
+\section{Metode Pengukuran dan Analisis}
 
-% TODO: Jelaskan metode pengujian yang akan digunakan.
-
-Pengujian dilakukan dengan beberapa pendekatan:
+Pengukuran dilakukan dengan beberapa pendekatan:
 
 \begin{enumerate}
-    \item \textbf{Pengujian Fungsional:} Lorem ipsum dolor sit amet.
-    \item \textbf{Pengujian Non-Fungsional:} Sed do eiusmod tempor incididunt.
-    \item \textbf{Pengujian Lainnya:} Ut enim ad minim veniam.
+    \item \textbf{Kualitas prediksi:} akurasi dan macro-F1 pada dataset klasifikasi sentimen.
+    \item \textbf{Kepatuhan dan transisi:} valid-label rate, prediction agreement, serta kategori benar-ke-salah dan salah-ke-benar.
+    \item \textbf{Efisiensi:} ukuran berkas, peak RAM, waktu pemuatan, latensi, dan throughput.
+    \item \textbf{Analisis:} selisih absolut, degradasi relatif terhadap baseline model yang sama, interval kepercayaan bootstrap berpasangan, dan Pareto frontier.
+    \item \textbf{Reproduksibilitas:} pencatatan versi model dan runtime, hash berkas, konfigurasi, prompt, seed, dan hasil per sampel.
 \end{enumerate}
