@@ -1,6 +1,6 @@
-# Skripsi — Topik Belum Diputuskan
+# Skripsi — Topik 14 Terpilih
 
-> **Status: EKSPLORASI** — belum ada topik yang di-accept. `CONTEXT.md` ini bersifat general lintas-topik dan hanya berisi constraint + terminologi umum skripsi yang tidak bergantung topik spesifik. Glossary kandidat spesifik disimpan terpisah per-kandidat di `notes/exploration/` (mis. `indoagentbench-glossary.md`).
+> **Status: TOPIK TERPILIH** — Topik 14, *Ketahanan Kuantisasi Lintas-SLM untuk NLP Bahasa Indonesia*. `CONTEXT.md` ini berisi constraint umum dan keputusan yang berlaku untuk topik terpilih. Detail eksplorasi Topik 14 disimpan di `notes/exploration/topic-14-slm-quantization-indonesian-nlp.md`.
 
 ## Jenis TA
 
@@ -8,7 +8,9 @@ Jenis TA **mengikuti topik yang akhirnya dipilih**, bukan keputusan di depan:
 - **Skripsi Inovasi Produk** — jika topik menghasilkan produk/prototipe yang jelas (Bab 4 Perancangan Produk, Bab 5 Pembuatan Produk, Bab 6 Pengujian dan Evaluasi Produk, dengan Kesimpulan+Saran).
 - **Skripsi Ilmiah Akademik** — jika topik berupa eksperimen/analisis tanpa produk (Bab 4-6 berisi metodologi, hasil, evaluasi).
 
-User belum tahu arah topik dan butuh bantuan memetakan pilihan. Jangan jadikan jenis TA sebagai pertanyaan awal — biarkan muncul alami dari topik yang dipilih.
+Topik yang dipilih berupa studi empiris dengan pipeline benchmark yang reproducible, sehingga jenis TA yang sesuai adalah Skripsi Ilmiah Akademik. Artefak pipeline berfungsi mendukung reproduksibilitas, bukan menjadi produk utama.
+
+Scope inti dibatasi pada evaluasi kuantisasi beberapa Small Language Model untuk klasifikasi sentimen Bahasa Indonesia. QA singkat dan perbandingan Indonesia--Inggris bukan bagian dari scope minimum.
 
 ## Constraint keras (tidak bisa berubah)
 
@@ -30,17 +32,21 @@ User belum tahu arah topik dan butuh bantuan memetakan pilihan. Jangan jadikan j
 2. **Jangan trust catatan eksplorasi lama mentah-mentah.** Catatan 2026-06-08 belum tahu paper April-Juni 2026. Cek ulang tanggal dan paper terbaru.
 3. **Cek constraint $0 + hardware di awal grilling**, jangan di akhir setelah banyak keputusan dibuat.
 4. **Klaim kebaruan harus spesifik dan dapat dipertahankan.** Hindari "pertama menguji X" tanpa verifikasi; lebih baik "ekstensi terkontrol dari Y dengan diferensiasi Z".
-5. **Status kandidat: STORED, bukan accepted.** Putusan akhir tetap milik user.
+5. **Status kandidat sebelum pemilihan: STORED.** Setelah dipilih, detail dan scope topik harus dikunci bertahap melalui pilot serta verifikasi literatur.
 
-## Kandidat topik yang sudah dieksplorasi
+## Topik terpilih dan kandidat yang diarsipkan
 
-Setiap kandidat punya artefak tersendiri di `notes/exploration/`. Status kandidat berikut kandidat tersimpan, bukan accepted:
+Topik terpilih:
 
-- **IndoAgentBench** (grilling 2026-07-20) — benchmark kesenjangan bahasa pada coding agent.
-  - Grilling: `grilling-decisions-2026-07-20.md` (status STORED)
-  - Verifikasi literatur: `literature-comparison-2026-07-20.md` (klaim kebaruan utama gugur sebagian — Ren et al. 2026 sudah menguji Cina di SWE-bench)
-  - Glossary: `indoagentbench-glossary.md` (berlaku hanya jika topik ini dipilih)
-  - ADR: `docs/adr/0001-free-tier-llm-choice.md` (berlaku hanya jika topik ini dipilih)
+- **Topik 14 — Ketahanan Kuantisasi Lintas-SLM untuk NLP Bahasa Indonesia**.
+  - Detail: `notes/exploration/topic-14-slm-quantization-indonesian-nlp.md`
+  - Fokus awal: degradasi relatif, transisi kesalahan, dan efisiensi CPU pada pipeline GGUF yang reproducible.
+
+Kandidat lain telah diarsipkan di `notes/exploration/archive/`:
+
+- Topik 01: IndoAgentBench.
+- Topik 02: Foundation-vs-Supervised Shortcut Attribution.
+- Topik 03, 04, 05, dan kandidat lama lain yang tercantum di arsip.
 
 ## Language (terminologi umum skripsi)
 
@@ -49,11 +55,11 @@ Dokumen rencana penelitian; untuk UGM berisi Bab 1 Pendahuluan (Latar Belakang, 
 _Avoid_: research plan, prapenelitian.
 
 **Skripsi**:
-Dokumen akhir TA; untuk Inovasi Produk berisi Bab 1 Pendahuluan (Latar Belakang, Perumusan Produk, Batasan, Tujuan, Manfaat), Bab 2 Identifikasi Masalah dan Ide Inovatif, Bab 3 Kajian Ilmiah, Bab 4 Perancangan Prototipe/Produk, Bab 5 Proses Pembuatan Produk, Bab 6 Pengujian dan Evaluasi Produk + Kesimpulan+Saran.
+Dokumen akhir TA; untuk topik ilmiah akademik ini berisi Bab 1 Pendahuluan (Latar Belakang, Rumusan Masalah, Batasan, Tujuan, Manfaat), Bab 2 Kajian Pustaka dan Penelitian Terkait, Bab 3 Metodologi Penelitian, Bab 4 Implementasi dan Hasil Penelitian, Bab 5 Pembahasan, serta Bab 6 Kesimpulan dan Saran.
 _Avoid_: thesis, laporan akhir.
 
 **Kandidat topik**:
-Satu ide topik spesifik yang sudah digrilling dan diverifikasi kebaruannya; status `STORED` (belum di-accept). Bisa ada lebih dari satu kandidat secara paralel.
+Satu ide topik spesifik yang sudah digrilling dan diverifikasi kebaruannya. Sebelum pemilihan, kandidat berstatus `STORED`; pada repo ini Topik 14 sudah dipilih.
 _Avoid_: topik final, topik terpilih.
 
 **Verifikasi kebaruan mandiri**:

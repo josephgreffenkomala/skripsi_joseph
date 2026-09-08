@@ -6,15 +6,15 @@ cssclasses:
 
 Date: 2026-08-31
 
-Updated: 2026-09-03
+Updated: 2026-09-08
 
 Catalog Reference: [`topic-catalog.md`](topic-catalog.md)
 
 ## Status Singkat
 
-**Kandidat utama yang layak dilanjutkan, tetapi belum dipilih secara final.** Fokus kandidat ini adalah evaluasi terkontrol terhadap **ketahanan kuantisasi beberapa Small Language Model (SLM) dengan orientasi bahasa berbeda** pada tugas Bahasa Indonesia dan lingkungan inferensi CPU konsumen.
+**✅ TERPILIH.** Fokus penelitian ini adalah evaluasi terkontrol terhadap **ketahanan kuantisasi beberapa Small Language Model (SLM) dengan orientasi bahasa berbeda** pada tugas Bahasa Indonesia dan lingkungan inferensi CPU konsumen.
 
-Penelitian tidak dikunci pada keluarga Qwen. Kandidat model inti sementara adalah satu SLM multibahasa umum berukuran sangat kecil, satu SLM multibahasa dari keluarga berbeda, dan satu SLM yang berorientasi pada bahasa Asia Tenggara. Kandidat operasionalnya adalah Qwen3-0.6B, Gemma 3 1B, dan Sailor2-1B-Chat. Daftar tersebut harus dikunci setelah pilot memastikan kompatibilitas `llama.cpp`, kemampuan dasar Bahasa Indonesia, stabilitas format jawaban, kebutuhan RAM, dan waktu inferensi.
+Penelitian menggunakan empat model generatif yang relatif sekelas dan diuji melalui pipeline yang sama: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat. Dua varian Qwen memungkinkan pengamatan perubahan kapasitas dalam satu keluarga; Gemma dan Sailor2 memberi pembanding lintas keluarga. Gemma 3 270M-IT menjadi kandidat tambahan opsional, bukan bagian minimum, karena rentang kapasitasnya lebih jauh. Seluruh model tetap harus lulus pilot kompatibilitas `llama.cpp`, kemampuan dasar Bahasa Indonesia, stabilitas format jawaban, kebutuhan RAM, dan waktu inferensi.
 
 Kebaruan tidak berasal dari penggunaan banyak model atau kuantisasi itu sendiri. SLMQuant telah membandingkan kuantisasi lintas arsitektur SLM, penelitian Qwen3 telah membandingkan ukuran serta metode kuantisasi, dan penelitian multilingual telah menunjukkan bahwa dampak kuantisasi berbeda menurut bahasa dan tugas. Posisi yang masih defensible adalah **perbandingan degradasi relatif dan transisi kesalahan per sampel pada SLM multibahasa umum versus SLM berorientasi Asia Tenggara untuk tugas Bahasa Indonesia**, dengan kualitas dan biaya inferensi diukur melalui satu pipeline GGUF/CPU yang konsisten.
 
@@ -22,20 +22,31 @@ Kebaruan tidak berasal dari penggunaan banyak model atau kuantisasi itu sendiri.
 
 ### Judul utama
 
-- **Bahasa Indonesia**: *Evaluasi Ketahanan Kuantisasi pada Small Language Model Multibahasa Umum dan Berorientasi Asia Tenggara untuk Tugas Bahasa Indonesia di Lingkungan CPU*
-- **Bahasa Inggris**: *Evaluating Quantization Robustness of General Multilingual and Southeast Asian-Oriented Small Language Models on Indonesian Tasks in a CPU Environment*
+- **Bahasa Indonesia**: *Evaluasi Trade-off Kualitas dan Efisiensi Kuantisasi pada Small Language Model untuk Klasifikasi Sentimen Bahasa Indonesia*
+- **Bahasa Inggris**: *Evaluating Quality–Efficiency Trade-offs of Quantization in Small Language Models for Indonesian Sentiment Classification*
 
 ### Alternatif lebih ringkas
 
-- **Bahasa Indonesia**: *Evaluasi Ketahanan Kuantisasi Small Language Model pada Tugas Bahasa Indonesia dan Inferensi CPU*
-- **Bahasa Inggris**: *Evaluating Small Language Model Quantization Robustness on Indonesian Tasks and CPU Inference*
+- **Bahasa Indonesia**: *Evaluasi Ketahanan Kuantisasi Small Language Model pada Tugas Bahasa Indonesia*
+- **Bahasa Inggris**: *Evaluating Small Language Model Quantization Robustness on Indonesian Tasks*
 
 ### Alternatif yang menonjolkan analisis kesalahan
 
 - **Bahasa Indonesia**: *Studi Empiris Degradasi Kualitas dan Transisi Kesalahan Small Language Model Terkuantisasi pada Tugas Bahasa Indonesia*
 - **Bahasa Inggris**: *An Empirical Study of Quality Degradation and Error Transitions in Quantized Small Language Models on Indonesian Tasks*
 
-Judul tidak menyebut merek model sebelum pilot selesai. Nama dan versi model akan dicantumkan dalam batasan penelitian dan metodologi setelah konfigurasi final dibekukan.
+Judul tidak perlu mencantumkan seluruh merek model. Nama, versi, ukuran parameter, dan revisi checkpoint dicantumkan dalam batasan serta metodologi setelah konfigurasi final dibekukan.
+
+### Daftar Model Utama
+
+| Model | Ukuran | Peran dalam penelitian |
+|---|---:|---|
+| **Qwen3-0.6B** | 0,6B | Varian Qwen berukuran lebih kecil dan model multibahasa umum |
+| **Qwen3-1.7B** | 1,7B | Varian Qwen berukuran lebih besar untuk menguji pengaruh kapasitas dalam satu keluarga |
+| **Gemma 3 1B-IT** | 1B | Pembanding lintas keluarga dengan model instruction-tuned multibahasa |
+| **Sailor2-1B-Chat** | 1B | Pembanding yang berorientasi pada bahasa Asia Tenggara, termasuk Bahasa Indonesia |
+
+Keempat model utama tersebut digunakan pada konfigurasi eksperimen yang sama. **Gemma 3 270M-IT** hanya menjadi kandidat tambahan apabila pilot menunjukkan bahwa model tersebut tetap memiliki kualitas dasar yang layak; model itu tidak termasuk dalam jumlah minimum eksperimen.
 
 ## 2. Penjelasan Sederhana
 
@@ -57,11 +68,11 @@ Identitas model diperlakukan sebagai faktor komposit. Perbedaan antarmodel tidak
 
 ### Pertanyaan penelitian sementara
 
-1. Bagaimana Q8_0 dan Q4_K_M memengaruhi kualitas setiap SLM dibandingkan baseline BF16/F16 model yang sama pada tugas Bahasa Indonesia?
-2. Apakah SLM yang diuji menunjukkan pola degradasi relatif dan transisi kesalahan yang berbeda setelah kuantisasi?
-3. Apakah pola sensitivitas kuantisasi berbeda antar-kondisi tugas atau dataset Bahasa Indonesia?
-4. Pada kategori soal atau karakteristik input apa perubahan benar-ke-salah paling sering terjadi?
-5. Konfigurasi model dan tingkat kuantisasi mana yang memberikan *Pareto trade-off* terbaik antara kualitas, latensi, *throughput*, penggunaan RAM, dan ukuran berkas pada CPU konsumen?
+1. Bagaimana lima tingkat kuantisasi GGUF—Q8_0, Q6_K, Q5_K_M, Q4_K_M, dan IQ4_XS/IQ4_NL berbasis *importance matrix*—memengaruhi kualitas setiap model dibandingkan baseline F16/BF16 model yang sama?
+2. Apakah pola degradasi relatif dan transisi kesalahan berbeda antara Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat pada klasifikasi sentimen Bahasa Indonesia?
+3. Bagaimana setiap tingkat kuantisasi memengaruhi ukuran berkas, peak RAM, latensi, dan throughput pada CPU yang sama?
+4. Pada kelas sentimen atau karakteristik input apa perubahan benar-ke-salah paling sering terjadi setelah kuantisasi?
+5. Konfigurasi model dan tingkat kuantisasi mana yang memberikan *Pareto trade-off* terbaik antara kualitas dan efisiensi deployment?
 
 Eksperimen pasangan Indonesia–Inggris dapat ditambahkan setelah eksperimen inti selesai. Jika dilakukan, item harus benar-benar berpasangan dan ekuivalensi terjemahannya harus diaudit; hasilnya digunakan untuk membandingkan degradasi lintas bahasa, bukan sebagai scope minimum.
 
@@ -98,7 +109,7 @@ Rumusan kontribusi yang defensible adalah:
 
 | Lapisan kontribusi | Bentuk kontribusi |
 |---|---|
-| Empiris | Bukti per-model dan per-sampel mengenai perubahan kualitas tugas Bahasa Indonesia pada Q8_0 dan Q4_K_M |
+| Empiris | Bukti per-model dan per-sampel mengenai perubahan kualitas tugas Bahasa Indonesia pada lima tipe kuantisasi GGUF |
 | Metodologis | Protokol baseline-terpasang yang membandingkan degradasi relatif, transisi jawaban, kondisi tugas, dan biaya inferensi |
 | Praktis | Pemetaan konfigurasi yang non-dominated untuk deployment CPU konsumen pada ruang eksperimen yang diuji |
 
@@ -112,7 +123,7 @@ Penelitian tidak akan mengklaim:
 - bahwa orientasi bahasa, arsitektur, tokenizer, ukuran, atau data pelatihan merupakan penyebab tunggal perbedaan antarmodel;
 - bahwa SLM berorientasi Asia Tenggara pasti lebih baik atau lebih tahan terhadap kuantisasi;
 - bahwa hasil berlaku untuk seluruh SLM, dataset, runtime, CPU, atau bahasa;
-- bahwa Q8_0 dan Q4_K_M identik dengan INT8 dan INT4 murni; atau
+- bahwa tipe GGUF identik dengan INT8/INT4 murni; atau
 - bahwa kuantisasi selalu mempercepat inferensi atau selalu menurunkan kualitas.
 
 ## 5. Posisi Penelitian dan Batasan
@@ -125,11 +136,11 @@ Benchmark kuantisasi umum belum langsung menjawab bagaimana SLM dengan orientasi
 
 Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 
-- memilih maksimal tiga instruction-tuned SLM berukuran sekitar 0,5--1,7 miliar parameter;
-- mewakili sekurang-kurangnya satu model multibahasa umum dan satu model berorientasi Asia Tenggara;
+- memilih empat instruction-tuned SLM berukuran sekitar 0,6--1,7 miliar parameter;
+- mewakili dua varian Qwen, satu Gemma, dan satu model berorientasi Asia Tenggara;
 - mengonversi checkpoint sumber sendiri dan menghasilkan seluruh varian dengan versi `llama.cpp` serta prosedur kuantisasi yang sama;
 - menjalankan contoh, prompt, parser, panjang konteks, decoding, jumlah thread, dan perangkat keras yang sama pada seluruh konfigurasi;
-- membandingkan setiap varian Q8_0 dan Q4_K_M dengan baseline presisi tertinggi dari model yang sama;
+- membandingkan lima tipe kuantisasi GGUF dengan baseline presisi tertinggi dari model yang sama;
 - menyimpan keluaran dan status penilaian pada tingkat sampel;
 - mengukur kualitas, transisi kesalahan, latensi, *throughput*, RAM, dan ukuran berkas; serta
 - menganalisis interval kepercayaan berpasangan dan Pareto frontier.
@@ -137,16 +148,16 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 ### Batasan penelitian
 
 1. Lingkungan utama dibatasi pada AMD Ryzen 3 5300U, RAM 9 GB, tanpa GPU, dan ruang kosong awal sekitar 8,5 GB.
-2. Model final dibatasi maksimal tiga SLM instruction-tuned berukuran sekitar 0,5--1,7B.
-3. Kandidat awal adalah Qwen3-0.6B, Gemma 3 1B, dan Sailor2-1B-Chat; semuanya masih harus lulus pilot.
-4. Representasi inti dibatasi pada BF16/F16 sebagai baseline operasional, Q8_0, dan Q4_K_M.
+2. Model final dibatasi empat SLM instruction-tuned berukuran sekitar 0,6--1,7B.
+3. Model utama adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat; semuanya harus lulus pilot.
+4. Representasi inti dibatasi pada F16/BF16 sebagai baseline operasional, Q8_0, Q6_K, Q5_K_M, Q4_K_M, dan IQ4_XS atau IQ4_NL.
 5. Runtime dibatasi pada satu commit atau versi `llama.cpp` dengan opsi kompilasi yang sama.
-6. Eksperimen inti memakai dua dataset atau kondisi tugas Bahasa Indonesia dengan keluaran yang dapat dinilai otomatis.
-7. Jika hanya satu dataset mewakili setiap jenis tugas, hasil disebut per “kondisi tugas/dataset”, bukan efek umum jenis tugas.
+6. Eksperimen inti dibatasi pada satu atau dua dataset klasifikasi sentimen Bahasa Indonesia dengan keluaran yang dapat dinilai otomatis.
+7. Jika digunakan lebih dari satu dataset, hasil dilaporkan per dataset dan tidak digeneralisasi sebagai efek umum seluruh tugas NLP.
 8. Mode *thinking* dinonaktifkan jika tersedia; panjang konteks, token keluaran, template chat, dan decoding dikendalikan.
 9. Model dijalankan serta disimpan secara berurutan untuk membatasi penggunaan disk.
-10. Fine-tuning, QAT, GPTQ, AWQ, INT2/INT3, model 3B ke atas, dan perbandingan banyak runtime tidak termasuk scope inti.
-11. Perbandingan Indonesia–Inggris bukan scope minimum.
+10. Fine-tuning, QAT, GPTQ, AWQ, BitsAndBytes, INT2/INT3, model 3B ke atas, dan perbandingan banyak runtime tidak termasuk scope inti.
+11. QA singkat dan perbandingan Indonesia–Inggris bukan scope minimum.
 
 ## 6. Landasan Teknik dan Ilmiah
 
@@ -154,7 +165,7 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 - **Orientasi bahasa model**: pengelompokan deskriptif berdasarkan dokumentasi pengembang, misalnya multibahasa umum atau berorientasi Asia Tenggara; bukan variabel kausal yang berdiri sendiri.
 - **Post-training weight quantization**: pengurangan presisi bobot setelah pelatihan untuk menurunkan kebutuhan penyimpanan dan memori.
 - **GGUF**: format model ekosistem `llama.cpp` yang memuat bobot, tokenizer, metadata, dan konfigurasi inferensi.
-- **Q8_0 dan Q4_K_M**: skema kuantisasi GGUF yang dilaporkan dengan nama format aktual.
+- **Q8_0, Q6_K, Q5_K_M, Q4_K_M, dan IQ4_XS/IQ4_NL**: tipe kuantisasi GGUF yang dilaporkan dengan nama format aktual; kelimanya adalah kondisi kuantisasi dalam satu ekosistem `llama.cpp`, bukan lima runtime berbeda.
 - **Degradasi relatif**: perubahan skor varian terkuantisasi terhadap baseline presisi tinggi dari model yang sama.
 - **Transisi kesalahan**: perubahan status atau isi jawaban pada sampel yang sama antara baseline dan varian kuantisasi.
 - **Pareto frontier**: konfigurasi non-dominated ketika kualitas dan satu atau lebih biaya deployment dipertimbangkan bersama.
@@ -165,20 +176,20 @@ Penelitian menggunakan eksperimen terkontrol dengan prosedur berikut:
 
 | Faktor | Level yang direncanakan |
 |---|---|
-| Model | Maksimal tiga model: Qwen3-0.6B, Gemma 3 1B, Sailor2-1B-Chat sebagai kandidat awal |
+| Model | Empat model: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, Sailor2-1B-Chat |
 | Orientasi deskriptif | Multibahasa umum dan berorientasi Asia Tenggara |
-| Representasi bobot | BF16/F16, Q8_0, Q4_K_M |
-| Kondisi tugas/dataset | Satu pilihan ganda/klasifikasi berbasis prompt dan satu QA singkat |
+| Representasi bobot | F16/BF16, Q8_0, Q6_K, Q5_K_M, Q4_K_M, IQ4_XS/IQ4_NL |
+| Kondisi tugas/dataset | Satu atau dua dataset klasifikasi sentimen Bahasa Indonesia |
 | Runtime | Satu commit/versi `llama.cpp` |
 | Perangkat | Satu CPU dan konfigurasi sistem tetap |
 
-Jika tiga model lulus pilot, desain menghasilkan 3 × 3 × 2 = **18 kombinasi utama**. Kualitas dihitung pada contoh uji yang sama. Pengukuran sistem diulang 3--5 kali setelah warm-up; pengulangan ini mengukur variabilitas latensi dan throughput, bukan menambah observasi independen untuk kualitas model.
+Jika empat model lulus pilot, desain menghasilkan 4 × 6 = **24 konfigurasi utama**, termasuk baseline F16/BF16. Kualitas dihitung pada contoh uji yang sama. Pengukuran sistem diulang 3--5 kali setelah warm-up; pengulangan ini mengukur variabilitas latensi dan throughput, bukan menambah observasi independen untuk kualitas model.
 
 Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabilitas test split, ukuran, representasi Bahasa Indonesia, kompatibilitas dengan model generatif, dan metrik otomatis. IndoMMLU dapat menjadi salah satu kandidat, tetapi tidak boleh menjadi satu-satunya bukti jika risiko kontaminasi tidak dapat dikendalikan.
 
 ### 7.2 Metrik
 
-- **Kualitas tugas**: akurasi untuk pilihan ganda; exact match dan token-level F1 untuk QA singkat.
+- **Kualitas tugas**: akurasi dan macro-F1 untuk klasifikasi sentimen.
 - **Kepatuhan format**: valid-answer rate dan kategori kegagalan parser yang diperiksa manual pada sampel audit.
 - **Degradasi**: selisih absolut dan relatif terhadap baseline model yang sama.
 - **Transisi per sampel**: prediction agreement, benar-ke-salah, salah-ke-benar, tetap-benar, tetap-salah dengan jawaban sama, dan tetap-salah dengan jawaban berubah.
@@ -190,7 +201,7 @@ Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabi
 
 ### 7.3 Analisis
 
-1. Bandingkan Q8_0 dan Q4_K_M dengan baseline presisi tinggi pada model dan sampel yang sama.
+1. Bandingkan setiap tipe kuantisasi GGUF dengan baseline presisi tinggi pada model dan sampel yang sama.
 2. Hitung interval kepercayaan bootstrap berpasangan untuk selisih metrik kualitas.
 3. Bandingkan distribusi degradasi relatif dan transisi kesalahan antarmodel tanpa mengklaim penyebab tunggal.
 4. Laporkan skor absolut untuk konteks, tetapi gunakan perubahan terhadap baseline sebagai analisis ketahanan utama.
@@ -219,16 +230,16 @@ Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabi
 - **Risiko kompatibilitas**: salah satu arsitektur atau chat template dapat bermasalah pada versi `llama.cpp` yang dipilih. Mitigasinya adalah pilot konversi, prompt, dan parser sebelum model dikunci.
 - **Risiko lisensi/akses**: Gemma memerlukan penerimaan ketentuan akses. Mitigasinya adalah memeriksa izin sejak awal dan mengganti model tanpa mengubah kategori desain bila akses tidak tersedia.
 - **Risiko kontaminasi data**: dataset publik dapat muncul dalam data pelatihan model. Mitigasinya adalah mendokumentasikan provenance, menambah dataset yang lebih baru atau terkontrol, dan membatasi klaim.
-- **Risiko komputasi**: 18 kombinasi tetap dapat memerlukan waktu panjang pada CPU. Mitigasinya adalah keluaran pendek, subset pilot terpisah, evaluasi berurutan, dan maksimal tiga model.
+- **Risiko komputasi**: 24 konfigurasi tetap dapat memerlukan waktu panjang pada CPU. Mitigasinya adalah keluaran pendek, subset pilot terpisah, evaluasi berurutan, dan empat model tetap.
 - **Risiko penyimpanan**: seluruh checkpoint dan varian dapat melebihi ruang kosong. Mitigasinya adalah mengonversi serta mengevaluasi satu model pada satu waktu dan menyimpan permanen hanya metadata, checksum, konfigurasi, dan hasil.
 - **Risiko generalisasi**: satu CPU tidak mewakili semua perangkat. Posisi penelitian adalah eksperimen terkontrol pada satu CPU konsumen.
 
 ### Fallback plan
 
-1. Jika hanya dua model yang lulus seluruh pilot, pertahankan satu model multibahasa umum dan satu model berorientasi Asia Tenggara sehingga desain menjadi 2 × 3 × 2 = 12 kombinasi.
+1. Jika hanya dua model yang lulus seluruh pilot, pertahankan satu model multibahasa umum dan satu model berorientasi Asia Tenggara sehingga desain menjadi 2 × 6 = 12 konfigurasi.
 2. Jika BF16/F16 tidak stabil, gunakan representasi tertinggi yang didukung sebagai baseline operasional dan dokumentasikan konsekuensinya.
-3. Jika satu dataset tidak menghasilkan keluaran yang dapat dinilai stabil, ganti dengan tugas objektif lain tanpa menambah jumlah kondisi.
-4. Jika QA terlalu lambat, batasi panjang jawaban dan gunakan subset terstratifikasi yang ditetapkan sebelum analisis.
+3. Jika dataset utama tidak menghasilkan keluaran yang dapat dinilai stabil, gunakan dataset klasifikasi sentimen alternatif tanpa mengubah tugas inti.
+4. Jika dua dataset tidak layak diselesaikan dalam batas waktu atau komputasi, gunakan satu dataset yang telah ditetapkan sebelum analisis utama.
 5. Jika ruang penyimpanan terbatas, hapus artefak model antara batch hanya setelah checksum, konfigurasi, dan sumber unduhan tersimpan.
 6. Jika perbandingan Indonesia–Inggris terlalu mahal atau ekuivalensinya lemah, keluarkan dari scope final tanpa memengaruhi eksperimen inti.
 
@@ -243,13 +254,14 @@ Dataset final dipilih berdasarkan lisensi, provenance, risiko kontaminasi, stabi
 | 3 | Zheng et al., *An Empirical Study of Qwen3 Quantization* | 2025 | https://arxiv.org/abs/2505.02214 | Perbandingan ukuran dan kuantisasi Qwen3 telah dilakukan |
 | 4 | Wang et al., *SLMQuant: Benchmarking Small Language Model Quantization for Practical Deployment* | 2025 | https://arxiv.org/abs/2511.13023 | Benchmark kuantisasi lintas arsitektur SLM dan konsumsi inferensi telah tersedia |
 | 5 | Cersosimo, *Democratizing AI with Small Language Models* | 2026 | https://arxiv.org/abs/2607.16202 | Evaluasi lintas-SLM, pola kegagalan, efisiensi, dan Pareto deployment telah dilakukan |
-| 6 | Sailor2 Team, *Sailor2: Sailing in South-East Asia with Inclusive Multilingual LLMs* | 2025 | https://arxiv.org/abs/2502.12982 | SLM regional untuk Bahasa Indonesia tersedia; novelty harus berada pada audit kuantisasinya |
+| 6 | Aydın Gasimov, *Effects of Quantization on Large Language Models’ Performance on Sentiment Analysis Tasks* | 2026 | https://www.azjhpc.com/issue14/volume8.1.pdf | Pembanding langsung untuk kuantisasi pada tugas sentimen; menguji Gemma 3 4B, Phi-4 Mini, dan LFM2 1.2B pada FP16, Q8, Q6, Q5, Q4, Q4-QAT, dan Q3. Penelitian kita membedakan diri melalui model yang berfokus Bahasa Indonesia, model SLM sekitar 0,6--1,7B, dan analisis per-sampel yang lebih terkontrol |
 
 ### 10.2 Sumber Model dan Runtime
 
 | Komponen | URL | Catatan |
 |---|---|---|
 | Qwen3-0.6B | https://huggingface.co/Qwen/Qwen3-0.6B | Kandidat SLM multibahasa umum, Apache-2.0 |
+| Qwen3-1.7B | https://huggingface.co/Qwen/Qwen3-1.7B | Varian kapasitas lebih besar dari keluarga Qwen yang sama |
 | Gemma 3 1B IT | https://huggingface.co/google/gemma-3-1b-it | Kandidat keluarga berbeda dengan dukungan multibahasa; akses berlisensi perlu diterima |
 | Sailor2-1B-Chat | https://huggingface.co/sail/Sailor2-1B-Chat | Kandidat berorientasi Asia Tenggara dan Bahasa Indonesia, Apache-2.0 |
 | Qwen3 `llama.cpp` guide | https://github.com/QwenLM/Qwen3/blob/main/docs/source/run_locally/llama.cpp.md | Dasar dukungan runtime dan GGUF |
@@ -279,6 +291,6 @@ Topik generik “membandingkan beberapa SLM terkuantisasi” tidak cukup novel. 
 ## 11. Penyerahan ke Penulisan LaTeX
 
 - **Target file**: bab proposal baru ditulis setelah model, dataset, baseline, dan gap literatur dikunci.
-- **Gambar/diagram**: alur checkpoint sumber → konversi F16 → Q8_0/Q4_K_M → inferensi CPU → evaluasi per sampel → transisi kesalahan → profiling → Pareto frontier; matriks 3 × 3 × 2; dan diagram kategori transisi jawaban.
-- **Keputusan terbuka**: model mana yang lulus pilot, dua dataset final, ambang baseline minimum, baseline presisi tertinggi yang stabil, metode pengukuran peak RAM, serta kelayakan ekstensi Indonesia–Inggris.
-- **Syarat sebelum drafting proposal**: systematic mapping pembanding langsung; pilot ketiga kandidat pada hardware target; verifikasi seluruh varian berasal dari checkpoint sumber dan quantizer yang sama; estimasi durasi 18 kombinasi; validasi parser; dan audit awal risiko kontaminasi dataset.
+- **Gambar/diagram**: alur checkpoint sumber → konversi F16 → tingkat kuantisasi GGUF → inferensi CPU → evaluasi per sampel → transisi kesalahan → profiling → Pareto frontier; matriks model × representasi bobot × dataset; dan diagram kategori transisi jawaban.
+- **Keputusan terbuka**: model mana yang lulus pilot, dataset klasifikasi sentimen final, jumlah dataset, ambang baseline minimum, baseline presisi tertinggi yang stabil, serta metode pengukuran peak RAM.
+- **Syarat sebelum drafting proposal**: systematic mapping pembanding langsung; pilot empat kandidat pada hardware target; verifikasi seluruh varian berasal dari checkpoint sumber dan quantizer yang sama; estimasi durasi 24 konfigurasi; validasi parser; dan audit awal risiko kontaminasi dataset.

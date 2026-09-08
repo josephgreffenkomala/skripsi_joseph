@@ -14,9 +14,21 @@
 
 ---
 
-## Jenis TA: Skripsi Inovasi Produk
+## Topik dan Jenis TA Saat Ini
 
-Mahasiswa mengembangkan produk/aplikasi/prototipe berbasis teknologi. Dalam kasus ini: **GitOps deployment system untuk InvenioRDM pada Kubernetes**.
+Topik yang sedang dikembangkan adalah **evaluasi trade-off kualitas dan efisiensi kuantisasi pada Small Language Model untuk klasifikasi sentimen Bahasa Indonesia**.
+
+Jenis tugas akhir yang berlaku adalah **skripsi ilmiah akademik**, karena penelitian berfokus pada eksperimen terkontrol dan analisis empiris. Artefak pipeline evaluasi digunakan untuk mendukung reproduksibilitas, bukan sebagai produk utama.
+
+Constraint utama topik:
+
+- Model utama: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat, dengan kemungkinan pengurangan jumlah model berdasarkan hasil pilot.
+- Tugas inti: klasifikasi sentimen Bahasa Indonesia. QA singkat dan perbandingan Indonesia--Inggris bukan bagian dari scope minimum.
+- Kondisi model: baseline presisi tinggi dan beberapa tingkat kuantisasi GGUF dalam satu pipeline `llama.cpp`.
+- Evaluasi: kualitas prediksi, kepatuhan format, transisi kesalahan per sampel, ukuran berkas, peak RAM, latensi, throughput, dan trade-off Pareto.
+- Lingkungan utama: CPU konsumen yang sama, tanpa GPU, dengan konfigurasi eksperimen yang dikendalikan.
+
+Jangan membuat klaim bahwa penelitian ini memperkenalkan algoritma kuantisasi baru atau merupakan penelitian pertama tentang kuantisasi SLM, kuantisasi lintas bahasa, atau kuantisasi model Bahasa Indonesia. Klaim kontribusi dibatasi pada evaluasi terkontrol dalam ruang model, data, runtime, dan perangkat keras yang diuji.
 
 ---
 
@@ -79,15 +91,17 @@ Mahasiswa mengembangkan produk/aplikasi/prototipe berbasis teknologi. Dalam kasu
 | Intisari | ✅ | Bahasa Indonesia |
 | Abstract | ✅ | Bahasa Inggris |
 
-### Bagian Utama (Inovasi Produk — Bab 3.2 Pedoman)
+### Bagian Utama (Skripsi Ilmiah Akademik)
 | Bab | Judul | Isi |
 |-----|-------|-----|
-| **Bab 1** | Pendahuluan | Latar Belakang, **Perumusan Produk**, Batasan Produk, Tujuan, Manfaat |
-| **Bab 2** | Identifikasi Masalah dan Ide Inovatif | Identifikasi masalah nyata + pengembangan ide inovatif |
-| **Bab 3** | Kajian Ilmiah | Tinjauan pustaka + dasar ilmiah produk (metode, algoritma, teknologi) |
-| **Bab 4** | Perancangan Prototipe/Produk | Arsitektur, UI/UX, database, rancangan teknis |
-| **Bab 5** | Proses Pembuatan Produk | Implementasi, kode, integrasi komponen |
-| **Bab 6** | Pengujian dan Evaluasi Produk | Metode pengujian, skenario, hasil, evaluasi kinerja + **Kesimpulan dan Saran** |
+| **Bab 1** | Pendahuluan | Latar Belakang, **Perumusan Masalah**, Batasan Penelitian, Tujuan, Manfaat |
+| **Bab 2** | Kajian Pustaka dan Penelitian Terkait | Landasan teori, penelitian terdahulu, dan posisi penelitian |
+| **Bab 3** | Metodologi Penelitian | Data, model, desain eksperimen, metrik, kontrol, dan analisis |
+| **Bab 4** | Implementasi dan Hasil Penelitian | Pipeline, hasil eksperimen, analisis kualitas, kesalahan, dan efisiensi |
+| **Bab 5** | Pembahasan | Interpretasi hasil, keterbatasan, implikasi, dan perbandingan dengan penelitian terkait |
+| **Bab 6** | Kesimpulan dan Saran | Jawaban atas rumusan masalah dan arah penelitian lanjutan |
+
+Catatan: berkas `template/skripsi/chapters/` masih merupakan scaffold lama berbasis inovasi produk. Jangan menjadikannya acuan struktur ilmiah akademik sebelum disesuaikan pada tahap penulisan skripsi.
 
 ### Bagian Akhir
 | Elemen | Ada? |
@@ -103,12 +117,12 @@ Mahasiswa mengembangkan produk/aplikasi/prototipe berbasis teknologi. Dalam kasu
 |-------|----------|---------|
 | Class option | `[proposal]` | `[skripsi]` |
 | Cover text | "PROPOSAL TUGAS AKHIR" | "SKRIPSI" |
-| Judul Bab 1 | Rumusan **Masalah** | **Perumusan Produk** |
-| Bab 2 | Penelitian Terkait | Identifikasi Masalah dan Ide Inovatif |
-| Bab 3 | Metode dan Rancangan | Kajian Ilmiah |
-| Bab 4 | Jadwal Penelitian | Perancangan Produk |
-| Bab 5 | ❌ Tidak ada | Proses Pembuatan Produk |
-| Bab 6 | ❌ Tidak ada | Pengujian dan Evaluasi Produk |
+| Judul Bab 1 | Rumusan **Masalah** | Perumusan Masalah |
+| Bab 2 | Penelitian Terkait | Kajian Pustaka dan Penelitian Terkait |
+| Bab 3 | Metode dan Rancangan | Metodologi Penelitian |
+| Bab 4 | Jadwal Penelitian | Implementasi dan Hasil Penelitian |
+| Bab 5 | ❌ Tidak ada | Pembahasan |
+| Bab 6 | ❌ Tidak ada | Kesimpulan dan Saran |
 | Preliminary pages | Minimal | Lengkap |
 | Lampiran | ❌ Tidak ada | ✅ Ada |
 
