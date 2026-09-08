@@ -2,65 +2,58 @@
 
 \section{Latar Belakang}
 
-Perkembangan model bahasa telah mendorong pemanfaatan teknologi pemrosesan bahasa alami pada berbagai kebutuhan, termasuk analisis sentimen. Analisis sentimen merupakan proses mengidentifikasi kecenderungan sentimen yang terkandung dalam suatu teks, misalnya positif, negatif, atau netral. Dalam konteks Bahasa Indonesia, tugas ini memiliki tantangan tersendiri karena teks dapat memuat ragam informal, singkatan, slang, negasi, campur kode, serta variasi penulisan yang tidak selalu mengikuti kaidah bahasa baku. Oleh karena itu, kemampuan model dalam memahami konteks Bahasa Indonesia perlu dievaluasi secara langsung pada data dan tugas yang relevan.
+% TODO: Tulis latar belakang penelitian Anda di sini.
+% Jelaskan konteks, urgensi, dan relevansi topik yang dipilih.
+% Rujuk pada penelitian terdahulu dan data sekunder jika ada.
 
-% TODO: Tambahkan sitasi untuk SLM dan keterbatasan sumber daya inferensi.
-Model bahasa berukuran besar umumnya memiliki kemampuan representasi yang kuat, tetapi kebutuhan sumber daya komputasinya dapat membatasi penggunaannya pada perangkat dengan kapasitas memori dan kemampuan komputasi yang terbatas. Kondisi tersebut mendorong penggunaan \textit{small language model} (SLM), yaitu model bahasa dengan jumlah parameter yang lebih kecil dan kebutuhan sumber daya yang relatif lebih rendah. SLM berpotensi digunakan pada lingkungan lokal atau perangkat dengan CPU konsumen, tetapi pengurangan ukuran model tidak selalu menjamin kualitas prediksi dan efisiensi inferensi yang sesuai dengan kebutuhan aplikasi.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-% TODO: Tambahkan sitasi dasar kuantisasi model bahasa.
-Salah satu pendekatan yang umum digunakan untuk mengurangi kebutuhan penyimpanan model adalah kuantisasi. Kuantisasi mengubah representasi numerik bobot model dari presisi yang lebih tinggi menjadi representasi dengan jumlah bit yang lebih rendah. Dengan cara tersebut, ukuran berkas model dan kebutuhan memori untuk menyimpan bobot berpotensi berkurang. Namun, kuantisasi juga dapat menyebabkan perubahan pada nilai numerik yang digunakan selama inferensi. Perubahan tersebut dapat memengaruhi kualitas prediksi, kepatuhan model terhadap format keluaran, serta waktu yang diperlukan untuk memproses masukan.
+Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
 
-Dampak kuantisasi tidak dapat disimpulkan hanya dari ukuran berkas atau satu metrik kualitas. Model dengan berkas yang lebih kecil belum tentu memiliki latensi yang lebih rendah karena kinerja inferensi juga dipengaruhi oleh runtime, kernel komputasi, instruksi CPU, panjang masukan, jumlah utas, dan overhead dekuantisasi. Demikian pula, perubahan nilai accuracy atau $F_1$ tidak sepenuhnya menunjukkan sampel dan kelas yang menjadi lebih rentan setelah kuantisasi. Evaluasi yang lebih menyeluruh perlu mengukur kualitas prediksi, kepatuhan format, ukuran artefak, penggunaan memori, latensi, dan throughput pada kondisi perangkat keras serta perangkat lunak yang dikendalikan.
+\section{Perumusan Produk}
 
-Format GGUF dan runtime \texttt{llama.cpp} menyediakan salah satu jalur yang praktis untuk menjalankan model bahasa terkuantisasi pada CPU. Beberapa tingkat kuantisasi dapat digunakan untuk membentuk trade-off antara kualitas dan efisiensi. Meskipun demikian, perbandingan tersebut harus dilakukan pada model, data, prompt, prosedur parsing, runtime, dan perangkat keras yang sama agar perubahan hasil dapat dianalisis secara lebih terkontrol. Selain metrik agregat, analisis berpasangan pada sampel yang sama diperlukan untuk mengetahui perpindahan prediksi, misalnya perubahan dari prediksi benar menjadi salah atau perubahan antarkelas sentimen.
+% TODO: Tulis perumusan produk dalam bentuk deklaratif.
+% Jelaskan produk apa yang akan dikembangkan.
 
-% TODO: Tambahkan sitasi penelitian terdahulu tentang dampak kuantisasi dan evaluasi efisiensi.
-Penelitian terdahulu telah menunjukkan bahwa dampak kuantisasi bergantung pada arsitektur model, tugas, bahasa, tingkat presisi, dan lingkungan inferensi yang digunakan. Dengan demikian, hasil dari model atau perangkat keras lain tidak dapat langsung digunakan untuk menyimpulkan perilaku model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia berbasis CPU. Masih diperlukan evaluasi empiris yang menyatukan pengukuran kualitas dan efisiensi dalam satu protokol eksperimen yang dapat direproduksi.
-
-Berdasarkan permasalahan tersebut, penelitian ini berfokus pada evaluasi trade-off kualitas dan efisiensi kuantisasi pada beberapa \textit{small language model} untuk klasifikasi sentimen Bahasa Indonesia. Evaluasi dilakukan menggunakan kondisi presisi tinggi dan beberapa tingkat kuantisasi GGUF dalam satu pipeline berbasis \texttt{llama.cpp}. Aspek yang diamati meliputi kualitas prediksi, kepatuhan format keluaran, perubahan prediksi per sampel, ukuran berkas, penggunaan memori, latensi, throughput, serta posisi setiap konfigurasi pada analisis Pareto. Penelitian ini tidak diarahkan untuk mengembangkan algoritma kuantisasi baru, melainkan untuk menghasilkan bukti empiris mengenai konsekuensi penggunaan beberapa konfigurasi kuantisasi pada ruang model, data, runtime, dan perangkat keras yang diuji.
-
-\section{Perumusan Masalah}
-
-Berdasarkan latar belakang yang telah diuraikan, permasalahan dalam penelitian ini dirumuskan sebagai berikut.
+Berdasarkan latar belakang di atas, produk yang akan dikembangkan dalam penelitian ini adalah:
 
 \begin{enumerate}
-  \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap kualitas prediksi dan kepatuhan format keluaran model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia?
-  \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap ukuran berkas, \textit{peak} RAM, latensi, dan throughput pada perangkat CPU yang sama?
-  \item Sampel atau kelas sentimen apa yang mengalami perpindahan prediksi setelah kuantisasi, dan konfigurasi mana yang menghasilkan trade-off kualitas dan efisiensi yang paling baik berdasarkan analisis Pareto?
+  \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
 \end{enumerate}
 
-\section{Batasan Penelitian}
+\section{Batasan Produk}
 
-Agar penelitian dapat dilaksanakan secara terukur, batasan penelitian yang digunakan adalah sebagai berikut.
+% TODO: Tulis batasan produk untuk memfokuskan pengembangan.
+
+Agar pengembangan produk tetap fokus dan terukur, batasan produk yang ditetapkan adalah:
 
 \begin{enumerate}
-  \item Penelitian berfokus pada klasifikasi sentimen Bahasa Indonesia dengan keluaran klasifikasi berformat singkat.
-  \item Model yang dievaluasi merupakan beberapa \textit{small language model} yang ditetapkan dalam rancangan eksperimen penelitian ini. Rincian model dan konfigurasi model dijelaskan pada Bab 3.
-  \item Kondisi model mencakup baseline dengan presisi tinggi dan beberapa tingkat kuantisasi GGUF yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
-  \item Inferensi dilakukan pada perangkat CPU konsumen yang sama dan tidak menggunakan GPU sebagai perangkat komputasi utama.
-  \item Evaluasi kualitas mencakup metrik klasifikasi, kepatuhan format keluaran, serta analisis perubahan prediksi pada sampel yang sama.
-  \item Evaluasi efisiensi mencakup ukuran berkas model, \textit{peak} RAM, latensi, dan throughput. Pengukuran dilakukan dengan konfigurasi perangkat lunak dan perangkat keras yang didokumentasikan.
-  \item Penelitian tidak mencakup pengembangan algoritma kuantisasi baru, pelatihan ulang model, atau perbandingan menyeluruh terhadap seluruh metode kompresi model.
-  \item Hasil penelitian dibatasi pada model, dataset, runtime, konfigurasi eksperimen, dan perangkat keras yang diuji. Hasil tersebut tidak digeneralisasi secara langsung ke seluruh model bahasa kecil, bahasa, runtime, atau perangkat keras lain.
+  \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
 \end{enumerate}
 
 \section{Tujuan Penelitian}
 
-Tujuan penelitian ini adalah sebagai berikut.
+% TODO: Tulis tujuan penelitian yang ingin dicapai.
+
+Tujuan dari penelitian ini adalah:
 
 \begin{enumerate}
-  \item Mengukur perubahan kualitas prediksi dan kepatuhan format keluaran pada beberapa tingkat kuantisasi GGUF untuk klasifikasi sentimen Bahasa Indonesia.
-  \item Mengukur perubahan ukuran berkas, \textit{peak} RAM, latensi, dan throughput pada perangkat CPU yang sama.
-  \item Menganalisis perpindahan prediksi pada tingkat sampel dan kelas sentimen setelah penerapan kuantisasi.
-  \item Menentukan konfigurasi model yang memberikan trade-off kualitas dan efisiensi yang sesuai berdasarkan analisis Pareto pada kondisi eksperimen yang diuji.
+  \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
 \end{enumerate}
 
 \section{Manfaat Penelitian}
 
-Penelitian ini diharapkan memberikan manfaat sebagai berikut.
+% TODO: Tulis manfaat penelitian bagi akademik dan praktis.
+
+Penelitian ini diharapkan memberikan manfaat berikut:
 
 \begin{enumerate}
-  \item \textbf{Manfaat akademik:} menyediakan evaluasi empiris mengenai dampak kuantisasi terhadap kualitas prediksi dan efisiensi inferensi model bahasa kecil pada tugas klasifikasi sentimen Bahasa Indonesia. Hasil analisis juga dapat memperlihatkan perubahan prediksi per sampel yang tidak selalu terlihat dari metrik agregat.
-  \item \textbf{Manfaat praktis:} menyediakan dasar pertimbangan dalam memilih konfigurasi model untuk inferensi berbasis CPU dengan mempertimbangkan ukuran berkas, penggunaan memori, waktu pemrosesan, throughput, dan kualitas prediksi secara bersamaan.
-  \item \textbf{Manfaat reproduksibilitas:} menghasilkan dokumentasi protokol evaluasi dan konfigurasi eksperimen yang dapat digunakan untuk mengulangi pengukuran pada ruang lingkup model, data, runtime, dan perangkat keras yang sama.
+  \item \textbf{Teoritis:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  \item \textbf{Praktis:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 \end{enumerate}
