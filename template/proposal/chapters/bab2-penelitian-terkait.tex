@@ -1,34 +1,65 @@
 \chapter{PENELITIAN TERKAIT}
 
-\section{Topik Pertama}
+\section{NLP Bahasa Indonesia dan IndoNLU}
 
-% TODO: Jelaskan teori atau konsep pertama yang relevan dengan penelitian Anda.
-% Gunakan referensi dari pustaka yang terpercaya.
+Ketersediaan sumber daya bahasa merupakan salah satu dasar penting dalam pengembangan dan evaluasi model bahasa untuk Bahasa Indonesia. Wilie et al. memperkenalkan IndoNLU sebagai kumpulan sumber daya untuk pelatihan, evaluasi, dan pembandingan pemahaman bahasa Indonesia. IndoNLU mencakup dua belas tugas dengan variasi domain, gaya bahasa, dan tingkat kompleksitas, serta menyediakan model pralatih IndoBERT sebagai model pembanding \citep{wilie2020indonlu}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi1}.
+Penelitian ini menggunakan tugas klasifikasi sentimen dari IndoNLU sebagai salah satu dasar evaluasi. Penggunaan dataset dan pembagian data yang telah ditetapkan memungkinkan perbandingan yang konsisten antara model sebelum dan sesudah kuantisasi. Metrik utama yang direncanakan adalah akurasi dan macro-F1 karena distribusi kelas sentimen tidak sepenuhnya seimbang.
 
-\subsection{Subtopik Pertama}
+\section{Kuantisasi pada Model Bahasa Indonesia}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Kuantisasi merupakan teknik kompresi yang mengurangi presisi numerik bobot model sehingga ukuran penyimpanan dan kebutuhan memori dapat ditekan. Dampak kuantisasi terhadap kualitas model perlu diukur secara empiris karena perubahan presisi tidak selalu menghasilkan penurunan kualitas yang sama pada setiap model dan tugas.
 
-\subsection{Subtopik Kedua}
+Abdurrahman et al. mengevaluasi kuantisasi pada IndoBERT untuk tujuh tugas hilir Bahasa Indonesia. Hasil penelitian tersebut menunjukkan bahwa kuantisasi pascapelatihan umumnya mengalami sedikit penurunan dibandingkan model presisi penuh, sedangkan kuantisasi ekstrem, khususnya 4-bit, dapat menyebabkan degradasi yang lebih besar pada kondisi tertentu. Penelitian tersebut juga membandingkan kuantisasi pascapelatihan dengan kuantisasi selama pelatihan dan mengukur ukuran model serta waktu inferensi \citep{abdurrahman2023indobert}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Penelitian tersebut penting bagi penelitian ini karena menunjukkan bahwa kuantisasi model Bahasa Indonesia telah diteliti, terutama pada arsitektur encoder. Oleh karena itu, penelitian ini tidak mengklaim sebagai penelitian pertama mengenai kuantisasi model bahasa Indonesia. Perbedaannya terletak pada evaluasi beberapa model generatif berukuran kecil, penggunaan tingkat kuantisasi yang konsisten, dan analisis perubahan prediksi pada setiap sampel.
 
-\section{Topik Kedua}
+\section{Dampak Kuantisasi pada Model Multibahasa}
 
-% TODO: Jelaskan teori atau konsep kedua yang relevan.
+Dampak kuantisasi dapat berbeda antarbahasa. Marchisio et al. mengevaluasi model bahasa multibahasa pada berbagai bahasa, skala model, dan tugas. Penelitian tersebut menunjukkan bahwa metrik otomatis dapat meremehkan dampak kuantisasi yang terlihat pada evaluasi manusia. Selain itu, tingkat degradasi tidak seragam antarbahasa dan tugas, dengan beberapa bahasa serta tugas yang lebih sensitif terhadap pengurangan presisi \citep{marchisio2024multilingual}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi2}.
+Temuan tersebut menjadi dasar bagi penelitian ini untuk tidak hanya melaporkan skor absolut antarmodel. Setiap varian terkuantisasi akan dibandingkan dengan baseline presisi tinggi dari model yang sama. Dengan cara tersebut, ketahanan kuantisasi dianalisis melalui perubahan relatif, kesesuaian prediksi, dan transisi dari prediksi benar menjadi salah atau sebaliknya.
 
-\section{Topik Ketiga}
+\section{Benchmark Kuantisasi Small Language Model}
 
-% TODO: Jelaskan teori atau konsep ketiga yang relevan.
+Wang et al. memperkenalkan SLMQuant sebagai benchmark sistematis untuk mengevaluasi teknik kompresi pada Small Language Model (SLM). Penelitian tersebut membandingkan berbagai arsitektur dan tugas, serta menunjukkan bahwa karakteristik sensitivitas kuantisasi pada SLM tidak dapat langsung diasumsikan sama dengan model bahasa berukuran besar \citep{wang2025slmquant}.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi3}.
+SLMQuant menjadi pembanding penting karena penelitian ini juga mengevaluasi model dengan jumlah parameter relatif kecil. Namun, penelitian ini mengambil ruang lingkup yang lebih terarah, yaitu klasifikasi sentimen Bahasa Indonesia, empat model generatif yang telah ditentukan, serta satu prosedur inferensi dan pengukuran yang dikendalikan. Fokus tersebut memungkinkan analisis yang lebih rinci terhadap perubahan keluaran pada sampel Bahasa Indonesia.
 
-\section{Tinjauan Keamanan / Aspek Lain}
+\section{Studi Kuantisasi pada Keluarga Qwen3}
 
-% TODO: Sesuaikan dengan aspek spesifik penelitian Anda.
+Zheng et al. melakukan studi empiris terhadap dampak kuantisasi pada keluarga Qwen3 dengan mempertimbangkan variasi ukuran model, metode kuantisasi, tingkat bit, dan tugas evaluasi \citep{zheng2025qwen3}. Penelitian tersebut menunjukkan bahwa performa setelah kuantisasi perlu dipahami berdasarkan kombinasi model, tingkat presisi, dan tugas yang digunakan.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Studi Qwen3 tersebut menjadi rujukan sekaligus batasan klaim kebaruan penelitian ini. Penelitian ini tidak mengklaim bahwa pengujian beberapa ukuran Qwen3 dengan beberapa tingkat kuantisasi merupakan hal baru secara umum. Kontribusi yang ditargetkan adalah perbandingan terkontrol pada tugas sentimen Bahasa Indonesia, termasuk Qwen3-0.6B dan Qwen3-1.7B, bersama model dari keluarga lain serta analisis transisi prediksi per sampel.
+
+\section{Kuantisasi untuk Klasifikasi Sentimen}
+
+Gasimov mengevaluasi pengaruh kuantisasi berbasis bobot terhadap tugas klasifikasi sentimen menggunakan Gemma 3 4B, Phi-4 Mini, dan Liquid LFM2 1.2B. Model-model tersebut diuji pada beberapa tingkat presisi, yaitu FP16, Q8, Q6, Q5, Q4, Q4-QAT, dan Q3, menggunakan dataset IMDB, SST-2, dan Twitter Airline Sentiment. Hasilnya menunjukkan bahwa klasifikasi sentimen dapat relatif tahan terhadap beberapa tingkat kuantisasi, tetapi pengurangan presisi yang lebih agresif dapat mengubah kecenderungan prediksi dan memperburuk pengenalan kelas minoritas \citep{gasimov2026sentiment}.
+
+Penelitian Gasimov paling dekat dengan penelitian ini dari sisi kombinasi kuantisasi dan analisis sentimen. Perbedaannya terletak pada bahasa, model, dan lingkungan evaluasi. Penelitian ini berfokus pada Bahasa Indonesia, menggunakan model berukuran sekitar 0,6--1,7 miliar parameter, serta membandingkan perubahan kualitas, kepatuhan format, dan transisi prediksi terhadap baseline model yang sama.
+
+\section{Posisi Penelitian}
+
+Berdasarkan penelitian terdahulu, kuantisasi telah dikaji pada model Bahasa Indonesia, model multibahasa, SLM, keluarga Qwen3, dan tugas klasifikasi sentimen. Dengan demikian, penelitian ini tidak mengusulkan algoritma kuantisasi baru. Posisi penelitian yang ditargetkan adalah evaluasi empiris terkontrol terhadap trade-off kualitas dan efisiensi beberapa Small Language Model pada klasifikasi sentimen Bahasa Indonesia.
+
+Penelitian ini akan membandingkan Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat pada baseline presisi tinggi serta beberapa tingkat kuantisasi. Selain akurasi dan macro-F1, penelitian akan mengukur ukuran berkas, peak RAM, latensi, throughput, valid-label rate, dan perubahan prediksi pada sampel yang sama. Ringkasan posisi penelitian terhadap penelitian terdahulu ditunjukkan pada Tabel~\ref{tab:posisi-penelitian}.
+
+\begin{table}[H]
+  \centering
+  \caption{Ringkasan penelitian terdahulu dan posisi penelitian yang diusulkan}
+  \label{tab:posisi-penelitian}
+  \begin{tabularx}{\textwidth}{p{0.22\textwidth} p{0.28\textwidth} X}
+    \toprule
+    \textbf{Penelitian} & \textbf{Fokus} & \textbf{Posisi terhadap penelitian ini} \\
+    \midrule
+    Wilie et al. \citep{wilie2020indonlu} & Benchmark NLP Bahasa Indonesia dan IndoNLU & Menjadi dasar dataset dan evaluasi Bahasa Indonesia. \\
+    Abdurrahman et al. \citep{abdurrahman2023indobert} & Kuantisasi IndoBERT & Menjadi dasar konteks kuantisasi model Bahasa Indonesia dan pembanding arsitektur. \\
+    Marchisio et al. \citep{marchisio2024multilingual} & Dampak kuantisasi lintas bahasa & Menjadi dasar analisis sensitivitas kuantisasi menurut bahasa dan tugas. \\
+    Wang et al. \citep{wang2025slmquant} & Benchmark kuantisasi SLM & Menjadi rujukan desain eksperimen dan metrik deployment. \\
+    Zheng et al. \citep{zheng2025qwen3} & Studi kuantisasi keluarga Qwen3 & Menjadi pembanding langsung untuk variasi Qwen3 dan batas klaim kebaruan. \\
+    Gasimov \citep{gasimov2026sentiment} & Kuantisasi pada klasifikasi sentimen & Menjadi pembanding terdekat untuk hubungan kuantisasi dan perubahan prediksi sentimen. \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Penelitian yang diusulkan mempersempit ruang masalah pada klasifikasi sentimen Bahasa Indonesia dan memperluas analisis pada tingkat sampel. Hasil penelitian diharapkan memberikan bukti mengenai konfigurasi model dan tingkat kuantisasi yang memiliki trade-off kualitas--efisiensi paling sesuai pada ruang eksperimen yang diuji.
