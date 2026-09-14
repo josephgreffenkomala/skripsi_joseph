@@ -46,6 +46,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--torch-dtype", choices=("auto", "float32", "bfloat16"), default="auto"
     )
+    parser.add_argument(
+        "--dynamic-int8",
+        action="store_true",
+        help="Dynamic INT8-kan kondisi quantized dari checkpoint native (CPU saja)",
+    )
     return parser.parse_args()
 
 
@@ -72,13 +77,21 @@ def record(
 
 
 def run_condition(
-    model_path: str, condition: str, examples: list[Any], config: ExperimentConfig
+    model_path: str,
+    condition: str,
+    examples: list[Any],
+    config: ExperimentConfig,
+    *,
+    dynamic_int8: bool = False,
 ) -> tuple[
     list[dict[str, Any]], list[dict[str, Any]], dict[int, list[OcclusionResult]]
 ]:
     """Run predictions and occlusion for one model condition."""
     client = TransformersClient(
-        model_path, device=config.device, torch_dtype=config.torch_dtype
+        model_path,
+        device=config.device,
+        torch_dtype=config.torch_dtype,
+        dynamic_int8=dynamic_int8,
     )
     predictions, occlusions, heatmap_rows = [], [], {}
     for example in examples:
@@ -166,6 +179,9 @@ def main() -> None:
         "python": platform.python_version(),
         "baseline_model": args.baseline_model,
         "quantized_model": args.quantized_model,
+        "quantized_runtime_transform": "dynamic_int8"
+        if args.dynamic_int8
+        else "checkpoint_native",
         "created_unix": time.time(),
     }
     all_predictions, all_occlusions = [], []
@@ -175,7 +191,11 @@ def main() -> None:
         ("quantized", args.quantized_model),
     ):
         predictions, occlusions, rows = run_condition(
-            model_path, condition, examples, config
+            model_path,
+            condition,
+            examples,
+            config,
+            dynamic_int8=args.dynamic_int8 and condition == "quantized",
         )
         all_predictions.extend(predictions)
         all_occlusions.extend(occlusions)

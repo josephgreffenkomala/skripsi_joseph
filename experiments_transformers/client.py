@@ -22,7 +22,12 @@ class TransformersClient:
     """Load and run one local causal LM through Transformers."""
 
     def __init__(
-        self, model_path: str, *, device: str = "cpu", torch_dtype: str = "auto"
+        self,
+        model_path: str,
+        *,
+        device: str = "cpu",
+        torch_dtype: str = "auto",
+        dynamic_int8: bool = False,
     ) -> None:
         try:
             import torch
@@ -43,6 +48,12 @@ class TransformersClient:
             model_kwargs["torch_dtype"] = dtype
         self.model = AutoModelForCausalLM.from_pretrained(model_path, **model_kwargs)
         self.device = torch.device(device)
+        if dynamic_int8:
+            if self.device.type != "cpu":
+                raise ValueError("dynamic_int8 hanya didukung pada CPU")
+            self.model = torch.quantization.quantize_dynamic(
+                self.model, {torch.nn.Linear}, dtype=torch.qint8
+            )
         self.model.to(self.device)
         self.model.eval()
 

@@ -1,0 +1,305 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="4500" height="320">
+<text x="20" y="28" font-family="sans-serif" font-size="18">Qwen3-0.6B Transformers sensitivity, SmSA row 3</text>
+<text x="20" y="79" font-family="sans-serif" font-size="14">baseline</text>
+<rect x="150" y="55" width="78" height="42" fill="rgb(230,230,255)" stroke="#6b7280"/>
+<text x="189" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">ini</text>
+<text x="189" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.232</text>
+<rect x="235" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="274" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">pertama</text>
+<text x="274" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0372</text>
+<rect x="320" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="359" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">kalinya</text>
+<text x="359" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0381</text>
+<rect x="405" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="444" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="444" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0284</text>
+<rect x="490" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="529" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">ke</text>
+<text x="529" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.00634</text>
+<rect x="575" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="614" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">bank</text>
+<text x="614" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-3.62e-05</text>
+<rect x="660" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="699" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">buat</text>
+<text x="699" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0255</text>
+<rect x="745" y="55" width="78" height="42" fill="rgb(255,234,234)" stroke="#6b7280"/>
+<text x="784" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">ngurusin</text>
+<text x="784" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.103</text>
+<rect x="830" y="55" width="78" height="42" fill="rgb(255,234,234)" stroke="#6b7280"/>
+<text x="869" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">pembuatan</text>
+<text x="869" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.116</text>
+<rect x="915" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="954" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">rekening</text>
+<text x="954" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0135</text>
+<rect x="1000" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1039" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">baru</text>
+<text x="1039" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0104</text>
+<rect x="1085" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1124" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="1124" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0179</text>
+<rect x="1170" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="1209" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">nama</text>
+<text x="1209" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0451</text>
+<rect x="1255" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1294" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">nya</text>
+<text x="1294" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.00294</text>
+<rect x="1340" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="1379" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">juga</text>
+<text x="1379" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.00165</text>
+<rect x="1425" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="1464" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">orang</text>
+<text x="1464" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0579</text>
+<rect x="1510" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="1549" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">pertama</text>
+<text x="1549" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0195</text>
+<rect x="1595" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1634" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">kali</text>
+<text x="1634" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0189</text>
+<rect x="1680" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="1719" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">ya</text>
+<text x="1719" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.00803</text>
+<rect x="1765" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1804" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">baru</text>
+<text x="1804" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0196</text>
+<rect x="1850" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="1889" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">ke</text>
+<text x="1889" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.00096</text>
+<rect x="1935" y="55" width="78" height="42" fill="rgb(236,236,255)" stroke="#6b7280"/>
+<text x="1974" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">bank</text>
+<text x="1974" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0571</text>
+<rect x="2020" y="55" width="78" height="42" fill="rgb(234,234,255)" stroke="#6b7280"/>
+<text x="2059" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">,</text>
+<text x="2059" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.125</text>
+<rect x="2105" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="2144" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="2144" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.069</text>
+<rect x="2190" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="2229" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">kena</text>
+<text x="2229" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0402</text>
+<rect x="2275" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="2314" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">semprot</text>
+<text x="2314" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0524</text>
+<rect x="2360" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="2399" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="2399" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.028</text>
+<rect x="2445" y="55" width="78" height="42" fill="rgb(255,233,233)" stroke="#6b7280"/>
+<text x="2484" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">kelihatan</text>
+<text x="2484" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.156</text>
+<rect x="2530" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="2569" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">banget</text>
+<text x="2569" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0682</text>
+<rect x="2615" y="55" width="78" height="42" fill="rgb(255,234,234)" stroke="#6b7280"/>
+<text x="2654" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">pelayanan</text>
+<text x="2654" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.115</text>
+<rect x="2700" y="55" width="78" height="42" fill="rgb(255,234,234)" stroke="#6b7280"/>
+<text x="2739" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">pelanggan</text>
+<text x="2739" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.115</text>
+<rect x="2785" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="2824" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">-</text>
+<text x="2824" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.00821</text>
+<rect x="2870" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="2909" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">nya</text>
+<text x="2909" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0285</text>
+<rect x="2955" y="55" width="78" height="42" fill="rgb(255,237,237)" stroke="#6b7280"/>
+<text x="2994" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">tidak</text>
+<text x="2994" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.00718</text>
+<rect x="3040" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="3079" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">suka</text>
+<text x="3079" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0635</text>
+<rect x="3125" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="3164" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="3164" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.081</text>
+<rect x="3210" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="3249" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">banyak</text>
+<text x="3249" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0184</text>
+<rect x="3295" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="3334" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">bertanya</text>
+<text x="3334" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0151</text>
+<rect x="3380" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="3419" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="3419" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0822</text>
+<rect x="3465" y="55" width="78" height="42" fill="rgb(255,228,228)" stroke="#6b7280"/>
+<text x="3504" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">amit-amit</text>
+<text x="3504" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.316</text>
+<rect x="3550" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="3589" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="3589" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0121</text>
+<rect x="3635" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="3674" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">padahal</text>
+<text x="3674" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0914</text>
+<rect x="3720" y="55" width="78" height="42" fill="rgb(235,235,255)" stroke="#6b7280"/>
+<text x="3759" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">itu</text>
+<text x="3759" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0904</text>
+<rect x="3805" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="3844" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">kan</text>
+<text x="3844" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0308</text>
+<rect x="3890" y="55" width="78" height="42" fill="rgb(255,236,236)" stroke="#6b7280"/>
+<text x="3929" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">tugas</text>
+<text x="3929" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0492</text>
+<rect x="3975" y="55" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="4014" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">mereka</text>
+<text x="4014" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0217</text>
+<rect x="4060" y="55" width="78" height="42" fill="rgb(236,236,255)" stroke="#6b7280"/>
+<text x="4099" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">buat</text>
+<text x="4099" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0365</text>
+<rect x="4145" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="4184" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">melayangkan</text>
+<text x="4184" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0779</text>
+<rect x="4230" y="55" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="4269" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="4269" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.0897</text>
+<rect x="4315" y="55" width="78" height="42" fill="rgb(255,231,231)" stroke="#6b7280"/>
+<text x="4354" y="73" text-anchor="middle" font-family="sans-serif" font-size="11">!</text>
+<text x="4354" y="89" text-anchor="middle" font-family="sans-serif" font-size="10">0.218</text>
+<text x="20" y="169" font-family="sans-serif" font-size="14">quantized</text>
+<rect x="150" y="145" width="78" height="42" fill="rgb(255,231,231)" stroke="#6b7280"/>
+<text x="189" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">ini</text>
+<text x="189" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.198</text>
+<rect x="235" y="145" width="78" height="42" fill="rgb(232,232,255)" stroke="#6b7280"/>
+<text x="274" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">pertama</text>
+<text x="274" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.181</text>
+<rect x="320" y="145" width="78" height="42" fill="rgb(255,200,200)" stroke="#6b7280"/>
+<text x="359" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">kalinya</text>
+<text x="359" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.2</text>
+<rect x="405" y="145" width="78" height="42" fill="rgb(227,227,255)" stroke="#6b7280"/>
+<text x="444" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="444" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.347</text>
+<rect x="490" y="145" width="78" height="42" fill="rgb(227,227,255)" stroke="#6b7280"/>
+<text x="529" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">ke</text>
+<text x="529" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.352</text>
+<rect x="575" y="145" width="78" height="42" fill="rgb(232,232,255)" stroke="#6b7280"/>
+<text x="614" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">bank</text>
+<text x="614" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.169</text>
+<rect x="660" y="145" width="78" height="42" fill="rgb(255,230,230)" stroke="#6b7280"/>
+<text x="699" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">buat</text>
+<text x="699" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.248</text>
+<rect x="745" y="145" width="78" height="42" fill="rgb(226,226,255)" stroke="#6b7280"/>
+<text x="784" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">ngurusin</text>
+<text x="784" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.359</text>
+<rect x="830" y="145" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="869" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">pembuatan</text>
+<text x="869" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.00175</text>
+<rect x="915" y="145" width="78" height="42" fill="rgb(108,108,255)" stroke="#6b7280"/>
+<text x="954" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">rekening</text>
+<text x="954" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-4.18</text>
+<rect x="1000" y="145" width="78" height="42" fill="rgb(237,237,255)" stroke="#6b7280"/>
+<text x="1039" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">baru</text>
+<text x="1039" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.0264</text>
+<rect x="1085" y="145" width="78" height="42" fill="rgb(227,227,255)" stroke="#6b7280"/>
+<text x="1124" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="1124" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.345</text>
+<rect x="1170" y="145" width="78" height="42" fill="rgb(255,200,200)" stroke="#6b7280"/>
+<text x="1209" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">nama</text>
+<text x="1209" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.21</text>
+<rect x="1255" y="145" width="78" height="42" fill="rgb(154,154,255)" stroke="#6b7280"/>
+<text x="1294" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">nya</text>
+<text x="1294" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-2.68</text>
+<rect x="1340" y="145" width="78" height="42" fill="rgb(234,234,255)" stroke="#6b7280"/>
+<text x="1379" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">juga</text>
+<text x="1379" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.118</text>
+<rect x="1425" y="145" width="78" height="42" fill="rgb(255,213,213)" stroke="#6b7280"/>
+<text x="1464" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">orang</text>
+<text x="1464" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.778</text>
+<rect x="1510" y="145" width="78" height="42" fill="rgb(174,174,255)" stroke="#6b7280"/>
+<text x="1549" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">pertama</text>
+<text x="1549" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-2.06</text>
+<rect x="1595" y="145" width="78" height="42" fill="rgb(255,220,220)" stroke="#6b7280"/>
+<text x="1634" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">kali</text>
+<text x="1634" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.549</text>
+<rect x="1680" y="145" width="78" height="42" fill="rgb(225,225,255)" stroke="#6b7280"/>
+<text x="1719" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">ya</text>
+<text x="1719" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.417</text>
+<rect x="1765" y="145" width="78" height="42" fill="rgb(234,234,255)" stroke="#6b7280"/>
+<text x="1804" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">baru</text>
+<text x="1804" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.106</text>
+<rect x="1850" y="145" width="78" height="42" fill="rgb(225,225,255)" stroke="#6b7280"/>
+<text x="1889" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">ke</text>
+<text x="1889" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.389</text>
+<rect x="1935" y="145" width="78" height="42" fill="rgb(255,121,121)" stroke="#6b7280"/>
+<text x="1974" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">bank</text>
+<text x="1974" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">3.76</text>
+<rect x="2020" y="145" width="78" height="42" fill="rgb(195,195,255)" stroke="#6b7280"/>
+<text x="2059" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">,</text>
+<text x="2059" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.36</text>
+<rect x="2105" y="145" width="78" height="42" fill="rgb(255,167,167)" stroke="#6b7280"/>
+<text x="2144" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="2144" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">2.27</text>
+<rect x="2190" y="145" width="78" height="42" fill="rgb(192,192,255)" stroke="#6b7280"/>
+<text x="2229" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">kena</text>
+<text x="2229" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.45</text>
+<rect x="2275" y="145" width="78" height="42" fill="rgb(174,174,255)" stroke="#6b7280"/>
+<text x="2314" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">semprot</text>
+<text x="2314" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-2.03</text>
+<rect x="2360" y="145" width="78" height="42" fill="rgb(255,230,230)" stroke="#6b7280"/>
+<text x="2399" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="2399" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.255</text>
+<rect x="2445" y="145" width="78" height="42" fill="rgb(255,215,215)" stroke="#6b7280"/>
+<text x="2484" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">kelihatan</text>
+<text x="2484" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.73</text>
+<rect x="2530" y="145" width="78" height="42" fill="rgb(183,183,255)" stroke="#6b7280"/>
+<text x="2569" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">banget</text>
+<text x="2569" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.76</text>
+<rect x="2615" y="145" width="78" height="42" fill="rgb(171,171,255)" stroke="#6b7280"/>
+<text x="2654" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">pelayanan</text>
+<text x="2654" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-2.13</text>
+<rect x="2700" y="145" width="78" height="42" fill="rgb(255,207,207)" stroke="#6b7280"/>
+<text x="2739" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">pelanggan</text>
+<text x="2739" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.972</text>
+<rect x="2785" y="145" width="78" height="42" fill="rgb(255,187,187)" stroke="#6b7280"/>
+<text x="2824" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">-</text>
+<text x="2824" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.62</text>
+<rect x="2870" y="145" width="78" height="42" fill="rgb(255,166,166)" stroke="#6b7280"/>
+<text x="2909" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">nya</text>
+<text x="2909" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">2.29</text>
+<rect x="2955" y="145" width="78" height="42" fill="rgb(255,222,222)" stroke="#6b7280"/>
+<text x="2994" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">tidak</text>
+<text x="2994" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.512</text>
+<rect x="3040" y="145" width="78" height="42" fill="rgb(255,173,173)" stroke="#6b7280"/>
+<text x="3079" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">suka</text>
+<text x="3079" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">2.07</text>
+<rect x="3125" y="145" width="78" height="42" fill="rgb(255,183,183)" stroke="#6b7280"/>
+<text x="3164" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="3164" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.74</text>
+<rect x="3210" y="145" width="78" height="42" fill="rgb(199,199,255)" stroke="#6b7280"/>
+<text x="3249" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">banyak</text>
+<text x="3249" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.22</text>
+<rect x="3295" y="145" width="78" height="42" fill="rgb(203,203,255)" stroke="#6b7280"/>
+<text x="3334" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">bertanya</text>
+<text x="3334" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.11</text>
+<rect x="3380" y="145" width="78" height="42" fill="rgb(227,227,255)" stroke="#6b7280"/>
+<text x="3419" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="3419" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.322</text>
+<rect x="3465" y="145" width="78" height="42" fill="rgb(255,225,225)" stroke="#6b7280"/>
+<text x="3504" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">amit-amit</text>
+<text x="3504" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.413</text>
+<rect x="3550" y="145" width="78" height="42" fill="rgb(255,152,152)" stroke="#6b7280"/>
+<text x="3589" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">.</text>
+<text x="3589" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">2.75</text>
+<rect x="3635" y="145" width="78" height="42" fill="rgb(255,217,217)" stroke="#6b7280"/>
+<text x="3674" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">padahal</text>
+<text x="3674" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.65</text>
+<rect x="3720" y="145" width="78" height="42" fill="rgb(220,220,255)" stroke="#6b7280"/>
+<text x="3759" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">itu</text>
+<text x="3759" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.574</text>
+<rect x="3805" y="145" width="78" height="42" fill="rgb(209,209,255)" stroke="#6b7280"/>
+<text x="3844" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">kan</text>
+<text x="3844" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.917</text>
+<rect x="3890" y="145" width="78" height="42" fill="rgb(210,210,255)" stroke="#6b7280"/>
+<text x="3929" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">tugas</text>
+<text x="3929" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-0.899</text>
+<rect x="3975" y="145" width="78" height="42" fill="rgb(193,193,255)" stroke="#6b7280"/>
+<text x="4014" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">mereka</text>
+<text x="4014" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">-1.42</text>
+<rect x="4060" y="145" width="78" height="42" fill="rgb(255,235,235)" stroke="#6b7280"/>
+<text x="4099" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">buat</text>
+<text x="4099" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.0871</text>
+<rect x="4145" y="145" width="78" height="42" fill="rgb(255,200,200)" stroke="#6b7280"/>
+<text x="4184" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">melayangkan</text>
+<text x="4184" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.21</text>
+<rect x="4230" y="145" width="78" height="42" fill="rgb(255,181,181)" stroke="#6b7280"/>
+<text x="4269" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">gua</text>
+<text x="4269" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">1.82</text>
+<rect x="4315" y="145" width="78" height="42" fill="rgb(255,213,213)" stroke="#6b7280"/>
+<text x="4354" y="163" text-anchor="middle" font-family="sans-serif" font-size="11">!</text>
+<text x="4354" y="179" text-anchor="middle" font-family="sans-serif" font-size="10">0.792</text>
+</svg>
