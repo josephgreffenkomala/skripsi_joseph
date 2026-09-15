@@ -10,7 +10,7 @@ Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 \begin{enumerate}
     \item \textbf{Tahap 1:} Melakukan penelusuran penelitian terkait dan menetapkan kriteria pemilihan model serta dataset.
-    \item \textbf{Tahap 2:} Menjalankan pilot kompatibilitas, menetapkan model yang memenuhi kriteria, lalu membekukan baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
+    \item \textbf{Tahap 2:} Menetapkan empat model, lalu membekukan baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
     \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF BF16 dan menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M secara konsisten.
     \item \textbf{Tahap 4:} Menjalankan inferensi pada dataset klasifikasi sentimen dengan prompt, decoding, dan runtime yang dikendalikan.
     \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput serta menjalankan analisis sekunder oklusi kata pada subset kecil.
@@ -71,7 +71,7 @@ Arsitektur pipeline evaluasi ditunjukkan pada Gambar~\ref{fig:arsitektur}. Satu 
 
 \subsection{Konfigurasi yang Dikunci}
 
-Revisi checkpoint dan runtime yang digunakan ditetapkan sebelum evaluasi utama sebagaimana dirangkum pada Tabel~\ref{tab:revisi-model}. Apabila sebuah artefak tidak dapat diakses atau gagal dalam pilot, penggantian hanya dilakukan sebelum test set utama dijalankan dan perubahan tersebut dicatat sebagai revisi protokol.
+Revisi checkpoint dan runtime yang digunakan ditetapkan sebelum evaluasi utama sebagaimana dirangkum pada Tabel~\ref{tab:revisi-model}. Apabila sebuah artefak tidak dapat diakses, penggantian hanya dilakukan sebelum test set utama dijalankan dan perubahan tersebut dicatat sebagai revisi protokol.
 
 \begin{table}[H]
   \centering
@@ -91,37 +91,26 @@ Revisi checkpoint dan runtime yang digunakan ditetapkan sebelum evaluasi utama s
 
 Prompt meminta satu huruf keluaran: A untuk \textit{positive}, B untuk \textit{neutral}, atau C untuk \textit{negative}. Parser hanya menerima huruf pertama A, B, atau C setelah spasi dihapus; keluaran lain dicatat sebagai label tidak valid. Parameter decoding dikunci pada temperature 0, \textit{top-p} 1, \textit{top-k} 1, seed 42, panjang konteks 2.048 token, maksimum satu token keluaran, dan empat thread. Setiap model menggunakan template percakapan yang tersimpan pada checkpoint selama template tersebut didukung oleh runtime.
 
-Sebelum evaluasi utama, setiap model menjalani pilot pada subset validasi SmSA yang seimbang. Model dinyatakan lulus apabila berhasil dikonversi dan dimuat, menyelesaikan seluruh sampel tanpa galat fatal, menghasilkan label valid pada sedikitnya 95\% sampel, memiliki akurasi dan macro-F1 di atas baseline tebakan kelas mayoritas, serta peak RAM tidak melebihi kapasitas fisik 12 GB. Jika BF16 tidak stabil tetapi F16 memenuhi seluruh kriteria, F16 digunakan sebagai baseline operasional dan perubahan tersebut didokumentasikan.
-
 \subsection{Bagan Alir Metodologi}
 
-Bagan alir pada Gambar~\ref{fig:bagan-alir} memisahkan kegiatan persiapan, pilot, evaluasi utama, dan analisis. Keputusan kelulusan pilot mencegah model yang tidak kompatibel atau tidak memiliki kemampuan dasar yang memadai masuk ke evaluasi test set.
+Bagan alir pada Gambar~\ref{fig:bagan-alir} menunjukkan urutan kegiatan sejak pembekuan protokol hingga analisis dan pelaporan hasil.
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
     node distance=5mm,
     process/.style={draw, rounded corners, align=center, minimum height=8mm, text width=66mm, fill=blue!7},
-    decision/.style={draw, diamond, aspect=2.6, align=center, inner sep=1.5pt, text width=39mm, fill=yellow!15},
-    arrow/.style={-{Latex[length=2mm]}, thick},
-    label/.style={font=\small}
+    arrow/.style={-{Latex[length=2mm]}, thick}
   ]
     \node[process] (plan) {Kajian literatur dan pembekuan protokol};
     \node[process, below=of plan] (prepare) {Verifikasi dataset, checkpoint, konversi, dan kuantisasi};
-    \node[process, below=of prepare] (pilot) {Pilot kompatibilitas dan kualitas dasar pada data validasi};
-    \node[decision, below=7mm of pilot] (pass) {Memenuhi kriteria pilot?};
-    \node[process, below=7mm of pass] (eval) {Inferensi 500 sampel test untuk baseline dan empat varian};
+    \node[process, below=of prepare] (eval) {Inferensi 500 sampel test untuk baseline dan empat varian};
     \node[process, below=of eval] (measure) {Pengukuran kualitas, transisi, format, dan efisiensi};
     \node[process, below=of measure] (secondary) {Analisis sekunder oklusi kata pada subset seimbang};
     \node[process, below=of secondary] (result) {Bootstrap berpasangan, Pareto frontier, dan pelaporan};
-    \node[process, right=18mm of pass, text width=31mm] (exclude) {Keluarkan model atau gunakan baseline operasional yang stabil};
 
     \draw[arrow] (plan) -- (prepare);
-    \draw[arrow] (prepare) -- (pilot);
-    \draw[arrow] (pilot) -- (pass);
-    \draw[arrow] (pass) -- node[left,label] {ya} (eval);
-    \draw[arrow] (pass) -- node[above,label] {tidak} (exclude);
-    \draw[arrow] (exclude) |- (pilot.east);
+    \draw[arrow] (prepare) -- (eval);
     \draw[arrow] (eval) -- (measure);
     \draw[arrow] (measure) -- (secondary);
     \draw[arrow] (secondary) -- (result);
