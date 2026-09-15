@@ -1,0 +1,80 @@
+\chapter{METODE DAN RANCANGAN PENELITIAN}
+
+\section{Deskripsi Umum Penelitian}
+
+Penelitian ini menggunakan metode eksperimen terkontrol untuk mengevaluasi pengaruh kuantisasi terhadap kualitas dan efisiensi beberapa Small Language Model pada klasifikasi sentimen Bahasa Indonesia. Setiap varian kuantisasi dibandingkan dengan baseline presisi tinggi dari model yang sama. Dengan demikian, analisis utama tidak hanya membandingkan skor absolut antarmodel, tetapi juga perubahan relatif dan transisi prediksi pada sampel yang sama.
+
+\section{Metodologi}
+
+Tahapan penelitian dilakukan secara sistematis sebagai berikut:
+
+\begin{enumerate}
+    \item \textbf{Tahap 1:} Melakukan penelusuran penelitian terkait dan menetapkan kriteria pemilihan model serta dataset.
+    \item \textbf{Tahap 2:} Menetapkan empat model, baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
+    \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF BF16 dan menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M secara konsisten.
+    \item \textbf{Tahap 4:} Menjalankan inferensi pada dataset klasifikasi sentimen dengan prompt, decoding, dan runtime yang dikendalikan.
+    \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput.
+    \item \textbf{Tahap 6:} Menganalisis degradasi relatif dan menentukan konfigurasi pada Pareto frontier kualitas--efisiensi.
+\end{enumerate}
+
+\section{Dataset dan Protokol Inferensi}
+
+Dataset yang digunakan adalah SmSA (Sentence-level Sentiment Analysis) dari benchmark IndoNLU. Dataset ini berisi komentar dan ulasan Bahasa Indonesia dengan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative}. Pembagian resmi IndoNLU terdiri atas 11.000 data pelatihan, 1.260 data validasi, dan 500 data pengujian \citep{wilie2020indonlu}.
+
+Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupun pembaruan bobot model. Evaluasi utama menggunakan 500 sampel pada berkas uji resmi SmSA dari direktori dataset IndoNLU. Seluruh varian model menerima sampel dan prompt yang sama secara \textit{zero-shot}. Prompt, aturan keluaran, prosedur parsing, dan parameter decoding ditetapkan sebelum evaluasi utama sehingga perubahan hasil dapat dibandingkan terhadap baseline model yang sama.
+
+\section{Rancangan Eksperimen}
+
+\subsection{Alur Eksperimen}
+
+Rancangan eksperimen terdiri dari beberapa komponen utama:
+
+\begin{itemize}
+    \item \textbf{Checkpoint model:} Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat.
+    \item \textbf{Dataset:} SmSA dari benchmark IndoNLU, menggunakan test set resmi berisi 500 sampel dengan tiga label sentimen.
+    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M.
+    \item \textbf{Runtime inferensi:} satu versi atau commit \texttt{llama.cpp} dengan konfigurasi yang sama.
+    \item \textbf{Evaluator:} modul prompt zero-shot tetap, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
+\end{itemize}
+
+% TODO: Ganti dengan diagram arsitektur sistem Anda.
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figures/arsitektur-sistem}
+%   \caption{Diagram Arsitektur Sistem}
+%   \label{fig:arsitektur}
+% \end{figure}
+
+\subsection{Bagan Alir Metodologi}
+
+% TODO: Tambahkan bagan alir (flowchart) metodologi penelitian.
+
+% TODO: Ganti dengan bagan alir metodologi Anda.
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{figures/bagan-alir}
+%   \caption{Bagan Alir Metodologi Penelitian}
+%   \label{fig:bagan-alir}
+% \end{figure}
+
+\section{Lingkungan Penelitian}
+
+Lingkungan penelitian yang digunakan dalam eksperimen utama adalah:
+
+\begin{itemize}
+    \item \textbf{Perangkat lunak:} satu versi atau commit \texttt{llama.cpp}, tokenizer dan evaluator yang terdokumentasi.
+    \item \textbf{Perangkat keras:} AMD Ryzen 3 5300U, RAM 12 GB, tanpa GPU.
+    \item \textbf{Konfigurasi:} jumlah thread, panjang konteks, panjang keluaran, seed, prompt, dan parameter decoding dikendalikan.
+\end{itemize}
+
+\section{Metode Pengukuran dan Analisis}
+
+Pengukuran dilakukan dengan beberapa pendekatan:
+
+\begin{enumerate}
+    \item \textbf{Kualitas prediksi:} akurasi dan macro-F1 pada dataset klasifikasi sentimen.
+    \item \textbf{Kepatuhan dan transisi:} valid-label rate, prediction agreement, serta kategori benar-ke-salah dan salah-ke-benar.
+    \item \textbf{Efisiensi:} ukuran berkas, peak RAM proses server, waktu pemuatan, latensi, dan throughput.
+    \item \textbf{Analisis:} selisih absolut, degradasi relatif terhadap baseline model yang sama, interval kepercayaan bootstrap berpasangan, dan Pareto frontier. Pengukuran performa setiap konfigurasi akan diulang sekurang-kurangnya tiga kali setelah proses pemanasan, kemudian diringkas menggunakan median dan rentang hasil pengulangan.
+    \item \textbf{Reproduksibilitas:} pencatatan versi model dan runtime, hash berkas, konfigurasi, prompt, seed, dan hasil per sampel.
+\end{enumerate}
