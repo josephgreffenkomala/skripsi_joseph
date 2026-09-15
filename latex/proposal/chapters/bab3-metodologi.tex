@@ -10,10 +10,10 @@ Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 \begin{enumerate}
     \item \textbf{Tahap 1:} Melakukan penelusuran penelitian terkait dan menetapkan kriteria pemilihan model serta dataset.
-    \item \textbf{Tahap 2:} Menetapkan empat model, baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
+    \item \textbf{Tahap 2:} Menjalankan pilot kompatibilitas, menetapkan model yang memenuhi kriteria, lalu membekukan baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
     \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF BF16 dan menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M secara konsisten.
     \item \textbf{Tahap 4:} Menjalankan inferensi pada dataset klasifikasi sentimen dengan prompt, decoding, dan runtime yang dikendalikan.
-    \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput.
+    \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput serta menjalankan analisis sekunder oklusi kata pada subset kecil.
     \item \textbf{Tahap 6:} Menganalisis degradasi relatif dan menentukan konfigurasi pada Pareto frontier kualitas--efisiensi.
 \end{enumerate}
 
@@ -21,7 +21,7 @@ Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 Dataset yang digunakan adalah SmSA (Sentence-level Sentiment Analysis) dari benchmark IndoNLU. Dataset ini berisi komentar dan ulasan Bahasa Indonesia dengan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative}. Pembagian resmi IndoNLU terdiri atas 11.000 data pelatihan, 1.260 data validasi, dan 500 data pengujian \citep{wilie2020indonlu}.
 
-Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupun pembaruan bobot model. Evaluasi utama menggunakan 500 sampel pada berkas uji resmi SmSA dari direktori dataset IndoNLU. Seluruh varian model menerima sampel dan prompt yang sama secara \textit{zero-shot}. Prompt, aturan keluaran, prosedur parsing, dan parameter decoding ditetapkan sebelum evaluasi utama sehingga perubahan hasil dapat dibandingkan terhadap baseline model yang sama.
+Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupun pembaruan bobot model. Evaluasi utama menggunakan 500 sampel pada berkas uji resmi SmSA dari direktori dataset IndoNLU. Berkas tersebut dikunci dengan SHA-256 \texttt{\seqsplit{4e8016daa8e4e1b193f2a28a79d3a7804dd4e3f926a3ab7e8a64264f5f416a6f}}. Seluruh varian model menerima sampel dan prompt yang sama secara \textit{zero-shot}. Prompt, aturan keluaran, prosedur parsing, dan parameter decoding ditetapkan sebelum evaluasi utama sehingga perubahan hasil dapat dibandingkan terhadap baseline model yang sama.
 
 \section{Rancangan Eksperimen}
 
@@ -32,39 +32,112 @@ Rancangan eksperimen terdiri dari beberapa komponen utama:
 \begin{itemize}
     \item \textbf{Checkpoint model:} Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat.
     \item \textbf{Dataset:} SmSA dari benchmark IndoNLU, menggunakan test set resmi berisi 500 sampel dengan tiga label sentimen.
-    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M.
-    \item \textbf{Runtime inferensi:} satu versi atau commit \texttt{llama.cpp} dengan konfigurasi yang sama.
+    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M. Tipe IQ4 tidak dimasukkan agar eksperimen inti tidak memerlukan \textit{importance matrix} dan tetap layak pada sumber daya penelitian.
+    \item \textbf{Runtime inferensi:} \texttt{llama.cpp} pada commit \texttt{\seqsplit{bbdd9f246e9667f9aeb7ad11cca269466f981184}} dengan opsi kompilasi dan konfigurasi yang sama.
     \item \textbf{Evaluator:} modul prompt zero-shot tetap, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
 \end{itemize}
 
-% TODO: Ganti dengan diagram arsitektur sistem Anda.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figures/arsitektur-sistem}
-%   \caption{Diagram Arsitektur Sistem}
-%   \label{fig:arsitektur}
-% \end{figure}
+Arsitektur pipeline evaluasi ditunjukkan pada Gambar~\ref{fig:arsitektur}. Satu checkpoint sumber menghasilkan baseline dan seluruh varian kuantisasi agar perbedaan proses konversi tidak menjadi faktor pengganggu. Hasil inferensi dan pengukuran sistem disimpan bersama metadata konfigurasi untuk dianalisis oleh evaluator yang sama.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=7mm and 5mm,
+    block/.style={draw, rounded corners, align=center, minimum height=10mm, text width=25mm, fill=blue!7},
+    data/.style={draw, align=center, minimum height=10mm, text width=23mm, fill=yellow!12},
+    arrow/.style={-{Latex[length=2mm]}, thick}
+  ]
+    \node[block] (checkpoint) {Checkpoint\\model sumber};
+    \node[block, right=of checkpoint] (convert) {Konversi\\GGUF BF16};
+    \node[block, right=of convert] (quant) {Kuantisasi\\Q8--Q4};
+    \node[block, right=of quant] (runtime) {Inferensi CPU\\\texttt{llama.cpp}};
+    \node[data, above=of runtime] (dataset) {SmSA +\\prompt tetap};
+    \node[block, below=of runtime] (profiler) {Pencatat waktu,\\RAM, dan keluaran};
+    \node[block, left=of profiler] (evaluator) {Evaluator kualitas\\dan transisi};
+    \node[block, left=of evaluator] (analysis) {Bootstrap dan\\Pareto frontier};
+
+    \draw[arrow] (checkpoint) -- (convert);
+    \draw[arrow] (convert) -- (quant);
+    \draw[arrow] (quant) -- (runtime);
+    \draw[arrow] (convert.south) |- (runtime.west);
+    \draw[arrow] (dataset) -- (runtime);
+    \draw[arrow] (runtime) -- (profiler);
+    \draw[arrow] (profiler) -- (evaluator);
+    \draw[arrow] (evaluator) -- (analysis);
+  \end{tikzpicture}
+  \caption{Arsitektur pipeline evaluasi kuantisasi}
+  \label{fig:arsitektur}
+\end{figure}
+
+\subsection{Konfigurasi yang Dikunci}
+
+Revisi checkpoint dan runtime yang digunakan ditetapkan sebelum evaluasi utama sebagaimana dirangkum pada Tabel~\ref{tab:revisi-model}. Apabila sebuah artefak tidak dapat diakses atau gagal dalam pilot, penggantian hanya dilakukan sebelum test set utama dijalankan dan perubahan tersebut dicatat sebagai revisi protokol.
+
+\begin{table}[H]
+  \centering
+  \caption{Revisi checkpoint model yang direncanakan}
+  \label{tab:revisi-model}
+  \begin{tabularx}{\textwidth}{p{0.28\textwidth} X}
+    \toprule
+    \textbf{Model} & \textbf{Revisi checkpoint} \\
+    \midrule
+    Qwen3-0.6B & \texttt{\seqsplit{c1899de289a04d12100db370d81485cdf75e47ca}} \\
+    Qwen3-1.7B & \texttt{\seqsplit{70d244cc86ccca08cf5af4e1e306ecf908b1ad5e}} \\
+    Gemma 3 1B-IT & \texttt{\seqsplit{dcc83ea841ab6100d6b47a070329e1ba4cf78752}} \\
+    Sailor2-1B-Chat & \texttt{\seqsplit{51b48ecd7c0629e4c79dc927a0445e6b671d8692}} \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Prompt meminta satu huruf keluaran: A untuk \textit{positive}, B untuk \textit{neutral}, atau C untuk \textit{negative}. Parser hanya menerima huruf pertama A, B, atau C setelah spasi dihapus; keluaran lain dicatat sebagai label tidak valid. Parameter decoding dikunci pada temperature 0, \textit{top-p} 1, \textit{top-k} 1, seed 42, panjang konteks 2.048 token, maksimum satu token keluaran, dan empat thread. Setiap model menggunakan template percakapan yang tersimpan pada checkpoint selama template tersebut didukung oleh runtime.
+
+Sebelum evaluasi utama, setiap model menjalani pilot pada subset validasi SmSA yang seimbang. Model dinyatakan lulus apabila berhasil dikonversi dan dimuat, menyelesaikan seluruh sampel tanpa galat fatal, menghasilkan label valid pada sedikitnya 95\% sampel, memiliki akurasi dan macro-F1 di atas baseline tebakan kelas mayoritas, serta peak RAM tidak melebihi kapasitas fisik 12 GB. Jika BF16 tidak stabil tetapi F16 memenuhi seluruh kriteria, F16 digunakan sebagai baseline operasional dan perubahan tersebut didokumentasikan.
 
 \subsection{Bagan Alir Metodologi}
 
-% TODO: Tambahkan bagan alir (flowchart) metodologi penelitian.
+Bagan alir pada Gambar~\ref{fig:bagan-alir} memisahkan kegiatan persiapan, pilot, evaluasi utama, dan analisis. Keputusan kelulusan pilot mencegah model yang tidak kompatibel atau tidak memiliki kemampuan dasar yang memadai masuk ke evaluasi test set.
 
-% TODO: Ganti dengan bagan alir metodologi Anda.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/bagan-alir}
-%   \caption{Bagan Alir Metodologi Penelitian}
-%   \label{fig:bagan-alir}
-% \end{figure}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=5mm,
+    process/.style={draw, rounded corners, align=center, minimum height=8mm, text width=66mm, fill=blue!7},
+    decision/.style={draw, diamond, aspect=2.6, align=center, inner sep=1.5pt, text width=39mm, fill=yellow!15},
+    arrow/.style={-{Latex[length=2mm]}, thick},
+    label/.style={font=\small}
+  ]
+    \node[process] (plan) {Kajian literatur dan pembekuan protokol};
+    \node[process, below=of plan] (prepare) {Verifikasi dataset, checkpoint, konversi, dan kuantisasi};
+    \node[process, below=of prepare] (pilot) {Pilot kompatibilitas dan kualitas dasar pada data validasi};
+    \node[decision, below=7mm of pilot] (pass) {Memenuhi kriteria pilot?};
+    \node[process, below=7mm of pass] (eval) {Inferensi 500 sampel test untuk baseline dan empat varian};
+    \node[process, below=of eval] (measure) {Pengukuran kualitas, transisi, format, dan efisiensi};
+    \node[process, below=of measure] (secondary) {Analisis sekunder oklusi kata pada subset seimbang};
+    \node[process, below=of secondary] (result) {Bootstrap berpasangan, Pareto frontier, dan pelaporan};
+    \node[process, right=18mm of pass, text width=31mm] (exclude) {Keluarkan model atau gunakan baseline operasional yang stabil};
+
+    \draw[arrow] (plan) -- (prepare);
+    \draw[arrow] (prepare) -- (pilot);
+    \draw[arrow] (pilot) -- (pass);
+    \draw[arrow] (pass) -- node[left,label] {ya} (eval);
+    \draw[arrow] (pass) -- node[above,label] {tidak} (exclude);
+    \draw[arrow] (exclude) |- (pilot.east);
+    \draw[arrow] (eval) -- (measure);
+    \draw[arrow] (measure) -- (secondary);
+    \draw[arrow] (secondary) -- (result);
+  \end{tikzpicture}
+  \caption{Bagan alir metodologi penelitian}
+  \label{fig:bagan-alir}
+\end{figure}
 
 \section{Lingkungan Penelitian}
 
 Lingkungan penelitian yang digunakan dalam eksperimen utama adalah:
 
 \begin{itemize}
-    \item \textbf{Perangkat lunak:} satu versi atau commit \texttt{llama.cpp}, tokenizer dan evaluator yang terdokumentasi.
+    \item \textbf{Perangkat lunak:} \texttt{llama.cpp} pada commit yang telah dikunci, tokenizer dari checkpoint, dan evaluator yang terdokumentasi.
     \item \textbf{Perangkat keras:} AMD Ryzen 3 5300U, RAM 12 GB, tanpa GPU.
-    \item \textbf{Konfigurasi:} jumlah thread, panjang konteks, panjang keluaran, seed, prompt, dan parameter decoding dikendalikan.
+    \item \textbf{Konfigurasi:} empat thread, panjang konteks 2.048 token, maksimum satu token keluaran, seed 42, temperature 0, \textit{top-p} 1, \textit{top-k} 1, prompt tetap, dan parser tetap.
 \end{itemize}
 
 \section{Metode Pengukuran dan Analisis}
@@ -74,7 +147,8 @@ Pengukuran dilakukan dengan beberapa pendekatan:
 \begin{enumerate}
     \item \textbf{Kualitas prediksi:} akurasi dan macro-F1 pada dataset klasifikasi sentimen.
     \item \textbf{Kepatuhan dan transisi:} valid-label rate, prediction agreement, serta kategori benar-ke-salah dan salah-ke-benar.
-    \item \textbf{Efisiensi:} ukuran berkas, peak RAM proses server, waktu pemuatan, latensi, dan throughput.
-    \item \textbf{Analisis:} selisih absolut, degradasi relatif terhadap baseline model yang sama, interval kepercayaan bootstrap berpasangan, dan Pareto frontier. Pengukuran performa setiap konfigurasi akan diulang sekurang-kurangnya tiga kali setelah proses pemanasan, kemudian diringkas menggunakan median dan rentang hasil pengulangan.
+    \item \textbf{Efisiensi:} ukuran berkas, peak RAM proses server, waktu pemuatan, latensi, dan throughput. Peak RAM diambil dari nilai \texttt{VmHWM} pada berkas status proses di bawah direktori \texttt{/proc} milik \texttt{llama-server} yang dijalankan terpisah untuk setiap konfigurasi.
+    \item \textbf{Analisis:} selisih absolut, degradasi relatif terhadap baseline model yang sama, interval kepercayaan bootstrap berpasangan, dan Pareto frontier. Pengukuran performa setiap konfigurasi akan diulang lima kali setelah satu proses pemanasan, kemudian diringkas menggunakan median dan rentang antarkuartil. Inferensi kualitas dilakukan satu kali karena decoding bersifat deterministik.
+    \item \textbf{Analisis sekunder:} oklusi satu kata secara bergantian pada subset 30 sampel yang seimbang. Analisis melaporkan perubahan skor label, korelasi peringkat sensitivitas, dan heatmap sebelum serta sesudah kuantisasi tanpa menafsirkannya sebagai penjelasan kausal.
     \item \textbf{Reproduksibilitas:} pencatatan versi model dan runtime, hash berkas, konfigurasi, prompt, seed, dan hasil per sampel.
 \end{enumerate}
