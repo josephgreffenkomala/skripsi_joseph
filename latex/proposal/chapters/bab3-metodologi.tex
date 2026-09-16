@@ -10,8 +10,8 @@ Tahapan penelitian dilakukan secara sistematis sebagai berikut:
 
 \begin{enumerate}
     \item \textbf{Tahap 1:} Melakukan penelusuran penelitian terkait dan menetapkan kriteria pemilihan model serta dataset.
-    \item \textbf{Tahap 2:} Menetapkan empat model, lalu membekukan baseline BF16, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
-    \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF BF16 dan menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M secara konsisten.
+    \item \textbf{Tahap 2:} Menetapkan empat model, lalu membekukan baseline presisi tinggi sesuai checkpoint sumber, empat tingkat kuantisasi GGUF, prompt, parser, dan konfigurasi runtime.
+    \item \textbf{Tahap 3:} Mengonversi checkpoint model ke GGUF berpresisi tinggi dan menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M secara konsisten.
     \item \textbf{Tahap 4:} Menjalankan inferensi pada dataset klasifikasi sentimen dengan prompt, decoding, dan runtime yang dikendalikan.
     \item \textbf{Tahap 5:} Mengukur kualitas, kepatuhan format, transisi prediksi, ukuran berkas, memori, latensi, dan throughput serta menjalankan analisis sekunder oklusi kata pada subset kecil.
     \item \textbf{Tahap 6:} Menganalisis degradasi relatif dan menentukan konfigurasi pada Pareto frontier kualitas--efisiensi.
@@ -23,6 +23,18 @@ Dataset yang digunakan adalah SmSA (Sentence-level Sentiment Analysis) dari benc
 
 Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupun pembaruan bobot model. Evaluasi utama menggunakan 500 sampel pada berkas uji resmi SmSA dari direktori dataset IndoNLU. Berkas tersebut dikunci dengan SHA-256 \texttt{\seqsplit{4e8016daa8e4e1b193f2a28a79d3a7804dd4e3f926a3ab7e8a64264f5f416a6f}}. Seluruh varian model menerima sampel dan prompt yang sama secara \textit{zero-shot}. Prompt, aturan keluaran, prosedur parsing, dan parameter decoding ditetapkan sebelum evaluasi utama sehingga perubahan hasil dapat dibandingkan terhadap baseline model yang sama.
 
+\section{Pemilihan Model}
+
+Model dipilih berdasarkan lima kriteria. Pertama, jumlah parameter berada pada rentang sekitar 0,6--1,7 miliar agar inferensi seluruh kondisi tetap layak dilakukan pada CPU konsumen. Kedua, model menyediakan varian yang telah diselaraskan untuk mengikuti instruksi sehingga dapat digunakan untuk klasifikasi \textit{zero-shot}. Ketiga, model memiliki cakupan multibahasa yang mencakup Bahasa Indonesia. Keempat, checkpoint sumber dapat dikonversi dan dikuantisasi ke format GGUF serta dijalankan menggunakan \texttt{llama.cpp}. Kelima, model dipilih dari beberapa keluarga agar analisis tidak hanya menggambarkan perilaku satu keluarga model. Kelayakan teknis setiap checkpoint akan diverifikasi melalui pengujian awal sebelum protokol dan data uji utama dikunci.
+
+Qwen3-0.6B dan Qwen3-1.7B dipilih untuk menyediakan dua skala parameter dari keluarga yang sama. Rancangan ini memungkinkan pengamatan apakah pola perubahan akibat kuantisasi berbeda ketika ukuran model berubah, sementara keluarga model tetap sama. Qwen3 juga memiliki kemampuan mengikuti instruksi dan cakupan multibahasa yang luas, sehingga relevan untuk pengujian \textit{zero-shot} pada Bahasa Indonesia \citep{qwenTeam2025qwen3}. Kedua model akan dijalankan dalam mode \textit{non-thinking} agar keluaran klasifikasi singkat dan prosedur parsing tetap konsisten.
+
+Gemma 3 1B-IT dipilih sebagai model sekitar satu miliar parameter dari keluarga yang berbeda dengan Qwen3. Varian \textit{instruction-tuned} digunakan agar model dapat menerima instruksi klasifikasi tanpa \textit{fine-tuning}. Keluarga Gemma 3 dirancang untuk penggunaan multibahasa dan tersedia dalam ukuran kecil yang sesuai dengan batas sumber daya penelitian \citep{gemmaTeam2025gemma3}. Penyertaan model ini memberikan pembanding lintas keluarga pada skala yang tetap layak dijalankan pada CPU.
+
+BLOOMZ-1b7 dipilih sebagai model general-purpose multibahasa dari keluarga BLOOM dengan sekitar 1,7 miliar parameter. BLOOMZ dihasilkan melalui \textit{multitask prompted fine-tuning} pada xP3 untuk mendukung generalisasi tugas dan bahasa secara \textit{zero-shot} \citep{muennighoff2023crosslingual}. Data xP3 secara eksplisit mencakup Bahasa Indonesia, sehingga model ini memberikan pembanding lintas keluarga yang memiliki dukungan Bahasa Indonesia tanpa dikhususkan hanya untuk tugas sentimen. Checkpoint resmi BLOOMZ-1b7 juga menyediakan bobot sumber FP16 dan dapat digunakan melalui format yang kompatibel dengan \texttt{llama.cpp} \citep{bigscience2022bloomz1b7}.
+
+Pemilihan dua model Qwen3 dan masing-masing satu model Gemma 3 serta BLOOMZ menghasilkan dua jenis perbandingan. Perbandingan Qwen3-0.6B dengan Qwen3-1.7B digunakan untuk mengamati variasi ukuran dalam satu keluarga, sedangkan perbandingan seluruh model digunakan untuk mengamati variasi respons kuantisasi antar-keluarga. Karena ukuran, data pelatihan, tokenizer, dan prosedur penyelarasan setiap keluarga tidak identik, skor absolut antarmodel tidak akan ditafsirkan sebagai pengaruh satu faktor tertentu. Analisis utama tetap berupa perubahan setiap varian kuantisasi terhadap baseline presisi tinggi dari model yang sama.
+
 \section{Rancangan Eksperimen}
 
 \subsection{Alur Eksperimen}
@@ -30,9 +42,9 @@ Penelitian ini tidak melakukan pelatihan, \textit{fine-tuning}, distilasi, maupu
 Rancangan eksperimen terdiri dari beberapa komponen utama:
 
 \begin{itemize}
-    \item \textbf{Checkpoint model:} Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat.
+    \item \textbf{Checkpoint model:} Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7.
     \item \textbf{Dataset:} SmSA dari benchmark IndoNLU, menggunakan test set resmi berisi 500 sampel dengan tiga label sentimen.
-    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline BF16 serta varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M. Tipe IQ4 tidak dimasukkan agar eksperimen inti tidak memerlukan \textit{importance matrix} dan tetap layak pada sumber daya penelitian.
+    \item \textbf{Konversi dan kuantisasi:} pembentukan baseline berpresisi tinggi sesuai checkpoint sumber serta varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M. Tipe IQ4 tidak dimasukkan agar eksperimen inti tidak memerlukan \textit{importance matrix} dan tetap layak pada sumber daya penelitian.
     \item \textbf{Runtime inferensi:} \texttt{llama.cpp} pada commit \texttt{\seqsplit{bbdd9f246e9667f9aeb7ad11cca269466f981184}} dengan opsi kompilasi dan konfigurasi yang sama.
     \item \textbf{Evaluator:} modul prompt zero-shot tetap, parser label, penghitung metrik, penyimpan keluaran per sampel, dan pengukur performa sistem.
 \end{itemize}
@@ -48,7 +60,7 @@ Arsitektur pipeline evaluasi ditunjukkan pada Gambar~\ref{fig:arsitektur}. Satu 
     arrow/.style={-{Latex[length=2mm]}, thick}
   ]
     \node[block] (checkpoint) {Checkpoint\\model sumber};
-    \node[block, right=of checkpoint] (convert) {Konversi\\GGUF BF16};
+    \node[block, right=of checkpoint] (convert) {Konversi GGUF\\presisi tinggi};
     \node[block, right=of convert] (quant) {Kuantisasi\\Q8--Q4};
     \node[block, right=of quant] (runtime) {Inferensi CPU\\\texttt{llama.cpp}};
     \node[data, above=of runtime] (dataset) {SmSA +\\prompt tetap};
@@ -84,12 +96,14 @@ Revisi checkpoint dan runtime yang digunakan ditetapkan sebelum evaluasi utama s
     Qwen3-0.6B & \texttt{\seqsplit{c1899de289a04d12100db370d81485cdf75e47ca}} \\
     Qwen3-1.7B & \texttt{\seqsplit{70d244cc86ccca08cf5af4e1e306ecf908b1ad5e}} \\
     Gemma 3 1B-IT & \texttt{\seqsplit{dcc83ea841ab6100d6b47a070329e1ba4cf78752}} \\
-    Sailor2-1B-Chat & \texttt{\seqsplit{51b48ecd7c0629e4c79dc927a0445e6b671d8692}} \\
+    BLOOMZ-1b7 & \texttt{\seqsplit{4ea0141c75b2b96e17bc41f0d52c5368c879a281}} \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-Prompt meminta satu huruf keluaran: A untuk \textit{positive}, B untuk \textit{neutral}, atau C untuk \textit{negative}. Parser hanya menerima huruf pertama A, B, atau C setelah spasi dihapus; keluaran lain dicatat sebagai label tidak valid. Parameter decoding dikunci pada temperature 0, \textit{top-p} 1, \textit{top-k} 1, seed 42, panjang konteks 2.048 token, maksimum satu token keluaran, dan empat thread. Setiap model menggunakan template percakapan yang tersimpan pada checkpoint selama template tersebut didukung oleh runtime.
+Baseline GGUF menggunakan BF16 untuk checkpoint sumber yang menyediakan bobot BF16 dan FP16 untuk BLOOMZ-1b7 sesuai presisi bobot sumbernya. Setiap varian kuantisasi dibandingkan hanya dengan baseline dari checkpoint model yang sama; baseline tersebut tidak digunakan untuk mengatribusikan perbedaan absolut antarmodel pada tipe presisi sumber.
+
+Prompt meminta satu huruf keluaran: A untuk \textit{positive}, B untuk \textit{neutral}, atau C untuk \textit{negative}. Parser hanya menerima huruf pertama A, B, atau C setelah spasi dihapus; keluaran lain dicatat sebagai label tidak valid. Parameter decoding dikunci pada temperature 0, \textit{top-p} 1, \textit{top-k} 1, seed 42, panjang konteks 2.048 token, maksimum satu token keluaran, dan empat thread. Setiap model menggunakan template percakapan yang tersimpan pada checkpoint selama template tersebut didukung oleh runtime; model tanpa template percakapan menggunakan format instruksi teks yang ekuivalen. Mode \textit{thinking} pada Qwen3 dinonaktifkan agar model langsung menghasilkan label klasifikasi.
 
 \subsection{Bagan Alir Metodologi}
 

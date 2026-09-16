@@ -22,7 +22,7 @@ Berdasarkan latar belakang yang telah diuraikan, rumusan masalah dalam penelitia
 
 \begin{enumerate}
   \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap kualitas prediksi dan kepatuhan format keluaran setiap model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia dibandingkan dengan baseline presisi tinggi dari model yang sama?
-  \item Bagaimana perbedaan pola degradasi relatif dan transisi prediksi antara Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat?
+  \item Bagaimana perbedaan pola degradasi relatif dan transisi prediksi antara Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7?
   \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap ukuran berkas, \textit{peak} RAM, latensi, dan throughput pada perangkat CPU yang sama?
   \item Sampel atau kelas sentimen apa yang paling sering mengalami perubahan prediksi setelah kuantisasi?
   \item Konfigurasi model dan tingkat kuantisasi mana yang menghasilkan trade-off kualitas dan efisiensi terbaik berdasarkan analisis Pareto pada ruang eksperimen yang diuji?
@@ -34,9 +34,9 @@ Agar penelitian tetap fokus dan dapat dilaksanakan secara terukur, batasan masal
 
 \begin{enumerate}
   \item Penelitian berfokus pada klasifikasi sentimen Bahasa Indonesia dengan keluaran klasifikasi berformat singkat.
-  \item Model yang dievaluasi adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat.
+  \item Model yang dievaluasi adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7.
   \item Dataset yang digunakan adalah SmSA dari benchmark IndoNLU, dengan evaluasi utama pada berkas \texttt{test\_preprocess.tsv} berisi 500 sampel dan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative} \citep{wilie2020indonlu}.
-  \item Kondisi model terdiri atas baseline BF16 dan varian kuantisasi GGUF Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
+  \item Kondisi model terdiri atas baseline GGUF berpresisi tinggi sesuai checkpoint sumber dan varian kuantisasi Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
   \item Inferensi direncanakan dilakukan pada perangkat CPU konsumen yang sama tanpa menggunakan GPU sebagai perangkat komputasi utama.
   \item Evaluasi kualitas akan mencakup metrik klasifikasi, kepatuhan format keluaran, serta analisis perubahan prediksi pada sampel yang sama.
   \item Evaluasi efisiensi akan mencakup ukuran berkas model, \textit{peak} RAM, latensi, dan throughput.
