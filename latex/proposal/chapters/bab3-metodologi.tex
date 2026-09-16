@@ -143,9 +143,22 @@ Bagan alir pada Gambar~\ref{fig:bagan-alir} menunjukkan urutan kegiatan sejak pe
   \label{fig:bagan-alir}
 \end{figure}
 
-\section{Lingkungan Penelitian}
+\section{Pemilihan Format dan Lingkungan Eksperimen}
+\label{sec:pemilihan-format-lingkungan}
 
-Lingkungan penelitian yang digunakan dalam eksperimen utama adalah:
+\subsection{Pemilihan Format GGUF dan Runtime}
+
+Format GGUF dan runtime \texttt{llama.cpp} dipilih untuk menyatukan proses konversi, kuantisasi, dan inferensi dalam satu alur eksperimen. Sebagaimana diuraikan pada Bab II, GGUF digunakan untuk menyimpan bobot dan metadata model yang diperlukan oleh runtime. Checkpoint sumber akan dikonversi menjadi baseline GGUF berpresisi tinggi, kemudian digunakan untuk menghasilkan varian Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M dengan perangkat kuantisasi dalam ekosistem \texttt{llama.cpp} \citep{llamacpp2026}. Pemilihan ini memungkinkan baseline dan varian kuantisasi dievaluasi melalui format artefak serta runtime yang sama.
+
+Penggunaan satu runtime bertujuan membatasi variasi perangkat lunak dalam perbandingan kualitas dan efisiensi. Setiap varian akan dibandingkan dengan baseline dari checkpoint model yang sama menggunakan dataset SmSA resmi dari IndoNLU, prompt, prosedur parsing, dan perangkat keras yang sama. Versi runtime serta opsi kompilasinya akan dikunci agar perubahan hasil tidak bercampur dengan perubahan implementasi perangkat lunak selama eksperimen. Selain metrik agregat, prediksi pada sampel yang sama akan dibandingkan untuk mengamati transisi benar menjadi salah, salah menjadi benar, serta perpindahan antarkelas sentimen.
+
+Dengan demikian, pemilihan GGUF dan \texttt{llama.cpp} didasarkan pada kebutuhan konsistensi alur evaluasi dan reproduksibilitas penelitian. Hasil penelitian akan ditafsirkan sebagai trade-off konfigurasi kuantisasi dalam lingkungan yang diuji, tanpa menyimpulkan bahwa format atau runtime tersebut lebih unggul daripada alternatif yang tidak dibandingkan.
+
+\subsection{Pemilihan Lingkungan Berbasis CPU}
+
+Eksperimen utama direncanakan menggunakan CPU konsumen AMD Ryzen 3 5300U dengan RAM 12 GB tanpa akselerasi GPU. Lingkungan tersebut dipilih karena sesuai dengan sasaran penelitian, yaitu penggunaan model bahasa kecil secara lokal pada perangkat dengan sumber daya terbatas. Pengujian pada satu perangkat yang sama juga bertujuan mengendalikan perbedaan kemampuan perangkat keras ketika ukuran berkas, penggunaan memori, latensi, dan throughput dibandingkan antarkonfigurasi.
+
+Konfigurasi lingkungan eksperimen ditetapkan sebagai berikut:
 
 \begin{itemize}
     \item \textbf{Perangkat lunak:} \texttt{llama.cpp} pada commit yang telah dikunci, tokenizer dari checkpoint, dan evaluator yang terdokumentasi.
