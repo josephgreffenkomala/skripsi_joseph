@@ -54,24 +54,34 @@ Arsitektur pipeline evaluasi ditunjukkan pada Gambar~\ref{fig:arsitektur}. Satu 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}[
-    node distance=7mm and 5mm,
-    block/.style={draw, rounded corners, align=center, minimum height=10mm, text width=25mm, fill=blue!7},
-    data/.style={draw, align=center, minimum height=10mm, text width=23mm, fill=yellow!12},
-    arrow/.style={-{Latex[length=2mm]}, thick}
+    node distance=8mm and 6mm,
+    box/.style={
+      draw=black!70,
+      line width=0.6pt,
+      rounded corners=2pt,
+      align=center,
+      font=\small,
+      minimum height=13mm,
+      text width=26mm,
+      inner sep=1.5mm
+    },
+    process/.style={box, fill=blue!6},
+    result/.style={process, minimum height=25mm},
+    input/.style={box, fill=orange!10, minimum height=11mm},
+    arrow/.style={-{Latex[length=2mm, width=1.4mm]}, line width=0.7pt}
   ]
-    \node[block] (checkpoint) {Checkpoint\\model sumber};
-    \node[block, right=of checkpoint] (convert) {Konversi GGUF\\presisi tinggi};
-    \node[block, right=of convert] (quant) {Kuantisasi\\Q8--Q4};
-    \node[block, right=of quant] (runtime) {Inferensi CPU\\\texttt{llama.cpp}};
-    \node[data, above=of runtime] (dataset) {SmSA +\\prompt tetap};
-    \node[block, below=of runtime] (profiler) {Pencatat waktu,\\RAM, dan keluaran};
-    \node[block, left=of profiler] (evaluator) {Evaluator kualitas\\dan transisi};
-    \node[block, left=of evaluator] (analysis) {Bootstrap dan\\Pareto frontier};
+    \node[process] (checkpoint) {Checkpoint\\model sumber};
+    \node[process, right=of checkpoint] (convert) {Konversi GGUF\\presisi tinggi};
+    \node[process, right=of convert] (variants) {Baseline dan\\varian Q8--Q4};
+    \node[process, right=of variants] (runtime) {Inferensi CPU\\\texttt{llama.cpp}};
+    \node[input, above=of runtime] (dataset) {Data uji SmSA\\dan prompt tetap};
+    \node[result, below=of runtime] (profiler) {Pencatatan\\keluaran, waktu,\\dan RAM};
+    \node[result, left=of profiler] (evaluator) {Evaluasi kualitas\\dan transisi\\prediksi};
+    \node[result, left=of evaluator] (analysis) {Bootstrap\\berpasangan dan\\Pareto frontier};
 
     \draw[arrow] (checkpoint) -- (convert);
-    \draw[arrow] (convert) -- (quant);
-    \draw[arrow] (quant) -- (runtime);
-    \draw[arrow] (convert.south) |- (runtime.west);
+    \draw[arrow] (convert) -- (variants);
+    \draw[arrow] (variants) -- (runtime);
     \draw[arrow] (dataset) -- (runtime);
     \draw[arrow] (runtime) -- (profiler);
     \draw[arrow] (profiler) -- (evaluator);
