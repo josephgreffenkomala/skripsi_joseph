@@ -4,26 +4,29 @@
 
 Perkembangan model bahasa telah mendorong pemanfaatan teknologi pemrosesan bahasa alami pada berbagai kebutuhan, termasuk analisis sentimen. Analisis sentimen merupakan proses mengidentifikasi kecenderungan sentimen yang terkandung dalam suatu teks, misalnya positif, negatif, atau netral. Dalam konteks Bahasa Indonesia, tugas ini memiliki tantangan tersendiri karena teks dapat memuat ragam informal, singkatan, slang, negasi, campur kode, serta variasi penulisan yang tidak selalu mengikuti kaidah bahasa baku. Oleh karena itu, kemampuan model dalam memahami konteks Bahasa Indonesia perlu dievaluasi secara langsung pada data dan tugas yang relevan.
 
-Model bahasa berukuran besar umumnya memiliki kemampuan representasi yang kuat, tetapi kebutuhan sumber daya komputasinya dapat membatasi penggunaannya pada perangkat dengan kapasitas memori dan kemampuan komputasi yang terbatas. Kondisi tersebut mendorong penggunaan \textit{small language model} (SLM), yaitu model bahasa dengan jumlah parameter yang lebih kecil dan kebutuhan sumber daya yang relatif lebih rendah. Meskipun SLM ditujukan untuk skenario penggunaan dengan sumber daya terbatas, karakteristik kualitas dan biaya inferensinya tetap perlu diukur pada perangkat sasaran \citep{wang2025slmquant}. SLM berpotensi digunakan pada lingkungan lokal atau perangkat dengan CPU konsumen, tetapi pengurangan ukuran model tidak selalu menjamin kualitas prediksi dan efisiensi inferensi yang sesuai dengan kebutuhan aplikasi.
+% TODO: Tambahkan sitasi untuk SLM dan keterbatasan sumber daya inferensi.
+Model bahasa berukuran besar umumnya memiliki kemampuan representasi yang kuat, tetapi kebutuhan sumber daya komputasinya dapat membatasi penggunaannya pada perangkat dengan kapasitas memori dan kemampuan komputasi yang terbatas. Kondisi tersebut mendorong penggunaan \textit{small language model} (SLM), yaitu model bahasa dengan jumlah parameter yang lebih kecil dan kebutuhan sumber daya yang relatif lebih rendah. SLM berpotensi digunakan pada lingkungan lokal atau perangkat dengan CPU konsumen, tetapi pengurangan ukuran model tidak selalu menjamin kualitas prediksi dan efisiensi inferensi yang sesuai dengan kebutuhan aplikasi.
 
-Salah satu pendekatan yang dapat digunakan untuk mengurangi kebutuhan penyimpanan model adalah kuantisasi. Kuantisasi mengubah representasi numerik bobot model dari presisi yang lebih tinggi menjadi representasi dengan jumlah bit yang lebih rendah. Dengan cara tersebut, ukuran berkas model dan kebutuhan memori untuk menyimpan bobot berpotensi berkurang \citep{abdurrahman2023indobert,wang2025slmquant}. Namun, kuantisasi juga dapat menyebabkan perubahan pada nilai numerik yang digunakan selama inferensi. Perubahan tersebut berpotensi memengaruhi kualitas prediksi, kepatuhan model terhadap format keluaran, serta waktu yang diperlukan untuk memproses masukan.
+% TODO: Tambahkan sitasi dasar kuantisasi model bahasa.
+Salah satu pendekatan yang dapat digunakan untuk mengurangi kebutuhan penyimpanan model adalah kuantisasi. Kuantisasi mengubah representasi numerik bobot model dari presisi yang lebih tinggi menjadi representasi dengan jumlah bit yang lebih rendah. Dengan cara tersebut, ukuran berkas model dan kebutuhan memori untuk menyimpan bobot berpotensi berkurang. Namun, kuantisasi juga dapat menyebabkan perubahan pada nilai numerik yang digunakan selama inferensi. Perubahan tersebut berpotensi memengaruhi kualitas prediksi, kepatuhan model terhadap format keluaran, serta waktu yang diperlukan untuk memproses masukan.
 
 Dampak kuantisasi tidak dapat dinilai hanya dari ukuran berkas atau satu metrik kualitas. Model dengan berkas yang lebih kecil belum tentu memiliki latensi yang lebih rendah karena kinerja inferensi juga dipengaruhi oleh runtime, kernel komputasi, instruksi CPU, panjang masukan, jumlah utas, dan overhead dekuantisasi. Demikian pula, perubahan nilai akurasi atau $F_1$ tidak sepenuhnya menunjukkan sampel dan kelas yang berpotensi menjadi lebih rentan setelah kuantisasi. Oleh sebab itu, penelitian ini perlu mengukur kualitas prediksi, kepatuhan format, ukuran artefak, penggunaan memori, latensi, dan throughput pada kondisi perangkat keras serta perangkat lunak yang dikendalikan.
 
-Penelitian terdahulu telah menunjukkan bahwa dampak kuantisasi terhadap kualitas dapat berbeda menurut model, bahasa, dan tugas, serta bahwa evaluasi untuk kebutuhan penerapan perlu mempertimbangkan metrik kualitas dan sumber daya secara bersamaan \citep{marchisio2024multilingual,wang2025slmquant,gasimov2026sentiment}. Hasil pada model, tugas, bahasa, atau perangkat keras tertentu tidak dapat langsung digunakan untuk menyimpulkan perilaku model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia berbasis CPU. Dengan demikian, diperlukan rancangan evaluasi empiris yang menyatukan pengukuran kualitas dan efisiensi dalam satu protokol eksperimen yang dapat direproduksi.
+Format GGUF dan runtime \texttt{llama.cpp} dipilih sebagai salah satu jalur yang dapat digunakan untuk menjalankan model bahasa terkuantisasi pada CPU. Beberapa tingkat kuantisasi akan dibandingkan untuk mengamati trade-off antara kualitas dan efisiensi. Perbandingan tersebut dirancang menggunakan model, dataset SmSA resmi dari IndoNLU, prompt, prosedur parsing, runtime, dan perangkat keras yang sama. Selain metrik agregat, prediksi pada sampel yang sama akan dibandingkan untuk mengetahui perpindahan prediksi, misalnya perubahan dari prediksi benar menjadi salah atau perubahan antarkelas sentimen.
 
-Berdasarkan permasalahan tersebut, penelitian ini dirancang untuk mengevaluasi trade-off kualitas dan efisiensi kuantisasi pada beberapa \textit{small language model} untuk klasifikasi sentimen Bahasa Indonesia. Evaluasi akan membandingkan kondisi presisi tinggi dengan beberapa tingkat kuantisasi pada kondisi eksperimen yang dikendalikan. Aspek yang direncanakan untuk diamati meliputi kualitas prediksi, kepatuhan format keluaran, perubahan prediksi per sampel, ukuran berkas, penggunaan memori, latensi, throughput, serta posisi setiap konfigurasi pada analisis Pareto. Penelitian ini tidak diarahkan untuk mengembangkan algoritma kuantisasi baru, melainkan untuk memperoleh bukti empiris mengenai konsekuensi penggunaan beberapa konfigurasi kuantisasi pada ruang model, data, runtime, dan perangkat keras yang diuji.
+% TODO: Tambahkan sitasi penelitian terdahulu tentang dampak kuantisasi dan evaluasi efisiensi.
+Penelitian terdahulu telah membahas kuantisasi model bahasa dan pengaruhnya terhadap kualitas maupun kebutuhan sumber daya. Namun, hasil pada model, tugas, bahasa, atau perangkat keras tertentu tidak dapat langsung digunakan untuk menyimpulkan perilaku model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia berbasis CPU. Dengan demikian, diperlukan rancangan evaluasi empiris yang menyatukan pengukuran kualitas dan efisiensi dalam satu protokol eksperimen yang dapat direproduksi.
+
+Berdasarkan permasalahan tersebut, penelitian ini dirancang untuk mengevaluasi trade-off kualitas dan efisiensi kuantisasi pada beberapa \textit{small language model} untuk klasifikasi sentimen Bahasa Indonesia. Evaluasi akan menggunakan kondisi presisi tinggi dan beberapa tingkat kuantisasi GGUF dalam satu pipeline berbasis \texttt{llama.cpp}. Aspek yang direncanakan untuk diamati meliputi kualitas prediksi, kepatuhan format keluaran, perubahan prediksi per sampel, ukuran berkas, penggunaan memori, latensi, throughput, serta posisi setiap konfigurasi pada analisis Pareto. Penelitian ini tidak diarahkan untuk mengembangkan algoritma kuantisasi baru, melainkan untuk memperoleh bukti empiris mengenai konsekuensi penggunaan beberapa konfigurasi kuantisasi pada ruang model, data, runtime, dan perangkat keras yang diuji.
 
 \section{Rumusan Masalah}
 
 Berdasarkan latar belakang yang telah diuraikan, rumusan masalah dalam penelitian ini adalah sebagai berikut.
 
 \begin{enumerate}
-  \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap kualitas prediksi dan kepatuhan format keluaran setiap model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia dibandingkan dengan baseline presisi tinggi dari model yang sama?
-  \item Bagaimana perbedaan pola degradasi relatif dan transisi prediksi antara Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7?
+  \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap kualitas prediksi dan kepatuhan format keluaran model bahasa kecil pada klasifikasi sentimen Bahasa Indonesia?
   \item Bagaimana pengaruh tingkat kuantisasi GGUF terhadap ukuran berkas, \textit{peak} RAM, latensi, dan throughput pada perangkat CPU yang sama?
-  \item Sampel atau kelas sentimen apa yang paling sering mengalami perubahan prediksi setelah kuantisasi?
-  \item Konfigurasi model dan tingkat kuantisasi mana yang menghasilkan trade-off kualitas dan efisiensi terbaik berdasarkan analisis Pareto pada ruang eksperimen yang diuji?
+  \item Sampel atau kelas sentimen apa yang berpotensi mengalami perpindahan prediksi setelah kuantisasi, dan konfigurasi mana yang direncanakan menghasilkan trade-off kualitas dan efisiensi paling baik berdasarkan analisis Pareto?
 \end{enumerate}
 
 \section{Batasan Masalah}
@@ -32,14 +35,13 @@ Agar penelitian tetap fokus dan dapat dilaksanakan secara terukur, batasan masal
 
 \begin{enumerate}
   \item Penelitian berfokus pada klasifikasi sentimen Bahasa Indonesia dengan keluaran klasifikasi berformat singkat.
-  \item Model yang dievaluasi adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7.
+  \item Model yang direncanakan untuk dievaluasi adalah beberapa \textit{small language model}. Rincian model dan alasan pemilihannya akan dijelaskan pada Bab 3.
   \item Dataset yang digunakan adalah SmSA dari benchmark IndoNLU, dengan evaluasi utama pada berkas \texttt{test\_preprocess.tsv} berisi 500 sampel dan tiga label, yaitu \textit{positive}, \textit{neutral}, dan \textit{negative} \citep{wilie2020indonlu}.
-  \item Kondisi model terdiri atas baseline GGUF berpresisi tinggi sesuai checkpoint sumber dan varian kuantisasi Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
+  \item Kondisi model mencakup baseline dengan presisi tinggi dan beberapa tingkat kuantisasi GGUF yang dijalankan menggunakan pipeline \texttt{llama.cpp}.
   \item Inferensi direncanakan dilakukan pada perangkat CPU konsumen yang sama tanpa menggunakan GPU sebagai perangkat komputasi utama.
   \item Evaluasi kualitas akan mencakup metrik klasifikasi, kepatuhan format keluaran, serta analisis perubahan prediksi pada sampel yang sama.
   \item Evaluasi efisiensi akan mencakup ukuran berkas model, \textit{peak} RAM, latensi, dan throughput.
   \item Inferensi dilakukan secara \textit{zero-shot} menggunakan prompt tetap. Penelitian tidak mencakup pelatihan, \textit{fine-tuning}, pengembangan algoritma kuantisasi baru, atau perbandingan menyeluruh terhadap seluruh metode kompresi model.
-  \item Analisis sensitivitas masukan menggunakan oklusi kata hanya menjadi analisis sekunder pada subset kecil yang seimbang. Hasilnya ditafsirkan sebagai sensitivitas terhadap penghilangan kata, bukan penjelasan kausal atau alasan kognitif model.
   \item Kesimpulan penelitian akan dibatasi pada model, dataset, runtime, konfigurasi eksperimen, dan perangkat keras yang diuji.
 \end{enumerate}
 
@@ -48,11 +50,10 @@ Agar penelitian tetap fokus dan dapat dilaksanakan secara terukur, batasan masal
 Tujuan penelitian ini adalah sebagai berikut.
 
 \begin{enumerate}
-  \item Mengukur perubahan kualitas prediksi dan kepatuhan format keluaran pada beberapa tingkat kuantisasi GGUF untuk klasifikasi sentimen Bahasa Indonesia terhadap baseline presisi tinggi dari model yang sama.
-  \item Membandingkan pola degradasi relatif dan transisi prediksi antara empat model bahasa kecil yang diuji.
+  \item Mengukur perubahan kualitas prediksi dan kepatuhan format keluaran pada beberapa tingkat kuantisasi GGUF untuk klasifikasi sentimen Bahasa Indonesia.
   \item Mengukur perubahan ukuran berkas, \textit{peak} RAM, latensi, dan throughput pada perangkat CPU yang sama.
   \item Menganalisis perpindahan prediksi pada tingkat sampel dan kelas sentimen setelah penerapan kuantisasi.
-  \item Menentukan konfigurasi model dan tingkat kuantisasi yang memberikan trade-off kualitas dan efisiensi terbaik berdasarkan analisis Pareto pada kondisi eksperimen yang direncanakan.
+  \item Menentukan konfigurasi model yang memberikan trade-off kualitas dan efisiensi yang sesuai berdasarkan analisis Pareto pada kondisi eksperimen yang direncanakan.
 \end{enumerate}
 
 \section{Manfaat Penelitian}
@@ -72,6 +73,6 @@ Sistematika penulisan proposal tugas akhir ini adalah sebagai berikut.
 \begin{itemize}
   \item \textbf{Bab I Pendahuluan} membahas latar belakang, rumusan masalah, batasan masalah, tujuan penelitian, dan manfaat penelitian.
   \item \textbf{Bab II Penelitian Terkait} membahas landasan dan penelitian terdahulu yang relevan dengan model bahasa kecil, kuantisasi, klasifikasi sentimen, dan evaluasi efisiensi.
-  \item \textbf{Bab III Metode dan Rancangan Penelitian} menjelaskan dataset, model, pemilihan format dan lingkungan eksperimen beserta alasannya, konfigurasi kuantisasi, rancangan eksperimen, metrik evaluasi, serta prosedur pengukuran.
+  \item \textbf{Bab III Metode dan Rancangan Penelitian} menjelaskan dataset, model, konfigurasi kuantisasi, rancangan eksperimen, metrik evaluasi, serta prosedur pengukuran.
   \item \textbf{Bab IV Jadwal Penelitian} memuat rencana kegiatan penelitian dalam bentuk jadwal berbasis bulan.
 \end{itemize}

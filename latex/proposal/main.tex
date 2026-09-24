@@ -7,15 +7,16 @@
 %------------------------------------------------------------
 % Metadata Proposal
 %------------------------------------------------------------
-\titleind{Evaluasi Trade-off Kualitas dan Efisiensi Kuantisasi pada Small Language Model untuk Klasifikasi Sentimen Bahasa Indonesia}
-\titleeng{Evaluating Quality--Efficiency Trade-offs of Quantization in Small Language Models for Indonesian Sentiment Classification}
+% TODO: Ganti metadata di bawah ini dengan data Anda sendiri
+\titleind{JUDUL BAHASA INDONESIA}
+\titleeng{JUDUL BAHASA INGGRIS}
 \fullname{NAMA LENGKAP}
 \idnum{NIM}
-\degree{Sarjana}
-\gelar{Sarjana Ilmu Komputer}
-\yearsubmit{2026}
-\program{Informatika}
-\dept{Ilmu Komputer dan Elektronika}
+\degree{JENJANG}
+\gelar{GELAR}
+\yearsubmit{TAHUN}
+\program{PROGRAM STUDI}
+\dept{DEPARTEMEN}
 \firstsupervisor{NAMA DOSEN PEMBIMBING}
 \firstexaminer{NAMA DOSEN PENGUJI 1}
 \secondexaminer{NAMA DOSEN PENGUJI 2}
@@ -38,10 +39,6 @@
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{enumitem}
-\usepackage{seqsplit}
-\usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning}
-\setlength{\emergencystretch}{3em}
 
 % Code listing style
 \lstset{
@@ -90,15 +87,17 @@
 \tableofcontents
 
 \abstractind
-Kuantisasi dapat menurunkan ukuran model bahasa dan kebutuhan memori, tetapi pengaruhnya terhadap kualitas tugas dan efisiensi inferensi tidak selalu seragam pada setiap model. Penelitian ini bertujuan mengevaluasi trade-off kualitas dan efisiensi kuantisasi pada model bahasa berukuran kecil untuk klasifikasi sentimen Bahasa Indonesia. Empat model yang direncanakan adalah Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7. Setiap model akan dikonversi menjadi baseline GGUF berpresisi tinggi sesuai checkpoint sumber dan empat varian kuantisasi, yaitu Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M, kemudian dijalankan dengan satu versi \texttt{llama.cpp} pada CPU konsumen tanpa GPU. Evaluasi menggunakan 500 sampel uji SmSA dari IndoNLU secara \textit{zero-shot} dengan prompt, parser, parameter decoding, dan konfigurasi perangkat keras yang dikendalikan. Kualitas akan diukur menggunakan akurasi, macro-F1, kepatuhan format, dan transisi prediksi per sampel. Efisiensi akan diukur melalui ukuran berkas, \textit{peak} RAM, waktu pemuatan, latensi, dan throughput. Perubahan setiap varian akan dihitung terhadap baseline model yang sama dan dianalisis menggunakan interval kepercayaan bootstrap berpasangan serta Pareto frontier. Analisis sekunder pada subset kecil akan menggunakan oklusi kata untuk membandingkan perubahan sensitivitas masukan sebelum dan sesudah kuantisasi. Penelitian ini diharapkan menghasilkan bukti empiris dan protokol yang dapat direproduksi untuk memilih konfigurasi model berdasarkan keseimbangan kualitas dan biaya inferensi pada ruang eksperimen yang diuji.
+% TODO: Tulis intisari dalam Bahasa Indonesia di sini (150-250 kata).
+% Jelaskan latar belakang, tujuan, metode, dan hasil penelitian.
 
-\noindent\textbf{Kata kunci:} model bahasa berukuran kecil, kuantisasi, GGUF, klasifikasi sentimen, Bahasa Indonesia, efisiensi inferensi.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 \endabstractind
 
 \abstracteng
-Quantization can reduce language-model size and memory requirements, but its effects on task quality and inference efficiency are not necessarily uniform across models. This study aims to evaluate the quality--efficiency trade-offs of quantization in small language models for Indonesian sentiment classification. The planned models are Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, and BLOOMZ-1b7. Each model will be converted into a high-precision GGUF baseline corresponding to its source checkpoint and four quantized variants: Q8\_0, Q6\_K, Q5\_K\_M, and Q4\_K\_M. All configurations will run with a single \texttt{llama.cpp} revision on a consumer CPU without GPU acceleration. Evaluation will use the 500-example SmSA test set from IndoNLU in a zero-shot setting with a controlled prompt, parser, decoding parameters, and hardware configuration. Quality will be measured using accuracy, macro-F1, output-format compliance, and sample-level prediction transitions. Efficiency will be measured using file size, peak RAM, loading time, latency, and throughput. Each quantized variant will be compared with the high-precision baseline of the same model using paired bootstrap confidence intervals and Pareto-frontier analysis. As a secondary analysis, word occlusion on a small subset will compare changes in input sensitivity before and after quantization. The expected outcome is reproducible empirical evidence for selecting model configurations according to the balance between prediction quality and inference cost within the evaluated setting.
+% TODO: Write abstract in English here (150-250 words).
+% Explain background, objectives, methods, and results.
 
-\noindent\textbf{Keywords:} small language model, quantization, GGUF, sentiment classification, Indonesian, inference efficiency.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
 \endabstracteng
 
 %------------------------------------------------------------

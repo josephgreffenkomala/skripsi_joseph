@@ -16,19 +16,17 @@
 
 ## Topik dan Jenis TA Saat Ini
 
-Topik yang sedang dikembangkan adalah **evaluasi trade-off kualitas dan efisiensi kuantisasi pada Small Language Model untuk klasifikasi sentimen Bahasa Indonesia**.
+Topik tugas akhir masih **dalam tahap eksplorasi**. Belum ada judul, pertanyaan penelitian, jenis tugas akhir, model, dataset, metode, lingkungan eksperimen, atau klaim kontribusi yang dikunci.
 
-Jenis tugas akhir yang berlaku adalah **skripsi ilmiah akademik**, karena penelitian berfokus pada eksperimen terkontrol dan analisis empiris. Artefak pipeline evaluasi digunakan untuk mendukung reproduksibilitas, bukan sebagai produk utama.
+Proposal aktif harus diperlakukan sebagai **template/scaffold awal**, bukan sebagai dokumen yang mewakili topik penelitian tertentu. Isi yang masih berupa lorem ipsum, placeholder, atau komentar `TODO` boleh dipertahankan sampai arah topik dipilih.
 
-Constraint utama topik:
+Aturan selama eksplorasi:
 
-- Model utama: Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat, dengan kemungkinan pengurangan jumlah model berdasarkan hasil pilot.
-- Tugas inti: klasifikasi sentimen Bahasa Indonesia. QA singkat dan perbandingan Indonesia--Inggris bukan bagian dari scope minimum.
-- Kondisi model: baseline presisi tinggi dan beberapa tingkat kuantisasi GGUF dalam satu pipeline `llama.cpp`.
-- Evaluasi: kualitas prediksi, kepatuhan format, transisi kesalahan per sampel, ukuran berkas, peak RAM, latensi, throughput, dan trade-off Pareto.
-- Lingkungan utama: CPU konsumen yang sama, tanpa GPU, dengan konfigurasi eksperimen yang dikendalikan.
-
-Jangan membuat klaim bahwa penelitian ini memperkenalkan algoritma kuantisasi baru atau merupakan penelitian pertama tentang kuantisasi SLM, kuantisasi lintas bahasa, atau kuantisasi model Bahasa Indonesia. Klaim kontribusi dibatasi pada evaluasi terkontrol dalam ruang model, data, runtime, dan perangkat keras yang diuji.
+- Jangan menganggap isi proposal lama sebagai scope penelitian yang berlaku.
+- Jangan mengunci model, dataset, metode, runtime, perangkat keras, metrik, jadwal, atau desain eksperimen tanpa keputusan eksplisit setelah eksplorasi.
+- Jangan menyalin klaim kontribusi, hasil pilot, atau kesimpulan dari topik sebelumnya ke proposal baru.
+- Jika menambahkan catatan eksplorasi, tandai sebagai hipotesis atau opsi yang masih perlu diverifikasi, bukan sebagai fakta atau keputusan final.
+- Setelah topik dipilih, perbarui bagian ini terlebih dahulu sebelum mengembangkan isi proposal secara substantif.
 
 ---
 

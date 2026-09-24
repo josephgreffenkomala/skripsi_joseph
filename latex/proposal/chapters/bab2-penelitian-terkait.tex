@@ -20,7 +20,7 @@ GGUF merupakan format berkas yang digunakan dalam ekosistem \texttt{llama.cpp} u
 
 \texttt{llama.cpp} digunakan sebagai runtime inferensi yang sama untuk seluruh model dan tingkat kuantisasi dalam eksperimen utama. Penggunaan satu runtime membantu mengendalikan pengaruh perangkat lunak sehingga perbandingan lebih berfokus pada model dan representasi bobot. Tipe kuantisasi GGUF yang digunakan merupakan tipe standar yang tersedia pada runtime, bukan algoritma kuantisasi baru.
 
-Penelitian ini tidak merancang tipe kuantisasi baru dari kode sumber \texttt{llama.cpp}. Eksperimen menggunakan tipe kuantisasi standar yang tersedia pada runtime, yaitu Q8\_0, Q6\_K, Q5\_K\_M, dan Q4\_K\_M. Dengan demikian, perbandingan difokuskan pada konsekuensi penggunaan tingkat presisi yang berbeda dalam konfigurasi runtime yang sama.
+Penelitian ini tidak merancang tipe kuantisasi baru dari kode sumber \texttt{llama.cpp}. Jika hasil pilot menunjukkan manfaat dan kompatibilitas yang memadai, berkas *importance matrix* dapat digunakan sebagai konfigurasi kalibrasi tambahan. Penggunaan tersebut akan diterapkan secara konsisten pada model dan kondisi eksperimen yang dibandingkan.
 
 \section{Dampak Kuantisasi pada Model Multibahasa}
 
@@ -44,13 +44,13 @@ Studi Qwen3 tersebut menjadi rujukan sekaligus batasan klaim kebaruan penelitian
 
 Gasimov mengevaluasi pengaruh kuantisasi berbasis bobot terhadap tugas klasifikasi sentimen menggunakan Gemma 3 4B, Phi-4 Mini, dan Liquid LFM2 1.2B. Model-model tersebut diuji pada beberapa tingkat presisi, yaitu FP16, Q8, Q6, Q5, Q4, Q4-QAT, dan Q3, menggunakan dataset IMDB, SST-2, dan Twitter Airline Sentiment. Hasilnya menunjukkan bahwa klasifikasi sentimen dapat relatif tahan terhadap beberapa tingkat kuantisasi, tetapi pengurangan presisi yang lebih agresif dapat mengubah kecenderungan prediksi dan memperburuk pengenalan kelas minoritas \citep{gasimov2026sentiment}.
 
-Penelitian Gasimov paling dekat dengan penelitian ini dari sisi kombinasi kuantisasi dan analisis sentimen. Perbedaannya terletak pada bahasa, model, dan lingkungan evaluasi. Penelitian ini berfokus pada Bahasa Indonesia, menggunakan model dengan jumlah parameter di bawah dua miliar, serta membandingkan perubahan kualitas, kepatuhan format, dan transisi prediksi terhadap baseline model yang sama.
+Penelitian Gasimov paling dekat dengan penelitian ini dari sisi kombinasi kuantisasi dan analisis sentimen. Perbedaannya terletak pada bahasa, model, dan lingkungan evaluasi. Penelitian ini berfokus pada Bahasa Indonesia, menggunakan model berukuran sekitar 0,6--1,7 miliar parameter, serta membandingkan perubahan kualitas, kepatuhan format, dan transisi prediksi terhadap baseline model yang sama.
 
 \section{Posisi Penelitian}
 
 Berdasarkan penelitian terdahulu, kuantisasi telah dikaji pada model Bahasa Indonesia, model multibahasa, SLM, keluarga Qwen3, dan tugas klasifikasi sentimen. Dengan demikian, penelitian ini tidak mengusulkan algoritma kuantisasi baru. Posisi penelitian yang ditargetkan adalah evaluasi empiris terkontrol terhadap trade-off kualitas dan efisiensi beberapa Small Language Model pada klasifikasi sentimen Bahasa Indonesia.
 
-Penelitian ini akan membandingkan Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan BLOOMZ-1b7 pada baseline presisi tinggi sesuai checkpoint sumber serta empat tingkat kuantisasi GGUF. Selain akurasi dan macro-F1, penelitian akan mengukur ukuran berkas, peak RAM, latensi, throughput, valid-label rate, dan perubahan prediksi pada sampel yang sama. Ringkasan posisi penelitian terhadap penelitian terdahulu ditunjukkan pada Tabel~\ref{tab:posisi-penelitian}.
+Penelitian ini akan membandingkan Qwen3-0.6B, Qwen3-1.7B, Gemma 3 1B-IT, dan Sailor2-1B-Chat pada baseline presisi tinggi serta beberapa tingkat kuantisasi. Selain akurasi dan macro-F1, penelitian akan mengukur ukuran berkas, peak RAM, latensi, throughput, valid-label rate, dan perubahan prediksi pada sampel yang sama. Ringkasan posisi penelitian terhadap penelitian terdahulu ditunjukkan pada Tabel~\ref{tab:posisi-penelitian}.
 
 \begin{table}[H]
   \centering
