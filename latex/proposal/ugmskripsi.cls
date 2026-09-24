@@ -2,8 +2,7 @@
 %Created by Pekik Nurwantoro, Universitas Gadjah Mada, Yogyakarta, Indonesia
 \ProvidesClass{ugmskripsi}[2010/16/01 v2.0 The University of Gadjah Mada Skripsi Class]
 
-\RequirePackage[english]{babel}
-\babelprovide[import]{indonesian}
+\RequirePackage[english,bahasa]{babel}
 \RequirePackage{indentfirst}
 \RequirePackage{setspace}
 \RequirePackage[T1]{fontenc}
@@ -138,7 +137,7 @@
 %------------------------------------------------------------
 %Redefine caption names
 %------------------------------------------------------------
-\def\captionsindonesian{%
+\def\captionsbahasa{%
 \def\prefacename{PRAKATA}%
 \def\contentsname{DAFTAR ISI}%
 \def\listfigurename{DAFTAR GAMBAR}%
@@ -229,18 +228,18 @@
       \else
         \MakeUppercase{\normalfont\bfseries Skripsi}\\
       \fi
-      \vspace{1.5cm}
+      \vspace{1.5cm}	
       \MakeUppercase{\normalfont\bfseries\@titleind}\par\nobreak
       \vspace{1.0cm}
       \MakeUppercase{\normalfont\slshape\bfseries\@titleeng}\par\nobreak
        \vfill
-       \includegraphics[width=5.5cm]{logougm}
+       \includegraphics{logougm}
        \vfill
        {\normalfont
         \MakeUppercase{\@fullname}\\
         \@idnum}\\
        \vspace{1.5cm}
-       {\normalfont
+       {\normalfont 
          \MakeUppercase{\normalfont\bfseries Program Studi \@program}\\
          \MakeUppercase{\normalfont\bfseries Departemen \@dept}\\
          \MakeUppercase{\normalfont\bfseries\@faculty}\\
@@ -250,7 +249,7 @@
          {\normalfont\bfseries\@yearsubmit}}\\
       \end{singlespace}
       \end{center}
-}
+}  
 
 %------------------------------------------------------------
 %Define titlepage in Indonesian
@@ -266,7 +265,7 @@
       \else
         \MakeUppercase{\normalfont\bfseries Skripsi}\\
       \fi
-      \vspace{1.5cm}
+      \vspace{1.5cm}	
       \MakeUppercase{\normalfont\bfseries\@titleind}\par\nobreak
       \vspace{1.0cm}
       \MakeUppercase{\normalfont\slshape\bfseries\@titleeng}\par\nobreak
@@ -278,15 +277,15 @@
         {\normalfont Usulan Penelitian}\\
        \fi
        \vfill
-       \includegraphics[width=5.5cm]{logougm}
+       \includegraphics{logougm}
        \vfill
        {\normalfont
         \MakeUppercase{\@fullname}\\
         \@idnum}\\
        \vspace{1.5cm}
-       {\normalfont
+       {\normalfont 
          \MakeUppercase{\normalfont\bfseries Program Studi \@program}\\
-         \MakeUppercase{\normalfont\bfseries Departemen \@dept}\\
+         \MakeUppercase{\normalfont\bfseries Depertemen \@dept}\\
          \MakeUppercase{\normalfont\bfseries\@faculty}\\
          \MakeUppercase{\normalfont\bfseries\@university}\\
          \MakeUppercase{\normalfont\bfseries\@city}\\
@@ -295,7 +294,7 @@
       \end{singlespace}
       \end{center}
 \addcontentsline{toc}{chapter}{Halaman Judul}
-}
+}  
 
 %------------------------------------------------------------
 %Acceptance Page
@@ -356,11 +355,11 @@ Pembimbing & Ketua Penguji
   \vspace{1.0cm}
     \noindent
 Dengan ini saya menyatakan bahwa dalam Skripsi ini tidak terdapat karya yang
-pernah diajukan untuk memperoleh gelar kesarjanaan di suatu Perguruan Tinggi,
+pernah diajukan untuk memperoleh gelar kesarjanaan di suatu Perguruan Tinggi, 
 dan sepanjang pengetahuan saya juga tidak terdapat karya atau pendapat yang
 ditulis atau diterbitkan oleh orang lain, kecuali yang secara tertulis diacu
 dalam naskah ini dan disebutkan dalam daftar pustaka.
-
+ 
 \vspace{1.5cm}
 \begin{tabular}{p{7.5cm}c}
 &\@city,\space\@examdate\\
@@ -378,7 +377,7 @@ dalam naskah ini dan disebutkan dalam daftar pustaka.
   \clearpage\thispagestyle{chapterheading}%
 \null\vfill%Force the content of acknowledment to bottom page
 \phantomsection
-\addcontentsline{toc}{chapter}{Halaman Persembahan}
+\addcontentsline{toc}{chapter}{Halaman Persembahan} 
 }
 
 %------------------------------------------------------------
@@ -387,7 +386,7 @@ dalam naskah ini dan disebutkan dalam daftar pustaka.
 \def\motto{%
   \clearpage\thispagestyle{chapterheading}%
 \null\vfill%Force the content of acknowledment to bottom page
-\phantomsection
+\phantomsection 
 \addcontentsline{toc}{chapter}{Halaman Motto}
 }
 
@@ -424,7 +423,7 @@ dalam naskah ini dan disebutkan dalam daftar pustaka.
         \par\nobreak
         \vskip 12\p@
     \interlinepenalty\@M
-    {\normalsize Oleh\par
+    {\normalsize Oleh\par 
    \vspace{0.5cm}
     \@fullname\\
     \@idnum\\
@@ -447,24 +446,24 @@ dalam naskah ini dan disebutkan dalam daftar pustaka.
   \thispagestyle{chapterheading}%
   {\parindent \z@ \centering \normalfont
   {\large\textbf{\abstractname}}\\
-
+  
   \vspace{1.0cm}
    {\large\textbf{\@titleeng}}
         \par\nobreak
         \vskip 12\p@
     \interlinepenalty\@M
-    {\normalsize By\par
+    {\normalsize By\par 
    \vspace{0.5cm}
     \@fullname\\
     \@idnum\\
     \vskip 10\p@
     }\par\nobreak
-    }
+    }  
   \begin{singlespace}%
   \vskip 20\p@
   }
 \def\endabstracteng{\par\vfil\null\end{singlespace}%
-\selectlanguage{indonesian}\clearpage\pagenumbering{arabic}\setcounter{page}{1}}
+\selectlanguage{bahasa}\clearpage\pagenumbering{arabic}\setcounter{page}{1}}
 
 
 \AtBeginDocument{%
@@ -480,7 +479,7 @@ dalam naskah ini dan disebutkan dalam daftar pustaka.
 
 \AtBeginDocument{%
 \if@langindo%
-\selectlanguage{indonesian}%
+\selectlanguage{bahasa}%
 \else
 \selectlanguage{english}%
 \fi
