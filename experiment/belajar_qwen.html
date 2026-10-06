@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Memahami Qwen — Panduan Experiment</title>
+<style>
+:root{--ink:#203935;--muted:#556b65;--paper:#f6f4ed;--white:#fffef9;--line:#d7dfd5;--green:#176650;--mint:#e2efe6;--gold:#c17b35;--blue:#e8edf9}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.75 system-ui,-apple-system,Segoe UI,sans-serif}a{color:var(--green);text-underline-offset:4px}a:hover{color:#904b1c}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--green);border-radius:9px;padding:10px 18px;background:var(--green);color:white}button.secondary{background:transparent;color:var(--green)}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid #c17b35;outline-offset:4px}aside{position:fixed;left:0;top:0;bottom:0;width:240px;border-right:1px solid var(--line);padding:30px 23px;background:var(--white);overflow:auto}aside .brand{font-size:24px;font-weight:800;letter-spacing:-1px}aside small{color:var(--muted)}nav{display:grid;gap:4px;margin-top:32px}nav a{font-size:14px;text-decoration:none;padding:9px 10px;border-radius:8px}nav a:hover{background:var(--mint)}main{max-width:1180px;margin-left:240px;padding:56px 7vw 80px}h1,h2,h3,h4{line-height:1.2;letter-spacing:-.035em}h1{font-size:clamp(42px,5.3vw,70px);max-width:800px;margin:22px 0}h2{font-size:34px;margin:10px 0 25px}h3{font-size:24px;margin-top:32px}h4{font-size:19px}p{margin:14px 0}.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--green)}.lead{font-size:21px;color:var(--muted);max-width:720px}.badges{display:flex;gap:8px;flex-wrap:wrap;margin:24px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:5px 12px;font-size:12px;background:var(--white)}section{margin-top:70px;padding-top:28px;border-top:1px solid var(--line)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.card{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:23px}.card h3{margin-top:0}.callout{padding:18px 22px;background:var(--mint);border-left:4px solid var(--green);border-radius:0 10px 10px 0;margin:24px 0}.note{font-size:14px;color:var(--muted)}code{font: .87em/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#e7ebe3;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#172e2a;color:#e8f2eb;padding:22px;border-radius:12px;overflow:auto;font:14px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;tab-size:4}pre code{padding:0;background:none;color:inherit;overflow-wrap:normal;font:inherit}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:15px;margin:20px 0}th,td{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}th{background:var(--mint)}td:first-child{font-weight:600}li{margin:8px 0}figure{margin:26px 0;padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--white)}figcaption{color:var(--muted);font-size:14px;margin-top:16px}svg{width:100%;height:auto;display:block;min-width:580px}figure:has(svg){overflow-x:auto}svg text{font-family:system-ui,sans-serif;fill:var(--ink)}.stack{max-width:560px;margin:auto;text-align:center}.node{padding:16px;border:1px solid #a9c5b5;border-radius:10px;background:var(--mint)}.node small{display:block;color:var(--muted)}.arrow{font-size:24px;color:var(--green);line-height:1.7}.repeat{padding:18px;border:2px dashed #b78750;border-radius:14px;background:#fbf4e7}.repeat .node{background:var(--white)}.tokens{display:flex;gap:8px;flex-wrap:wrap;min-height:46px;margin:16px 0}.token{border-radius:8px;padding:6px 12px;background:var(--mint);border:1px solid #adcbbb}.token.new{background:#f7dfb8;border-color:#d8ad6c}.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.formula{padding:16px;background:var(--blue);border-radius:9px;font-family:ui-monospace,monospace;overflow:auto}.matrix td,.matrix th{text-align:center}.matrix td.yes{background:#d6ebdd;color:#12543b}.matrix td.no{background:#f1f0ec;color:#6e736d}details{border:1px solid var(--line);border-radius:10px;background:var(--white);padding:15px 20px;margin:15px 0}summary{cursor:pointer;font-weight:700}.quiz button{margin:6px 6px 6px 0}.feedback{min-height:30px;font-weight:600}.bars{margin-top:20px}.barrow{display:grid;grid-template-columns:80px 1fr 65px;align-items:center;gap:10px;font-size:14px;margin:12px 0}.track{background:#e7e9e2;height:15px;border-radius:10px;overflow:hidden}.fill{height:100%;background:var(--green);transition:width .2s}.num{font-weight:800;font-size:34px;color:var(--green)}.source-line{display:block;white-space:pre}.lineno{display:inline-block;width:3em;color:#91aea0;user-select:none}.readme h2{font-size:27px;margin-top:45px}.readme h3{font-size:22px}.readme>h3:first-child{font-size:30px}footer{margin-top:60px;font-size:14px;color:var(--muted)}.skip{position:absolute;top:-100px}.skip:focus{top:10px;left:260px;background:white;z-index:10}.print{margin-top:24px} @media(max-width:950px){aside{position:static;width:auto;padding:18px 24px;border-right:0;border-bottom:1px solid var(--line)}nav{display:flex;overflow:auto;margin-top:12px;gap:5px}nav a{white-space:nowrap}aside .print,aside small{display:none}main{margin:0;padding:30px 24px 60px;max-width:900px}h1{font-size:46px}}@media(max-width:560px){body{font-size:16px}.grid{grid-template-columns:1fr}h1{font-size:38px}h2{font-size:28px}figure{padding:13px}.card{padding:18px}main{padding:28px 18px}section{margin-top:45px}pre{padding:16px;font-size:12px}th,td{padding:9px}.barrow{grid-template-columns:65px 1fr 50px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fill{transition:none}}@media print{aside,.controls,.print,.quiz button{display:none}main{margin:0;padding:0;max-width:none}body{font-size:11pt;background:white}h1{font-size:32pt}h2{font-size:22pt}section{margin-top:25px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eee;color:#111}details{display:block}figure,.card{break-inside:avoid}a{color:inherit}.source-line{white-space:pre-wrap}}
+</style></head><body><a class="skip" href="#mulai">Langsung ke materi</a>
+<aside><div class="brand">Qwen / Lab</div><small>Panduan belajar mandiri</small><nav aria-label="Daftar isi"><a href="#mulai">01 · Mulai dari sini</a><a href="#experiment">02 · Arsitektur experiment</a><a href="#qwen">03 · Anatomi Qwen</a><a href="#attention">04 · Membongkar attention</a><a href="#mlp">05 · MLP & residual</a><a href="#generasi">06 · Cara jawaban terbentuk</a><a href="#kode">07 · Membaca kode</a><a href="#latihan">08 · Cek pemahaman</a><a href="#readme">09 · README lengkap</a><a href="#sumber">10 · Sumber & konfigurasi</a></nav><button class="secondary print" onclick="window.print()">Cetak / simpan PDF</button></aside>
+<main><header id="mulai"><div class="eyebrow">Dari pertanyaan menjadi jawaban</div><h1>Memahami Qwen,<br>satu langkah<br>demi satu langkah.</h1><p class="lead">Kenali folder eksperimenmu, ikuti alur kode Python, lalu lihat bagaimana 28 blok Transformer menghasilkan teks.</p><div class="badges"><span class="badge">Qwen3-0.6B</span><span class="badge">CPU · Python 3.12</span><span class="badge">Satu HTML · bisa offline</span><span class="badge">Bahasa Indonesia</span></div></header>
+<div class="grid"><div class="card"><div class="eyebrow">Tujuan pertama</div><h3>Bisa menjalankan</h3><p>Kamu tahu perintah yang diketik, letak model, dan arti keluaran program.</p></div><div class="card"><div class="eyebrow">Tujuan berikutnya</div><h3>Bisa menjelaskan</h3><p>Kamu bisa menceritakan alur teks → token → jaringan → token baru → jawaban.</p></div></div>
+<div class="callout"><b>Mulai tanpa menghafal istilah.</b> Baca gambaran besarnya dulu. Bagian “lebih teknis” bisa dibuka setelah alurnya terasa masuk akal. Simulasi di halaman ini adalah ilustrasi buatan; halaman tidak menjalankan model Qwen.</div>
+<p>Model adalah jaringan perhitungan yang sudah dilatih. <b>Bobot</b> adalah angka hasil pelatihannya. <b>Load</b> berarti membaca bobot ke memori. <b>Inference</b> berarti memakai bobot itu untuk membuat prediksi. Eksperimen ini melakukan load dan inference; bobot tidak diperbarui saat kamu bertanya.</p>
+<section id="experiment"><div class="eyebrow">02 / Dari luar ke dalam</div><h2>Arsitektur experiment</h2><p>Ada tiga tempat yang perlu dibedakan: <b>disk</b> menyimpan file, <b>RAM</b> menampung data yang sedang dipakai, dan <b>CPU</b> mengerjakan perhitungan. Script mengatur perpindahan dan pengolahannya.</p>
+<figure><svg viewBox="0 0 760 350" role="img" aria-labelledby="arch-title arch-desc"><title id="arch-title">Alur penyimpanan dan eksekusi eksperimen</title><desc id="arch-desc">Hugging Face mengunduh model ke cache disk. Loader membaca cache ke RAM. Pertanyaan dari terminal diproses tokenizer dan model dengan CPU, lalu jawaban kembali ke terminal.</desc><defs><marker id="arr" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="#176650"/></marker></defs><g fill="#e2efe6" stroke="#a9c5b5"><rect x="15" y="25" width="210" height="85" rx="12"/><rect x="275" y="25" width="210" height="85" rx="12"/><rect x="535" y="25" width="210" height="85" rx="12"/><rect x="15" y="220" width="210" height="85" rx="12"/><rect x="275" y="220" width="210" height="85" rx="12"/><rect x="535" y="220" width="210" height="85" rx="12"/></g><g text-anchor="middle" font-size="18" font-weight="600"><text x="120" y="58">Hugging Face</text><text x="380" y="58">Disk / .cache</text><text x="640" y="58">RAM</text><text x="120" y="253">Pertanyaan</text><text x="380" y="253">Python + CPU</text><text x="640" y="253">Jawaban</text></g><g text-anchor="middle" font-size="13"><text x="120" y="84">Sumber file saat online</text><text x="380" y="84">Bobot + tokenizer + config</text><text x="640" y="84">Model yang sudah dimuat</text><text x="120" y="281">Opsi --prompt di terminal</text><text x="380" y="281">Tokenisasi dan inference</text><text x="640" y="281">Teks hasil decode</text></g><g fill="none" stroke="#176650" stroke-width="2" marker-end="url(#arr)"><path d="M225 67 H270"/><path d="M485 67 H530"/><path d="M225 262 H270"/><path d="M485 262 H530"/><path d="M640 110 V156 H380 V214"/></g><text x="395" y="182" font-size="14">CPU menggunakan bobot di RAM</text></svg><figcaption>Setelah unduhan lengkap, mode offline memakai cache disk. RAM tetap perlu diisi kembali setiap kali script dijalankan.</figcaption></figure>
+<div class="grid"><div class="card"><h3>Peta folder</h3><pre>experiment/
+├── belajar_qwen.html  ← halaman ini
+├── README.md          ← panduan teks
+├── load_qwen.py       ← program utama
+├── requirements.txt   ← library
+├── .gitignore         ← aturan Git
+├── .venv/             ← Python lokal
+└── .cache/
+    └── huggingface/   ← file model</pre></div><div class="card"><h3>Siapa melakukan apa?</h3><p><b>Python</b> menjalankan instruksi. <b>Transformers</b> menyediakan implementasi Qwen, tokenizer, dan generate. <b>PyTorch</b> menghitung tensor. <b>Accelerate</b> membantu pemuatan dengan pengaturan memori pada loader.</p><p>File <code>load_qwen.py</code> tidak menuliskan sendiri 28 blok Qwen. <code>from_pretrained()</code> membaca konfigurasi, membuat arsitektur dari library, dan mengisi bobotnya.</p></div></div>
+<h3>Coba sekarang</h3><pre>cd /home/joseph/skripsi/skripsi_joseph/experiment
+source .venv/bin/activate
+python load_qwen.py --prompt "Apa itu token? Jawab singkat."</pre><p><code>cd</code> pindah folder; <code>source</code> mengaktifkan lingkungan library; <code>python</code> menjalankan program. Panduan instalasi dari nol dan penanganan kendala ada pada <a href="#readme">README lengkap</a>.</p></section>
+<section id="qwen"><div class="eyebrow">03 / Mesin di dalam program</div><h2>Anatomi Qwen3-0.6B</h2><p>Qwen ini adalah <b>Transformer decoder-only yang dense</b>. “Decoder-only” berarti jaringan dipakai untuk memprediksi kelanjutan urutan. “Dense” berarti setiap token melewati seluruh 28 blok, tanpa pemilihan pakar seperti pada Mixture of Experts.</p><p>“Causal” berarti posisi token hanya boleh memakai informasi dari posisi itu sendiri dan posisi sebelumnya. Saat menghasilkan jawaban, model belum mempunyai token masa depan.</p>
+<figure><div class="stack"><div class="node"><b>ID token</b><small>Contoh bentuk: [1, T] · satu pertanyaan dengan T token</small></div><div class="arrow">↓</div><div class="node"><b>Embedding</b><small>Setiap ID menjadi vektor 1.024 angka · [1, T, 1024]</small></div><div class="arrow">↓</div><div class="repeat"><b>28 blok Transformer berurutan</b><p class="note">Bentuk blok sama, tetapi setiap blok memiliki bobotnya sendiri.</p><div class="node">RMSNorm → Attention → Tambah residual</div><div class="arrow">↓</div><div class="node">RMSNorm → MLP → Tambah residual</div></div><div class="arrow">↓</div><div class="node"><b>RMSNorm akhir → LM head</b><small>Representasi diubah menjadi skor untuk 151.936 slot token</small></div><div class="arrow">↓</div><div class="node"><b>Sampling token berikutnya</b><small>Token terpilih ditambahkan ke konteks untuk langkah berikutnya</small></div></div><figcaption>T adalah panjang input dalam token. Angka 1 berarti kita memproses satu contoh sekaligus (batch size 1).</figcaption></figure>
+<h3>Embedding: dari nomor menjadi representasi</h3><p>ID token hanyalah indeks, seperti nomor halaman. Besar ID tidak menyatakan besar maknanya. Embedding mengambil satu baris dari tabel bobot dan menghasilkan 1.024 angka untuk token itu.</p><div class="formula">ID token → tabel embedding [151936, 1024] → vektor [1024]</div><p>Angka-angka ini dipelajari selama training. Tidak ada aturan bahwa “angka pertama berarti hewan” atau “angka kedua berarti tempat”. Pola makna tersebar dalam banyak dimensi.</p><p>Setelah melalui attention, representasi token juga bergantung pada konteksnya. Token yang sama dalam dua kalimat bisa memiliki representasi akhir berbeda.</p>
+<div class="grid"><div class="card"><div class="num">28</div><b>blok pengolahan</b><p>Jangan membayangkan blok 1 khusus tata bahasa dan blok 28 khusus logika. Kita mengetahui struktur matematisnya, bukan pembagian pekerjaan manusia yang pasti.</p></div><div class="card"><div class="num">1.024</div><b>angka per posisi token</b><p>Ukuran ini dipertahankan pada jalur utama, supaya hasil attention dan MLP dapat dijumlahkan dengan residual.</p></div></div>
+<h3>LM head: dari representasi menjadi kandidat</h3><p>Setelah blok terakhir, LM head menghitung satu skor (<i>logit</i>) untuk setiap slot token. Saat memilih kelanjutan, kita memakai skor dari posisi terakhir. Skor kemudian diproses menjadi distribusi peluang untuk sampling.</p><p>Konfigurasi mengaktifkan <code>tie_word_embeddings=true</code>: bobot embedding masukan dibagi pakai dengan bobot LM head. Operasinya berbeda—masukan mengambil baris berdasarkan ID, keluaran menghitung skor terhadap tabel tersebut.</p>
+<div class="callout"><b>0.6B adalah ukuran nominal parameter, bukan jumlah lapisan atau ukuran file.</b> Model mempunyai jutaan angka di embedding, proyeksi attention, MLP, dan normalisasi. Ukuran file serta RAM juga dipengaruhi format angka dan cara bobot disimpan/dimuat.</div></section>
+<section id="attention"><div class="eyebrow">04 / Menghubungkan token</div><h2>Membongkar attention</h2><p>Attention mencampur informasi antarposisi. Misalnya, untuk memproses “ia” dalam kalimat “Budi membawa buku karena ia ingin membaca”, model dapat menggunakan informasi token sebelumnya. Contoh ini menjelaskan mekanisme, bukan hasil pengukuran attention Qwen.</p>
+<div class="grid"><div class="card"><h3>Tiga proyeksi</h3><p><b>Query:</b> fitur apa yang sedang dicari posisi ini?</p><p><b>Key:</b> fitur apa yang bisa dicocokkan pada posisi lain?</p><p><b>Value:</b> informasi apa yang akan digabungkan?</p></div><div class="card"><h3>Empat langkah</h3><ol><li>Buat Q, K, dan V dari representasi.</li><li>Hitung kecocokan Q dengan K.</li><li>Mask posisi masa depan; ubah skor menjadi bobot.</li><li>Gabungkan V menurut bobot itu.</li></ol></div></div>
+<details><summary>Lebih teknis: rumus attention</summary><div class="formula">Attention(Q, K, V) = softmax(QKᵀ / √128 + mask) V</div><p>QKᵀ menghitung kecocokan antarposisi. Pembagian dengan √128 mengatur skala karena dimensi tiap head adalah 128. Softmax membuat bobot nonnegatif yang totalnya 1. Posisi terlarang mendapat mask negatif tak hingga sebelum softmax, sehingga bobotnya 0.</p><p>Pada Qwen ini, Q dan K dinormalisasi per head, kemudian diberi transformasi posisi RoPE sebelum perhitungan kecocokan. Bentuk rumus di atas memakai Q dan K yang sudah diproses itu.</p></details>
+<h3>Causal mask: token tidak melihat masa depan</h3><p>Ilustrasi berikut memakai empat posisi token buatan, bukan tokenisasi Qwen yang sebenarnya. Baris adalah posisi yang sedang memproses; kolom adalah posisi yang boleh dibaca.</p><div class="tablewrap"><table class="matrix"><thead><tr><th scope="col">Posisi ↓ / dibaca →</th><th scope="col">1: Saya</th><th scope="col">2: suka</th><th scope="col">3: belajar</th><th scope="col">4: AI</th></tr></thead><tbody><tr><th scope="row">1: Saya</th><td class="yes">Boleh</td><td class="no">Diblokir</td><td class="no">Diblokir</td><td class="no">Diblokir</td></tr><tr><th scope="row">2: suka</th><td class="yes">Boleh</td><td class="yes">Boleh</td><td class="no">Diblokir</td><td class="no">Diblokir</td></tr><tr><th scope="row">3: belajar</th><td class="yes">Boleh</td><td class="yes">Boleh</td><td class="yes">Boleh</td><td class="no">Diblokir</td></tr><tr><th scope="row">4: AI</th><td class="yes">Boleh</td><td class="yes">Boleh</td><td class="yes">Boleh</td><td class="yes">Boleh</td></tr></tbody></table></div></div>
+<h3>GQA: 16 Query head berbagi 8 pasangan K/V</h3><p>Head adalah cabang perhitungan attention. GQA (<i>Grouped Query Attention</i>) mengelompokkan dua Query head untuk berbagi satu pasangan Key/Value head.</p><figure><svg viewBox="0 0 700 240" role="img" aria-labelledby="gqa-title"><title id="gqa-title">Dua kelompok GQA contoh: Q1 dan Q2 memakai KV1; Q3 dan Q4 memakai KV2; total ada delapan kelompok.</title><g fill="#e2efe6" stroke="#9bbdab"><rect x="30" y="20" width="130" height="60" rx="10"/><rect x="180" y="20" width="130" height="60" rx="10"/><rect x="390" y="20" width="130" height="60" rx="10"/><rect x="540" y="20" width="130" height="60" rx="10"/><rect x="105" y="140" width="130" height="60" rx="10"/><rect x="465" y="140" width="130" height="60" rx="10"/></g><g font-size="20" text-anchor="middle"><text x="95" y="57">Q1</text><text x="245" y="57">Q2</text><text x="455" y="57">Q3</text><text x="605" y="57">Q4</text><text x="170" y="177">K1 / V1</text><text x="530" y="177">K2 / V2</text></g><g stroke="#176650" fill="none" stroke-width="2"><path d="M95 80 L170 140 L245 80"/><path d="M455 80 L530 140 L605 80"/></g><text x="350" y="230" text-anchor="middle" font-size="14">Pola berlanjut hingga Q15 + Q16 berbagi K8 / V8</text></svg><figcaption>Diagram hubungan berbagi data. Setiap Q tetap menghitung attention-nya sendiri; skor dua Q dalam satu kelompok tidak harus sama.</figcaption></figure>
+<p>Manfaatnya: jumlah data K/V yang disimpan lebih kecil daripada memakai 16 head K/V dengan dimensi sama. Ini membantu menghemat KV cache selama generasi.</p>
+<details><summary>Lebih teknis: dimensi aktual Qwen ini</summary><div class="tablewrap"><div class="tablewrap"><table><tr><th>Operasi per token</th><th>Dimensi</th></tr><tr><td>Masukan</td><td>1024</td></tr><tr><td>Proyeksi Q</td><td>1024 → 2048 = 16 × 128</td></tr><tr><td>Proyeksi K dan V, masing-masing</td><td>1024 → 1024 = 8 × 128</td></tr><tr><td>Gabungan 16 hasil attention</td><td>2048</td></tr><tr><td>Proyeksi output</td><td>2048 → 1024</td></tr></table></div></div><p><b>Perhatikan:</b> dimensi head di konfigurasi adalah 128. Jangan menghitungnya dengan 1024 ÷ 16 = 64; model ini menetapkan <code>head_dim</code> secara eksplisit.</p></details>
+<h3>RoPE: urutan juga membawa informasi</h3><p>“Kucing mengejar tikus” berbeda dari “tikus mengejar kucing”. RoPE (<i>Rotary Position Embedding</i>) memutar pasangan komponen Q dan K menurut posisi token. Perbandingan Q dan K kemudian dapat membawa informasi jarak relatif antartoken.</p><p>RoPE tidak menambahkan kata baru dan tidak mengubah ID token. Ia bekerja pada angka di dalam attention. Konfigurasi lokal menggunakan <code>rope_theta=1000000</code>.</p></section>
+<section id="mlp"><div class="eyebrow">05 / Mengolah hasil perhatian</div><h2>MLP, normalisasi, dan jalur residual</h2><p>Attention menggabungkan informasi antarposisi. Sesudahnya, <b>MLP</b> mengolah fitur di setiap posisi secara terpisah, dengan bobot yang sama untuk semua posisi dalam satu blok. Masukannya sudah membawa konteks dari attention.</p>
+<figure><div class="stack"><div class="node">Masukan x: 1.024 angka</div><div class="arrow">↓</div><div class="grid"><div class="node">gate_proj<small>1024 → 3072<br>lalu aktivasi SiLU</small></div><div class="node">up_proj<small>1024 → 3072</small></div></div><div class="arrow">↓ × ↓</div><div class="node">Kalikan elemen demi elemen<small>Gerbang mengatur kontribusi fitur</small></div><div class="arrow">↓</div><div class="node">down_proj: 3072 → 1024</div></div><figcaption>MLP bergaya SwiGLU: SiLU pada cabang gate dikalikan dengan cabang up, kemudian diproyeksikan kembali.</figcaption></figure>
+<p><b>SiLU</b> adalah fungsi nonlinier: keluaran tidak sekadar kelipatan lurus masukan. Gerbangnya memberi cara yang dipelajari untuk mengatur fitur yang diteruskan. Ini berbeda dari router pemilih expert pada MoE.</p>
+<h3>Mengapa masih ditambah dengan masukan awal?</h3><p>Residual adalah jalur pintas. Alih-alih mengganti representasi seluruhnya, sebuah subbagian menambahkan perubahan terhadap representasi yang sudah ada.</p><div class="formula">h = x + Attention(RMSNorm(x))<br>keluaran = h + MLP(RMSNorm(h))</div><p>Penjumlahan dapat dilakukan karena bentuk tensor cocok. Jalur ini juga membantu aliran gradien saat model dilatih. Dalam eksperimen kita, bobot sudah tersedia; kita hanya menjalankan perhitungan ke depan.</p><p><b>RMSNorm</b> mengatur skala vektor berdasarkan akar rata-rata kuadrat elemennya, lalu memakai faktor skala yang dipelajari. Ia membantu kestabilan angka. RMSNorm tidak sama dengan mengubah semua angka menjadi peluang.</p><div class="callout"><b>28 blok ≠ 28 token jawaban.</b> Setiap langkah generasi memanfaatkan seluruh tumpukan blok. Jumlah token jawaban ditentukan proses generate, penanda berhenti, dan batas token.</div></section>
+<section id="generasi"><div class="eyebrow">06 / Satu token setiap langkah</div><h2>Cara jawaban terbentuk</h2><p>Model menghitung kandidat token berikutnya. Setelah satu token dipilih, token itu menjadi bagian konteks untuk memprediksi token selanjutnya. Proses berulang ini disebut <b>autoregresif</b>.</p>
+<div class="card"><h3>Ikuti satu langkah generasi</h3><p class="note">Simulasi alur dengan urutan tetap. Potongan berikut bukan hasil tokenizer atau inference Qwen.</p><p>Prompt: <b>“Berapa hasil 2 + 2?”</b></p><div id="demo-tokens" class="tokens" aria-live="polite"><span class="note">Belum ada token jawaban.</span></div><p id="demo-status" aria-live="polite">Langkah 0: prompt diproses terlebih dahulu (prefill).</p><div class="controls"><button id="step">Hasilkan satu token</button><button class="secondary" id="reset">Ulangi</button></div></div>
+<h3>Prefill dan decode</h3><p><b>Prefill</b> memproses token prompt dan menyiapkan K/V pada setiap blok. Banyak posisi prompt bisa dihitung bersama, dengan causal mask. <b>Decode</b> kemudian menghasilkan kelanjutan satu langkah demi satu langkah.</p><p>Dengan <b>KV cache</b>, K/V token lama disimpan di memori, sehingga tidak perlu dihitung ulang semuanya. Token baru tetap membaca informasi sebelumnya melalui attention. Cache ini sementara dan membesar saat konteks bertambah.</p><div class="tablewrap"><div class="tablewrap"><table><tr><th>Jenis cache</th><th>Tempat & isi</th><th>Gunanya</th></tr><tr><td>Cache Hugging Face</td><td>Disk: bobot, konfigurasi, tokenizer</td><td>Menghindari unduh ulang, bisa lintas eksekusi</td></tr><tr><td>KV cache</td><td>Memori saat inference: Key dan Value tiap blok</td><td>Menghindari hitung ulang K/V token lama</td></tr></table></div></div>
+<h3>Sampling: skor bukan jawaban final</h3><p>Script memakai <code>do_sample=True</code>, <code>temperature=0.7</code>, <code>top_k=20</code>, dan <code>top_p=0.8</code>. Token tidak selalu dipilih dari skor paling tinggi saja.</p><ul><li><b>Temperature:</b> mengubah ketajaman distribusi. Nilai lebih rendah biasanya memusatkan peluang pada kandidat kuat.</li><li><b>Top-k:</b> mempertahankan sejumlah kandidat dengan skor tertinggi.</li><li><b>Top-p:</b> mempertahankan kumpulan kandidat berpeluang tinggi hingga mencapai ambang peluang kumulatif. Kombinasi filter mengikuti implementasi library.</li></ul>
+<div class="card"><h3>Coba pengaruh temperature</h3><p class="note">Distribusi ilustratif dari logits buatan [3, 2, 1]. Tidak memakai top-k/top-p dan tidak mengukur keluaran model.</p><label for="temperature">Temperature: <b id="temp-val">0.7</b></label><input id="temperature" type="range" min="0.2" max="2" step="0.1" value="0.7" style="width:100%;accent-color:var(--green)"><div class="bars" id="bars" aria-live="polite"></div><p class="note">Peluang lebih menyebar berarti lebih banyak kandidat mungkin dipilih; itu tidak otomatis membuat jawaban lebih benar.</p></div>
+<h3>Kapan berhenti?</h3><p>Generasi berhenti saat model menghasilkan token akhir yang dikonfigurasi atau mencapai <code>max_new_tokens</code>. Default script 128; argumen menerima 1–1024. Pertanyaan dibatasi 2048 token <em>setelah</em> chat template diterapkan.</p><p>Batas latihan ini sengaja lebih kecil daripada kemampuan konteks yang disebut model card. Model card menyebut 32.768 token; konfigurasi lokal memiliki <code>max_position_embeddings=40960</code>. Nilai konfigurasi tersebut bukan bukti kualitas teruji sampai panjang itu.</p><p>Mode <code>enable_thinking=False</code> mengatur format permintaan jawaban langsung. Mode thinking tidak menghapus atau menambah blok Transformer. Seed 42 membantu pengulangan, tetapi hasil tidak dijamin identik lintas perangkat dan versi.</p></section>
+<section id="kode"><div class="eyebrow">07 / Hubungkan konsep ke program</div><h2>Membaca kode tanpa tersesat</h2><p>Baca program sebagai urutan kerja. Tidak perlu mengerti semua sintaks sebelum memahami tujuan setiap tahap.</p><div class="tablewrap"><div class="tablewrap"><table><tr><th>Potongan kode</th><th>Tugasnya</th><th>Konsep yang terhubung</th></tr><tr><td><code>argparse</code></td><td>Membaca --prompt, --offline, dan batas token</td><td>Antarmuka terminal</td></tr><tr><td><code>Path(__file__).resolve()</code></td><td>Mencari lokasi script untuk menentukan cache</td><td>Penyimpanan file</td></tr><tr><td><code>from_pretrained()</code></td><td>Memuat tokenizer serta jaringan dan bobot</td><td>Load, bukan training</td></tr><tr><td><code>torch_dtype=torch.float32</code></td><td>Memakai angka 32 bit saat model dimuat</td><td>Format angka memengaruhi RAM</td></tr><tr><td><code>.to("cpu")</code></td><td>Menempatkan model pada CPU</td><td>Perangkat perhitungan</td></tr><tr><td><code>model.eval()</code></td><td>Memilih perilaku evaluasi modul</td><td>Terpisah dari pengaturan gradien</td></tr><tr><td><code>apply_chat_template()</code></td><td>Menyusun pesan ke format Qwen</td><td>Giliran user / assistant</td></tr><tr><td><code>tokenizer(..., return_tensors="pt")</code></td><td>Membuat input_ids dan attention_mask</td><td>Tensor PyTorch</td></tr><tr><td><code>torch.inference_mode()</code></td><td>Menonaktifkan pencatatan gradien untuk latihan</td><td>Perhitungan inference lebih hemat</td></tr><tr><td><code>model.generate()</code></td><td>Mengulang prediksi dan pemilihan token</td><td>Transformer + sampling + cache</td></tr><tr><td><code>generated[0, input_length:]</code></td><td>Mengambil hanya kelanjutan untuk contoh pertama</td><td>Memisahkan input dan jawaban</td></tr><tr><td><code>tokenizer.decode()</code></td><td>Mengubah ID keluaran menjadi teks</td><td>Jawaban yang terbaca</td></tr></table></div></div>
+<h3>Kenapa ada dua macam mask?</h3><p><code>attention_mask</code> dari tokenizer menunjukkan token input yang valid dan padding bila ada. <b>Causal mask</b> membatasi pembacaan posisi masa depan. Keduanya berkaitan dengan attention, tetapi tujuannya berbeda.</p><h3>Memahami bentuk data</h3><pre>input_ids:        [1, T]              # ID token prompt
+setelah embedding:[1, T, 1024]        # representasi token
+generated:        [1, T + N]          # prompt + jawaban
+answer_ids:       [N]                # hanya jawaban</pre><p>T adalah panjang input, N jumlah token baru. Saat menggunakan KV cache pada langkah decode, model terutama memproses token baru dengan data K/V lama yang tersedia.</p><h3>Contoh pemotongan keluaran</h3><pre>generated = [token_input_1, token_input_2, token_jawaban_1, token_jawaban_2]
+input_length = 2
+answer_ids = generated[2:]  # dua token jawaban saja</pre><p>Ini contoh daftar sederhana untuk menjelaskan slicing. Di program sebenarnya, <code>generated</code> adalah tensor dua dimensi sehingga indeks pertamanya adalah <code>0</code>.</p>
+<details><summary>Buka seluruh kode load_qwen.py dengan nomor baris</summary><p class="note">Salinan kode saat HTML dibuat. Nomor baris hanya penanda baca.</p><pre aria-label="Kode lengkap load_qwen.py"><code><span class="source-line"><span class="lineno">1</span>&quot;&quot;&quot;Muat Qwen3-0.6B lalu jawab satu pertanyaan, seluruhnya di komputer lokal.&quot;&quot;&quot;</span><span class="source-line"><span class="lineno">2</span></span><span class="source-line"><span class="lineno">3</span>import argparse</span><span class="source-line"><span class="lineno">4</span>from pathlib import Path</span><span class="source-line"><span class="lineno">5</span></span><span class="source-line"><span class="lineno">6</span>MODEL_ID = &quot;Qwen/Qwen3-0.6B&quot;</span><span class="source-line"><span class="lineno">7</span>CACHE_DIR = Path(__file__).resolve().parent / &quot;.cache&quot; / &quot;huggingface&quot;</span><span class="source-line"><span class="lineno">8</span></span><span class="source-line"><span class="lineno">9</span></span><span class="source-line"><span class="lineno">10</span>def main() -&gt; None:</span><span class="source-line"><span class="lineno">11</span>    &quot;&quot;&quot;Baca pertanyaan, muat model, lalu cetak token jawaban sebagai teks.&quot;&quot;&quot;</span><span class="source-line"><span class="lineno">12</span>    parser = argparse.ArgumentParser(description=__doc__)</span><span class="source-line"><span class="lineno">13</span>    parser.add_argument(</span><span class="source-line"><span class="lineno">14</span>        &quot;--prompt&quot;, default=&quot;Jelaskan apa itu model bahasa dalam dua kalimat sederhana.&quot;</span><span class="source-line"><span class="lineno">15</span>    )</span><span class="source-line"><span class="lineno">16</span>    parser.add_argument(&quot;--max-new-tokens&quot;, type=int, default=128)</span><span class="source-line"><span class="lineno">17</span>    parser.add_argument(</span><span class="source-line"><span class="lineno">18</span>        &quot;--offline&quot;, action=&quot;store_true&quot;, help=&quot;Hanya gunakan file yang sudah diunduh.&quot;</span><span class="source-line"><span class="lineno">19</span>    )</span><span class="source-line"><span class="lineno">20</span>    args = parser.parse_args()</span><span class="source-line"><span class="lineno">21</span>    if not args.prompt.strip():</span><span class="source-line"><span class="lineno">22</span>        parser.error(&quot;Pertanyaan tidak boleh kosong.&quot;)</span><span class="source-line"><span class="lineno">23</span>    if not 1 &lt;= args.max_new_tokens &lt;= 1024:</span><span class="source-line"><span class="lineno">24</span>        parser.error(&quot;--max-new-tokens harus antara 1 dan 1024.&quot;)</span><span class="source-line"><span class="lineno">25</span></span><span class="source-line"><span class="lineno">26</span>    # Import setelah parsing supaya --help bisa dibuka sebelum instalasi library.</span><span class="source-line"><span class="lineno">27</span>    import torch</span><span class="source-line"><span class="lineno">28</span>    from transformers import AutoModelForCausalLM, AutoTokenizer, set_seed</span><span class="source-line"><span class="lineno">29</span></span><span class="source-line"><span class="lineno">30</span>    torch.set_num_threads(4)</span><span class="source-line"><span class="lineno">31</span>    set_seed(42)</span><span class="source-line"><span class="lineno">32</span>    print(f&quot;Model: {MODEL_ID} | Perangkat: CPU&quot;, flush=True)</span><span class="source-line"><span class="lineno">33</span>    print(&quot;Memuat tokenizer dan bobot; pemakaian pertama mengunduh file...&quot;, flush=True)</span><span class="source-line"><span class="lineno">34</span>    tokenizer = AutoTokenizer.from_pretrained(</span><span class="source-line"><span class="lineno">35</span>        MODEL_ID, cache_dir=CACHE_DIR, local_files_only=args.offline</span><span class="source-line"><span class="lineno">36</span>    )</span><span class="source-line"><span class="lineno">37</span>    model = AutoModelForCausalLM.from_pretrained(</span><span class="source-line"><span class="lineno">38</span>        MODEL_ID,</span><span class="source-line"><span class="lineno">39</span>        cache_dir=CACHE_DIR,</span><span class="source-line"><span class="lineno">40</span>        local_files_only=args.offline,</span><span class="source-line"><span class="lineno">41</span>        torch_dtype=torch.float32,</span><span class="source-line"><span class="lineno">42</span>        low_cpu_mem_usage=True,</span><span class="source-line"><span class="lineno">43</span>    ).to(&quot;cpu&quot;)</span><span class="source-line"><span class="lineno">44</span>    model.eval()</span><span class="source-line"><span class="lineno">45</span></span><span class="source-line"><span class="lineno">46</span>    # 1. Susun pesan pengguna ke format percakapan yang dikenali Qwen.</span><span class="source-line"><span class="lineno">47</span>    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: args.prompt}]</span><span class="source-line"><span class="lineno">48</span>    text = tokenizer.apply_chat_template(</span><span class="source-line"><span class="lineno">49</span>        messages, tokenize=False, add_generation_prompt=True, enable_thinking=False</span><span class="source-line"><span class="lineno">50</span>    )</span><span class="source-line"><span class="lineno">51</span></span><span class="source-line"><span class="lineno">52</span>    # 2. Ubah teks menjadi angka (ID token) dalam tensor PyTorch.</span><span class="source-line"><span class="lineno">53</span>    inputs = tokenizer(text, return_tensors=&quot;pt&quot;)</span><span class="source-line"><span class="lineno">54</span>    input_length = inputs.input_ids.shape[1]</span><span class="source-line"><span class="lineno">55</span>    if input_length &gt; 2048:</span><span class="source-line"><span class="lineno">56</span>        parser.error(</span><span class="source-line"><span class="lineno">57</span>            &quot;Pertanyaan terlalu panjang. Batasi hingga 2048 token untuk latihan.&quot;</span><span class="source-line"><span class="lineno">58</span>        )</span><span class="source-line"><span class="lineno">59</span>    print(f&quot;Input: {input_length} token. Sedang membuat jawaban...&quot;, flush=True)</span><span class="source-line"><span class="lineno">60</span></span><span class="source-line"><span class="lineno">61</span>    # 3. Prediksi token lanjutan tanpa menghitung gradien untuk pelatihan.</span><span class="source-line"><span class="lineno">62</span>    with torch.inference_mode():</span><span class="source-line"><span class="lineno">63</span>        generated = model.generate(</span><span class="source-line"><span class="lineno">64</span>            **inputs,</span><span class="source-line"><span class="lineno">65</span>            max_new_tokens=args.max_new_tokens,</span><span class="source-line"><span class="lineno">66</span>            do_sample=True,</span><span class="source-line"><span class="lineno">67</span>            temperature=0.7,</span><span class="source-line"><span class="lineno">68</span>            top_p=0.8,</span><span class="source-line"><span class="lineno">69</span>            top_k=20,</span><span class="source-line"><span class="lineno">70</span>            pad_token_id=tokenizer.eos_token_id,</span><span class="source-line"><span class="lineno">71</span>        )</span><span class="source-line"><span class="lineno">72</span></span><span class="source-line"><span class="lineno">73</span>    # 4. Buang token pertanyaan; ubah hanya token jawaban kembali menjadi teks.</span><span class="source-line"><span class="lineno">74</span>    answer_ids = generated[0, input_length:]</span><span class="source-line"><span class="lineno">75</span>    answer = tokenizer.decode(answer_ids, skip_special_tokens=True)</span><span class="source-line"><span class="lineno">76</span>    print(f&quot;\nPertanyaan: {args.prompt}\n\nJawaban:\n{answer.strip()}&quot;)</span><span class="source-line"><span class="lineno">77</span>    print(f&quot;\nToken jawaban: {len(answer_ids)}&quot;)</span><span class="source-line"><span class="lineno">78</span>    if len(answer_ids) == args.max_new_tokens:</span><span class="source-line"><span class="lineno">79</span>        print(</span><span class="source-line"><span class="lineno">80</span>            &quot;Batas token tercapai; jawaban mungkin terpotong. Naikkan --max-new-tokens.&quot;</span><span class="source-line"><span class="lineno">81</span>        )</span><span class="source-line"><span class="lineno">82</span></span><span class="source-line"><span class="lineno">83</span></span><span class="source-line"><span class="lineno">84</span>if __name__ == &quot;__main__&quot;:</span><span class="source-line"><span class="lineno">85</span>    main()</span><span class="source-line"><span class="lineno">86</span></span></code></pre></details>
+<p><code>torch.set_num_threads(4)</code> mengatur thread perhitungan CPU. <code>flush=True</code> membantu pesan status segera muncul. <code>if __name__ == "__main__"</code> memanggil fungsi utama ketika file dijalankan sebagai program. Import library berat setelah parsing membuat opsi <code>--help</code> tetap bisa dipakai sebelum instalasi library.</p></section>
+<section id="latihan"><div class="eyebrow">08 / Coba jelaskan kembali</div><h2>Cek pemahamanmu</h2><p>Pilih jawaban, lalu baca alasannya. Kamu tidak harus menjawab benar pada percobaan pertama.</p><div class="card quiz" data-correct="1"><h3>1. Apa yang berubah saat inference?</h3><button data-answer="0" class="secondary">Bobot model diperbarui</button><button data-answer="1" class="secondary">Konteks token bertambah</button><p class="feedback" aria-live="polite"></p><p class="explain" hidden>Saat inference, konteks bertambah ketika token dipilih. Bobot model tetap; pembaruan bobot dilakukan dalam training.</p></div><div class="card quiz" data-correct="0" style="margin-top:16px"><h3>2. Mengapa memakai GQA?</h3><button data-answer="0" class="secondary">Berbagi head Key/Value</button><button data-answer="1" class="secondary">Melewati blok tertentu</button><p class="feedback" aria-live="polite"></p><p class="explain" hidden>GQA berbagi K/V antar-Query head. Pada model ini seluruh 28 blok tetap digunakan.</p></div><div class="card quiz" data-correct="1" style="margin-top:16px"><h3>3. Cache mana yang dipakai untuk offline?</h3><button data-answer="0" class="secondary">KV cache di memori</button><button data-answer="1" class="secondary">File cache di disk</button><p class="feedback" aria-live="polite"></p><p class="explain" hidden>File cache menyimpan unduhan lintas eksekusi. KV cache membantu penghitungan selama proses generasi.</p></div><h3>Latihan terminal</h3><ol><li>Jalankan pertanyaan yang sama dengan batas 16 dan 128 token.</li><li>Coba mode offline setelah unduhan selesai.</li><li>Temukan baris kode untuk loading, tokenisasi, generate, dan decode.</li><li>Tanpa melihat diagram, ceritakan perjalanan satu token melalui embedding, attention, MLP, dan LM head.</li></ol><div class="callout"><b>Tanda sudah memahami:</b> kamu bisa menjelaskan mengapa 28 blok bukan 28 token, mengapa model perlu tokenizer, dan mengapa menjalankan prompt baru tidak melatih ulang bobot. Kalau satu langkah belum jelas, tanyakan bagian itu—misalnya “jelaskan Q dan K dengan angka kecil”.</div></section>
+<section id="readme"><div class="eyebrow">09 / Referensi operasional</div><h2>Seluruh README experiment</h2><p>Berikut isi README yang disertakan lengkap agar panduan ini tetap bisa dipakai saat dipindahkan sebagai satu file. Angka penggunaan memori di README adalah perkiraan praktis; kebutuhan aktual dapat berubah selama pemuatan dan generasi.</p><div class="readme"><h3>Belajar memuat Qwen3-0.6B dari nol</h3>
+<p>Folder ini untuk belajar menjalankan model bahasa lokal: beri pertanyaan, muat model,
+lalu lihat jawabannya. Ini eksplorasi teknis, belum menetapkan topik atau model skripsi.</p>
+<h2>1. Model apa yang dipakai?</h2>
+<p><strong><code>Qwen/Qwen3-0.6B</code></strong>, model percakapan resmi Qwen dengan ukuran nominal sekitar
+600 juta parameter. Berdasarkan pengecekan katalog resmi pada 25 September 2026,
+ini pilihan terbaru yang ditemukan untuk percakapan umum dengan ukuran tepat 0.6B.
+Varian 0.6B untuk suara, embedding, reranking, atau moderasi memiliki tugas berbeda.
+Qwen3.5 punya varian kecil 0.8B; itu tidak memenuhi permintaan ukuran 0.6B.</p>
+<p>Sumber: <a href="https://huggingface.co/Qwen/Qwen3-0.6B">model card Qwen3-0.6B</a>,
+<a href="https://huggingface.co/Qwen/models?search=0.6B">katalog resmi Qwen</a>,
+<a href="https://huggingface.co/Qwen/Qwen3.5-0.8B">Qwen3.5-0.8B</a>.</p>
+<p>Versi library di <code>requirements.txt</code> sengaja ditetapkan agar contoh stabil;
+versi library berbeda dari versi model. Model diambil dari revisi <code>main</code> yang tersedia
+ketika dijalankan online, sehingga revisi bobot belum dikunci untuk penelitian.</p>
+<h2>2. Istilah paling dasar</h2>
+<p>Bayangkan kamu ingin menjalankan mesin penjawab pertanyaan di laptop:</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Istilah</th>
+<th>Arti sederhana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python</td>
+<td>Bahasa untuk menulis instruksi kepada komputer.</td>
+</tr>
+<tr>
+<td>Script</td>
+<td>File berisi instruksi Python, di sini <code>load_qwen.py</code>.</td>
+</tr>
+<tr>
+<td>Library</td>
+<td>Kumpulan alat siap pakai supaya kita tidak menulis semuanya sendiri.</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Jaringan perhitungan yang sudah dilatih untuk memprediksi kelanjutan teks.</td>
+</tr>
+<tr>
+<td>Parameter/bobot</td>
+<td>Angka-angka di dalam model yang dipelajari saat pelatihan.</td>
+</tr>
+<tr>
+<td>0.6B</td>
+<td>Sekitar 0,6 miliar parameter; bukan ukuran file 0,6 GB.</td>
+</tr>
+<tr>
+<td>Load/memuat</td>
+<td>Membaca bobot dari penyimpanan ke memori agar bisa dihitung.</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>Teks pertanyaan atau instruksi yang kita berikan.</td>
+</tr>
+<tr>
+<td>Token</td>
+<td>Potongan teks; bisa bagian kata, tanda baca, atau unsur lain.</td>
+</tr>
+<tr>
+<td>Tokenizer</td>
+<td>Alat untuk mengubah teks menjadi ID token dan sebaliknya.</td>
+</tr>
+<tr>
+<td>Tensor</td>
+<td>Wadah angka yang digunakan library untuk perhitungan model.</td>
+</tr>
+<tr>
+<td>Inference</td>
+<td>Memakai model terlatih untuk menghasilkan jawaban.</td>
+</tr>
+<tr>
+<td>Training</td>
+<td>Proses mengubah bobot model melalui pembelajaran dari data.</td>
+</tr>
+<tr>
+<td>Cache</td>
+<td>Tempat menyimpan unduhan supaya bisa dipakai lagi.</td>
+</tr>
+<tr>
+<td>Virtual environment</td>
+<td>Lingkungan library khusus proyek agar instalasinya terpisah.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Kita melakukan <strong>inference</strong>. Mengajukan pertanyaan di script ini tidak melatih
+ulang model dan tidak membuatnya mengingat percakapan berikutnya.</p>
+<h2>3. Struktur folder</h2>
+<pre><code class="language-text">experiment/
+├── README.md           ← panduan yang sedang kamu baca
+├── load_qwen.py        ← program untuk memuat model dan menjawab satu pertanyaan
+├── requirements.txt    ← daftar library dan versi yang digunakan
+├── .gitignore          ← aturan agar file besar/lokal tidak masuk Git
+├── .venv/              ← Python dan library lokal; muncul setelah instalasi
+└── .cache/
+    └── huggingface/    ← tokenizer, konfigurasi, dan bobot; muncul saat dijalankan
+</code></pre>
+<p>File/folder berawalan titik biasanya tersembunyi. Lihat dengan <code>ls -a</code>.
+<code>.venv</code> dan <code>.cache</code> diabaikan Git. Bobot model tidak ditulis langsung ke kode Python.
+Path cache dihitung dari lokasi script sehingga tetap sama meski script dipanggil
+dari direktori lain.</p>
+<p>Tiga library utama:</p>
+<ul>
+<li><strong>PyTorch (<code>torch</code>)</strong> menjalankan perhitungan angka.</li>
+<li><strong>Transformers</strong> menyediakan loader model, tokenizer, dan proses menghasilkan teks.</li>
+<li><strong>Accelerate</strong> membantu loader memuat bobot dengan penggunaan memori yang lebih hemat.</li>
+</ul>
+<h2>4. Menjalankan contoh</h2>
+<p>Perintah berikut ditujukan untuk terminal Bash di Linux ini. Ketik perintahnya
+tanpa menambahkan tanda <code>$</code>. <code>uv</code> sudah tersedia di lingkungan ini.</p>
+<h3>Jika lingkungan sudah disiapkan</h3>
+<pre><code class="language-bash">cd /home/joseph/skripsi/skripsi_joseph/experiment
+source .venv/bin/activate
+python load_qwen.py
+</code></pre>
+<p><code>cd</code> memindahkan lokasi kerja terminal. <code>source</code> mengaktifkan lingkungan Python
+khusus folder ini. <code>python load_qwen.py</code> menjalankan instruksi di file tersebut.</p>
+<h3>Jika menyiapkan ulang dari awal</h3>
+<pre><code class="language-bash">cd /home/joseph/skripsi/skripsi_joseph/experiment
+uv venv --python 3.12 .venv
+source .venv/bin/activate
+uv pip install torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu
+uv pip install -r requirements.txt
+python load_qwen.py
+</code></pre>
+<p>Python 3.12 dipakai untuk kecocokan dengan versi library contoh. Instalasi pertama
+memilih PyTorch CPU supaya tidak mengunduh paket CUDA yang besar. Script memang
+menggunakan CPU meskipun dijalankan di komputer yang memiliki GPU.</p>
+<p>Pemakaian pertama perlu internet untuk mengunduh model; bobot yang terunduh sekitar 1,5 GB
+di disk, ditambah tokenizer, library, dan cache instalasi. Sediakan beberapa GB
+ruang kosong. Script memakai float32 pada CPU: bobot di RAM membutuhkan kira-kira
+3 GB, ditambah memori untuk perhitungan dan proses pemuatan. Itu perkiraan, bukan batas maksimum.
+Jika RAM hampir penuh, tutup aplikasi berat terlebih dahulu. CPU bisa memerlukan
+waktu cukup lama untuk menyelesaikan jawaban.</p>
+<p>Ganti pertanyaan:</p>
+<pre><code class="language-bash">python load_qwen.py --prompt &quot;Apa bedanya RAM dan penyimpanan? Jawab singkat.&quot;
+</code></pre>
+<p>Berikan ruang lebih panjang untuk jawaban:</p>
+<pre><code class="language-bash">python load_qwen.py --prompt &quot;Jelaskan token dengan contoh sederhana.&quot; --max-new-tokens 256
+</code></pre>
+<p>Sesudah unduhan lengkap, coba tanpa mengambil file dari internet:</p>
+<pre><code class="language-bash">python load_qwen.py --offline --prompt &quot;Berapa hasil 2 + 2?&quot;
+</code></pre>
+<p><code>--offline</code> memakai cache yang sudah ada. Setiap menjalankan script, model tetap
+dibaca lagi ke RAM. Cache menghemat unduhan, bukan mempertahankan model di RAM.
+Keluar dari lingkungan Python dengan <code>deactivate</code>.</p>
+<h2>5. Apa yang terjadi dari awal sampai muncul jawaban?</h2>
+<pre><code class="language-text">Pertanyaanmu
+    ↓
+Chat template: susun pesan ke format percakapan Qwen
+    ↓
+Tokenizer: ubah teks menjadi deretan angka
+    ↓
+Model: hitung peluang token berikutnya
+    ↓
+Generate: pilih token, lalu ulangi hingga selesai atau mencapai batas
+    ↓
+Decode: ubah token jawaban menjadi teks yang bisa dibaca
+</code></pre>
+<p>Model tidak mengambil jawaban dari Google. Script ini melakukan perhitungan lokal
+menggunakan bobot model. Jawaban dapat salah, terutama pada model kecil.</p>
+<h2>6. Membaca kode secara bertahap</h2>
+<p>Mulai dari <code>main()</code>, yaitu fungsi yang mengatur urutan kerja program.</p>
+<ol>
+<li><strong><code>argparse</code></strong> membaca opsi terminal seperti <code>--prompt</code>. Tanpa opsi, program
+   memakai pertanyaan contoh. Input kosong dan batas token di luar 1–1024 ditolak.</li>
+<li><strong><code>MODEL_ID</code></strong> menunjuk repositori model di Hugging Face, tempat distribusi model.</li>
+<li><strong><code>AutoTokenizer.from_pretrained(...)</code></strong> mengambil aturan pemecahan teks.</li>
+<li><strong><code>AutoModelForCausalLM.from_pretrained(...)</code></strong> memuat model yang sudah dilatih.
+   <code>CausalLM</code> di sini berarti model memprediksi token berikutnya dari token sebelumnya.</li>
+<li><strong><code>model.eval()</code></strong> mengatur perilaku model untuk evaluasi/inference.</li>
+<li><strong><code>messages</code></strong> berisi satu pesan dengan peran <code>user</code>. Ini format data percakapan.</li>
+<li><strong><code>apply_chat_template(...)</code></strong> menambahkan penanda percakapan yang dikenali model.
+   <code>enable_thinking=False</code> dipilih untuk latihan jawaban langsung. Kita belum
+   menambahkan mode thinking agar contoh awal tetap sederhana.</li>
+<li><strong><code>return_tensors="pt"</code></strong> meminta keluaran tokenizer berupa tensor PyTorch.</li>
+<li><strong><code>torch.inference_mode()</code></strong> menonaktifkan pencatatan gradien yang dipakai saat training.</li>
+<li><strong><code>model.generate(...)</code></strong> menghasilkan token baru. <code>max_new_tokens</code> membatasi
+    jumlah token tambahan, bukan jumlah kata atau panjang input.</li>
+<li><strong><code>generated[0, input_length:]</code></strong> mengambil hasil pertama, lalu membuang bagian
+    input. Tanpa langkah ini, pertanyaan ikut tercetak sebagai jawaban.</li>
+<li><strong><code>tokenizer.decode(...)</code></strong> mengubah token baru kembali menjadi teks.</li>
+</ol>
+<p>Pengaturan sampling memilih dari beberapa kemungkinan token: <code>temperature</code>
+mengatur ketajaman distribusi peluang, sedangkan <code>top_p</code> dan <code>top_k</code> membatasi
+kandidat. Untuk awal, biarkan nilainya tetap. Seed 42 membantu mengulang percobaan,
+tetapi bukan jaminan hasil identik di semua perangkat dan versi library.</p>
+<p><code>if __name__ == "__main__":</code> memastikan <code>main()</code> dijalankan ketika file ini
+dipanggil sebagai program. Import library berat diletakkan setelah pembacaan opsi
+agar <code>python load_qwen.py --help</code> tetap bisa dipakai sebelum library terpasang.</p>
+<h2>7. Latihan kecil agar benar-benar paham</h2>
+<p>Lakukan satu per satu; jangan mengubah semuanya sekaligus.</p>
+<ol>
+<li>Jalankan pertanyaan bawaan. Temukan baris nama model, perangkat, dan jumlah token.</li>
+<li>Ubah hanya <code>--prompt</code>. Perhatikan bahwa script-nya sama, tetapi input berbeda.</li>
+<li>Minta penjelasan panjang dengan batas 16 token, kemudian 128 token. Perhatikan
+   kemungkinan jawaban terpotong. Batas token yang lebih besar bukan jaminan jawaban lebih benar.</li>
+<li>Jalankan dengan <code>--offline</code> sesudah unduhan selesai. Ini menunjukkan peran cache.</li>
+<li>Jelaskan dengan bahasamu sendiri alur: teks → token → model → token → teks.</li>
+</ol>
+<p>Cek pemahaman:</p>
+<ul>
+<li>Mengapa 0.6B bukan 0,6 GB? Karena B menghitung parameter, sedangkan GB menghitung byte.</li>
+<li>Apakah prompt baru mengubah bobot? Tidak; script hanya melakukan inference.</li>
+<li>Mengapa perlu tokenizer? Perhitungan model memakai ID token, bukan huruf mentah.</li>
+<li>Mengapa pertanyaan dipotong dari <code>generated</code>? Hasil generate juga memuat input awal.</li>
+<li>Apakah program ini chatbot dengan ingatan? Belum; satu eksekusi hanya satu pertanyaan.</li>
+</ul>
+<h2>8. Jika terjadi kendala</h2>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Gejala</th>
+<th>Langkah pertama</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ModuleNotFoundError</code></td>
+<td>Aktifkan <code>.venv</code> dan jalankan instalasi requirements.</td>
+</tr>
+<tr>
+<td><code>KeyError: 'qwen3'</code></td>
+<td>Pastikan memakai Transformers dari requirements, bukan instalasi global lama.</td>
+</tr>
+<tr>
+<td>Unduhan gagal</td>
+<td>Periksa internet lalu jalankan ulang; unduhan menggunakan cache.</td>
+</tr>
+<tr>
+<td>Mode offline gagal</td>
+<td>Jalankan online terlebih dahulu sampai semua file berhasil dimuat.</td>
+</tr>
+<tr>
+<td>Program berhenti dengan <code>Killed</code></td>
+<td>Periksa RAM; tutup aplikasi berat dan coba prompt pendek.</td>
+</tr>
+<tr>
+<td>Jawaban lama muncul</td>
+<td>Periksa proses pemuatan/unduhan; CPU menghasilkan token bertahap, script mencetak setelah selesai.</td>
+</tr>
+<tr>
+<td>Jawaban terpotong</td>
+<td>Naikkan <code>--max-new-tokens</code>, misalnya ke 256.</td>
+</tr>
+<tr>
+<td>Jawaban keliru</td>
+<td>Coba instruksi lebih sederhana dan periksa faktanya; keberhasilan program tidak berarti jawabannya benar.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Untuk mempelajari API lebih lanjut: <a href="https://huggingface.co/docs/transformers/chat_templating">panduan chat template Transformers</a>
+dan <a href="https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html">dokumentasi inference_mode PyTorch</a>.</p>
+<h2>9. Hasil pengecekan awal</h2>
+<p>Pada 25 September 2026 di lingkungan ini (CPU, Python 3.12):</p>
+<ul>
+<li>Instalasi library berhasil, Ruff lint dan format lulus.</li>
+<li>Model berhasil diunduh dan dimuat. Revisi cache: <code>c1899de289a04d12100db370d81485cdf75e47ca</code>.</li>
+<li>Prompt <code>Berapa hasil 2 + 2? Jawab singkat dalam bahasa Indonesia.</code> menghasilkan
+  <code>Hasil dari 2 + 2 adalah 4.</code> (13 token keluaran).</li>
+<li>Pengujian <code>--offline</code> dengan prompt <code>Sebutkan satu warna.</code> berhasil dari cache,
+  menghasilkan <code>Jawaban: Kuning</code> (7 token keluaran).</li>
+</ul>
+<p>Ini pemeriksaan bahwa alur program berjalan, bukan evaluasi kualitas model untuk skripsi.</p></div></section>
+<section id="sumber"><div class="eyebrow">10 / Dasar penjelasan</div><h2>Sumber & konfigurasi</h2><p>Penjelasan arsitektur dicocokkan dengan konfigurasi model yang diunduh dan implementasi Transformers 4.51.3 di lingkungan experiment. Diagram adalah ilustrasi struktur; simulasi bukan pengukuran keluaran atau attention model.</p><ul><li><a href="https://huggingface.co/Qwen/Qwen3-0.6B">Model card resmi Qwen3-0.6B</a> — identitas model dan cara pemakaian.</li><li><a href="https://huggingface.co/Qwen/Qwen3-0.6B/blob/c1899de289a04d12100db370d81485cdf75e47ca/config.json">Konfigurasi pada revisi yang diunduh</a> — dimensi jaringan.</li><li><a href="https://github.com/huggingface/transformers/blob/v4.51.3/src/transformers/models/qwen3/modeling_qwen3.py">Implementasi Qwen3 Transformers v4.51.3</a> — attention, RMSNorm, RoPE, MLP, dan residual.</li><li><a href="https://huggingface.co/docs/transformers/chat_templating">Panduan chat template</a>.</li><li><a href="https://docs.pytorch.org/docs/stable/generated/torch.autograd.grad_mode.inference_mode.html">Dokumentasi inference_mode PyTorch</a>.</li></ul><details><summary>Lihat konfigurasi lokal lengkap</summary><pre id="config">{
+  &quot;architectures&quot;: [
+    &quot;Qwen3ForCausalLM&quot;
+  ],
+  &quot;attention_bias&quot;: false,
+  &quot;attention_dropout&quot;: 0.0,
+  &quot;bos_token_id&quot;: 151643,
+  &quot;eos_token_id&quot;: 151645,
+  &quot;head_dim&quot;: 128,
+  &quot;hidden_act&quot;: &quot;silu&quot;,
+  &quot;hidden_size&quot;: 1024,
+  &quot;initializer_range&quot;: 0.02,
+  &quot;intermediate_size&quot;: 3072,
+  &quot;max_position_embeddings&quot;: 40960,
+  &quot;max_window_layers&quot;: 28,
+  &quot;model_type&quot;: &quot;qwen3&quot;,
+  &quot;num_attention_heads&quot;: 16,
+  &quot;num_hidden_layers&quot;: 28,
+  &quot;num_key_value_heads&quot;: 8,
+  &quot;rms_norm_eps&quot;: 1e-06,
+  &quot;rope_scaling&quot;: null,
+  &quot;rope_theta&quot;: 1000000,
+  &quot;sliding_window&quot;: null,
+  &quot;tie_word_embeddings&quot;: true,
+  &quot;torch_dtype&quot;: &quot;bfloat16&quot;,
+  &quot;transformers_version&quot;: &quot;4.51.0&quot;,
+  &quot;use_cache&quot;: true,
+  &quot;use_sliding_window&quot;: false,
+  &quot;vocab_size&quot;: 151936
+}</pre></details><p>Versi library: <code>torch==2.6.0</code>, <code>transformers==4.51.3</code>, <code>accelerate==1.6.0</code>. Pengujian awal memakai build PyTorch CPU. Model dimuat dari cache revisi <code>c1899de289a04d12100db370d81485cdf75e47ca</code>; script belum mengunci revisi untuk eksperimen penelitian.</p></section>
+<footer>Qwen / Lab · Materi eksplorasi, bukan keputusan topik skripsi.<br>Semua CSS, diagram, dan JavaScript tertanam di file ini. Tautan sumber memerlukan internet, materi dan simulasi bisa dibuka offline.</footer></main>
+<script>
+const pieces=['Hasil',' dari',' 2',' +',' 2',' adalah',' 4','.','[selesai]'];let n=0;
+const area=document.getElementById('demo-tokens'),status=document.getElementById('demo-status'),step=document.getElementById('step');
+function renderDemo(){area.replaceChildren();if(n===0){const s=document.createElement('span');s.className='note';s.textContent='Belum ada token jawaban.';area.append(s);}pieces.slice(0,n).forEach((piece,i)=>{const s=document.createElement('span');s.className='token'+(i===n-1?' new':'');s.textContent=piece;area.append(s);});status.textContent=n===0?'Langkah 0: prompt diproses terlebih dahulu (prefill).':n===pieces.length?'Selesai: penanda akhir menghentikan generasi.':'Langkah '+n+': token baru ditambahkan; konteks ini dipakai untuk prediksi berikutnya.';step.disabled=n===pieces.length;}
+step.addEventListener('click',()=>{n=Math.min(n+1,pieces.length);renderDemo();});document.getElementById('reset').addEventListener('click',()=>{n=0;renderDemo();});
+const slider=document.getElementById('temperature');function renderBars(){const t=Number(slider.value);document.getElementById('temp-val').textContent=t.toFixed(1);const exp=[3,2,1].map(x=>Math.exp((x-3)/t)),sum=exp.reduce((a,b)=>a+b,0);document.getElementById('bars').innerHTML=exp.map((v,i)=>'<div class="barrow"><span>Kandidat '+String.fromCharCode(65+i)+'</span><div class="track"><div class="fill" style="width:'+(100*v/sum)+'%"></div></div><span>'+(100*v/sum).toFixed(1)+'%</span></div>').join('');}slider.addEventListener('input',renderBars);renderBars();
+document.querySelectorAll('.quiz').forEach(q=>{q.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const correct=b.dataset.answer===q.dataset.correct;q.querySelector('.feedback').textContent=correct?'Tepat.':'Belum tepat. Baca penjelasannya, lalu coba lagi.';q.querySelector('.explain').hidden=false;}));});
+window.addEventListener('beforeprint',()=>{document.querySelectorAll('details').forEach(d=>{d.dataset.wasOpen=d.open?'1':'0';d.open=true;});});window.addEventListener('afterprint',()=>{document.querySelectorAll('details').forEach(d=>{d.open=d.dataset.wasOpen==='1';});});
+</script></body></html>

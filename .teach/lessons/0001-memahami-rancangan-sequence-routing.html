@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Memahami Rancangan Sequence Routing</title><link rel="stylesheet" href="../assets/styles.css"></head>
+<body><main>
+<p class="small">Pelajaran 1 · Sequence-level routing</p>
+<h1>Satu prompt memilih satu jalur model</h1>
+<p class="lead">Tujuannya bukan membuat language model baru dari nol. Kita menempelkan pengambil keputusan kecil pada model yang sudah ada.</p>
+
+<h2>Kalimat yang sedang diurai</h2>
+<div class="note">Prompt-conditioned selection dari sejumlah kecil grouped-layer routes pada satu decoder-only SLM, dengan backbone dibekukan dan router dilatih dari label route yang dibentuk otomatis.</div>
+
+<h2>Alur sederhananya</h2>
+<div class="flow" aria-label="Alur sequence routing">
+  <div class="box"><b>1. Prompt</b><br>“Ringkas berita ini”</div>
+  <div class="box"><b>2. Layer awal</b><br>Membentuk representasi prompt</div>
+  <div class="box router"><b>3. MLP router</b><br>Memilih R0–R3</div>
+  <div class="box"><b>4. Route</b><br>Menentukan grup aktif</div>
+  <div class="box"><b>5. Decoding</b><br>Menghasilkan ringkasan</div>
+</div>
+
+<h2>Arti setiap bagian</h2>
+<h3>Prompt-conditioned selection</h3><p>Keputusan dibuat berdasarkan isi prompt. Artikel sederhana dan artikel kompleks boleh memperoleh route berbeda.</p>
+<h3>Sejumlah kecil grouped-layer routes</h3><p>Layer tengah dibagi menjadi kelompok A–D. Router tidak bebas membuat jutaan pola, tetapi memilih satu dari beberapa pola yang sudah disiapkan.</p>
+<div class="routes">
+  <div class="route"><b>R0 · penuh</b><span class="group">A</span><span class="group">B</span><span class="group">C</span><span class="group">D</span></div>
+  <div class="route"><b>R1 · ringan</b><span class="group">A</span><span class="group skip">B</span><span class="group">C</span><span class="group">D</span></div>
+  <div class="route"><b>R2 · lebih ringan</b><span class="group">A</span><span class="group skip">B</span><span class="group skip">C</span><span class="group">D</span></div>
+</div>
+<h3>Satu decoder-only SLM</h3><p>Eksperimen awal hanya memakai satu model dasar, misalnya Qwen kecil. Ini mencegah scope melebar.</p>
+<h3>Backbone dibekukan</h3><p>Bobot utama SLM tidak diubah ketika melatih router. Model tetap menyediakan representasi dan menghasilkan teks; yang belajar memilih route hanyalah MLP kecil.</p>
+<h3>Label route dibentuk otomatis</h3><p>Setiap prompt dicoba menggunakan R0, R1, dan R2. Sistem memilih route termurah yang kualitasnya masih cukup baik. Pilihan itu menjadi jawaban benar untuk melatih router—tidak perlu dilabeli manusia.</p>
+
+<h2>Contoh satu data training</h2>
+<pre><code>Prompt: artikel A
+R0 → loss 1,20 · 4 grup aktif
+R1 → loss 1,22 · 3 grup aktif
+R2 → loss 1,85 · 2 grup aktif
+
+Label otomatis: R1
+Alasan: lebih murah daripada R0, tetapi kualitas masih dekat.</code></pre>
+
+<div class="quiz"><h2>Cek pemahaman</h2><p>Jika router memilih R2 untuk sebuah prompt, apa yang dilatih?</p><button onclick="answer(false)">Seluruh bobot Qwen</button><button onclick="answer(true)">MLP pemilih route</button><button onclick="answer(false)">Tokenizer Qwen</button><p id="feedback" aria-live="polite"></p></div>
+
+<h2>Kalimat paling sederhana</h2>
+<p><b>Kita memakai SLM yang sudah jadi, menyediakan beberapa jalur cepat, lalu melatih MLP kecil agar dapat memilih jalur yang cocok untuk setiap prompt.</b></p>
+<p class="small">Bacaan utama: <a href="https://proceedings.mlr.press/v267/wee25a.html">PuDDing</a> untuk pemilihan kandidat route dan <a href="https://aclanthology.org/2025.findings-emnlp.1197/">FiRST</a> untuk sequence-level layer selection. Jika masih ada istilah yang tidak jelas, tanyakan kembali kepada Codex.</p>
+</main><script>function answer(ok){document.getElementById('feedback').textContent=ok?'Benar. Backbone tetap beku; MLP belajar memetakan prompt ke route.':'Belum tepat. Dalam rancangan minimum, backbone dan tokenizer tidak dilatih; hanya MLP router yang belajar.'}</script></body></html>
