@@ -22,7 +22,7 @@
 
   % Sequence-level router branch
   \node[router, right=of g1] (pool) {Rata-rata vektor representasi internal\\token artikel setelah $G_1$};
-  \node[router, below=of pool] (mlp) {Satu MLP\\1 lapisan tersembunyi, 5 keluaran sigmoid};
+  \node[router, below=of pool] (mlp) {MLP $1024\mathbin{\to}64\mathbin{\to}5$\\ReLU dan 5 keluaran sigmoid};
   \node[router, below=of mlp] (mask) {Ambang mengubah keluaran sigmoid\\menjadi keputusan biner $G_2$--$G_6$};
 
   \draw[flow] (g1.east) -- (pool.west);
@@ -31,5 +31,5 @@
   \draw[control] (mask.west) -- ++(-0.6,0) |- (middle.east);
 
   \node[align=left, text width=5.1cm, font=\footnotesize, below=0.8cm of mask] (note)
-    {Garis putus-putus menunjukkan keputusan router.\\Satu jalur dipilih per prompt untuk sisa prompt dan seluruh pembentukan keluaran.\\Bobot Qwen dibekukan; hanya router dilatih.\\Ambang dan objektif pelatihan masih perlu ditetapkan.};
+    {Garis putus-putus menunjukkan keputusan router.\\Satu jalur dipilih per prompt untuk sisa prompt dan seluruh pembentukan keluaran.\\Bobot Qwen dibekukan; hanya router dilatih.\\Target jalur dibuat dari kerugian prediksi token dan proporsi kelompok aktif.};
 \end{tikzpicture}

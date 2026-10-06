@@ -4,7 +4,7 @@
 
 \citet{wee2025pudding} mengusulkan \textit{Prompt-routed Dynamic Depth Pruning} (PuDDing), yaitu metode untuk memilih kelompok Transformer yang akan dilewati berdasarkan prompt. PuDDing menyiapkan beberapa pola lapisan yang dapat dilewati, lalu melatih router ringan untuk memilih salah satunya. Pola-pola tersebut dibentuk berdasarkan data. Pada benchmark penalaran akal sehat yang diuji, penulis melaporkan bahwa PuDDing mempercepat inferensi dan menghasilkan kinerja tugas yang lebih baik daripada pembanding pelompatan lapisan statis.
 
-PuDDing menunjukkan bahwa router dapat memilih pola eksekusi berdasarkan prompt. Namun, temuan pada benchmark penalaran tersebut tidak menetapkan hasil untuk peringkasan berita bahasa Indonesia. Penelitian ini juga tidak akan mereplikasi cara PuDDing memilih di antara pola-pola yang telah disiapkan. Router yang dikaji akan mengeluarkan keputusan aktif atau lewati secara terpisah untuk setiap kelompok tengah, tanpa menetapkan jumlah lapisan aktif yang sama bagi semua artikel. Target dan fungsi objektif untuk melatih keputusan ini masih perlu ditentukan. Rancangan lebih lengkap dijelaskan pada Bab III.
+PuDDing menunjukkan bahwa router dapat memilih pola eksekusi berdasarkan prompt. Namun, temuan pada benchmark penalaran tersebut tidak menetapkan hasil untuk peringkasan berita bahasa Indonesia. Penelitian ini juga tidak akan mereplikasi cara PuDDing memilih di antara pola-pola yang telah disiapkan. Router yang dikaji akan mengeluarkan keputusan aktif atau lewati secara terpisah untuk setiap kelompok tengah, tanpa menetapkan jumlah lapisan aktif yang sama bagi semua artikel. Dalam penelitian ini, target keputusan dibuat melalui pencarian bertahap yang mempertimbangkan kerugian prediksi token dan jumlah kelompok aktif, kemudian digunakan untuk melatih router. Rancangan lebih lengkap dijelaskan pada Bab III.
 
 \section{Routing pada Tingkat Urutan}
 
@@ -18,7 +18,7 @@ FiRST relevan karena menghubungkan keputusan berdasarkan prompt dengan pelaksana
 
 \section{Posisi Penelitian}
 
-Kajian awal menunjukkan bahwa router berbasis prompt dan pemilihan lapisan adaptif telah diteliti. Karena itu, penelitian ini tidak akan mengklaim bahwa penggunaan router dengan sendirinya merupakan kebaruan. Fokus penelitian adalah menguji routing pada tingkat urutan dengan kelompok lapisan di Qwen3-0.6B untuk peringkasan berita Indonesia, dengan rancangan awal yang hanya melatih router.
+Kajian awal menunjukkan bahwa router berbasis prompt dan pemilihan lapisan adaptif telah diteliti. Karena itu, penelitian ini tidak akan mengklaim bahwa penggunaan router dengan sendirinya merupakan kebaruan. Fokus penelitian adalah menguji routing pada tingkat urutan dengan kelompok lapisan di Qwen3-0.6B untuk peringkasan berita Indonesia, dengan rancangan yang membekukan parameter Qwen dan hanya melatih router menggunakan target keputusan yang dibentuk dari kerugian prediksi token serta penalti jumlah kelompok aktif.
 
 Perbandingan dengan model penuh akan mengukur perubahan kualitas dan biaya inferensi ketika lapisan dilewati. Pelompatan lapisan statis dan routing acak menjadi pembanding untuk menilai apakah keputusan router memberikan manfaat dibanding pola tetap atau acak. Penilaian akan mempertimbangkan kualitas ringkasan dan biaya inferensi aktual; protokol penyetaraan biaya antar-metode yang melewati lapisan masih perlu ditetapkan. Analisis juga akan mencatat pola yang dipilih pada berbagai artikel untuk menjelaskan perilaku routing berdasarkan hasil pengamatan.
 

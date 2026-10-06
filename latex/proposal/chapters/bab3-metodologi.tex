@@ -20,7 +20,7 @@ Generasi menggunakan pemilihan token greedy (\textit{greedy decoding}): pada set
 
 Data akan diambil dari dataset XL-Sum di Hugging Face dengan konfigurasi \texttt{indonesian} \citep{xlsumDatasetCard}. Repositori resmi XL-Sum mencantumkan 38.242 pasangan untuk data latih, 4.780 untuk data validasi, dan 4.780 untuk data uji \citep{xlsumRepository}. Jumlah tersebut adalah ukuran split yang tersedia sebelum penyaringan penelitian ini, bukan jumlah sampel akhir yang akan digunakan. Jumlah sampel eksperimen masih bergantung pada penyaringan dan pengukuran kemampuan perangkat.
 
-Artikel menjadi masukan untuk prompt peringkasan. Ringkasan acuan digunakan untuk menilai kualitas keluaran. Apakah ringkasan acuan juga digunakan untuk membentuk target pelatihan router belum ditetapkan karena target dan fungsi objektif pelatihan masih perlu dirancang. Data dipisahkan menjadi data latih (\textit{train}), validasi (\textit{validation}), dan uji (\textit{test}). Data uji tidak akan digunakan untuk menentukan target pelatihan ataupun memilih konfigurasi.
+Artikel menjadi masukan untuk prompt peringkasan. Ringkasan acuan digunakan untuk menilai kualitas keluaran dan untuk membentuk target pelatihan router pada data latih. Data dipisahkan menjadi data latih (\textit{train}), validasi (\textit{validation}), dan uji (\textit{test}). Data uji tidak akan digunakan untuk menentukan target pelatihan ataupun memilih konfigurasi.
 
 \medskip
 \noindent\textbf{Pembersihan Teks dan Duplikasi}\par\smallskip
@@ -58,7 +58,7 @@ Penelitian direncanakan melalui tahapan berikut.
   \item \textbf{Perumusan rancangan.} Kajian literatur, batasan, dan protokol evaluasi akan dilengkapi. Luaran tahap ini adalah spesifikasi eksperimen yang membedakan keputusan yang telah ditetapkan dari parameter yang masih harus dipilih menggunakan data validasi.
   \item \textbf{Persiapan data dan model.} Backbone dan split data akan disiapkan, prompt akan dibentuk, serta revisi model dan konfigurasi dicatat. Luaran tahap ini adalah proses masukan--keluaran model penuh yang dapat dijalankan ulang.
   \item \textbf{Implementasi eksekusi kondisional.} Router, mekanisme pelompatan kelompok, dan metode pembanding akan diimplementasikan. Kebenaran eksekusi, konsistensi jalur, dan penanganan KV cache akan diperiksa.
-  \item \textbf{Pelatihan dan pemilihan konfigurasi router.} Sebelum pelatihan, target, fungsi kerugian, cara mempelajari keputusan biner, dan dorongan penghematan komputasi akan ditetapkan. Router akan dilatih pada data latih dengan parameter Qwen dibekukan. Konfigurasi dipilih menggunakan data validasi.
+  \item \textbf{Pelatihan dan pemilihan konfigurasi router.} Target keputusan router akan dibuat dari data latih melalui pencarian bertahap berbasis kerugian prediksi token dan proporsi kelompok aktif. Router kemudian dilatih untuk memprediksi lima keputusan biner tersebut dengan parameter Qwen dibekukan. Nilai penalti komputasi dan konfigurasi yang akan digunakan dipilih menggunakan data validasi.
   \item \textbf{Evaluasi dan analisis.} Konfigurasi terpilih akan diuji pada data uji. Kualitas ringkasan, waktu inferensi, dan pola jalur yang dipilih akan dianalisis dan dibandingkan. Luaran tahap ini adalah hasil perbandingan beserta keterbatasannya.
   \item \textbf{Penulisan laporan.} Rancangan, implementasi, dan temuan akan didokumentasikan. Penulisan dilakukan sejalan dengan tahapan penelitian.
 \end{enumerate}
@@ -92,11 +92,21 @@ Kelompok $G_1$ dan $G_7$ selalu dijalankan. Untuk tiap kelompok $G_i$, dengan $i
 \medskip
 \noindent\textbf{Arsitektur Router dan Rencana Pelatihan}\par\smallskip
 
-Router menggunakan jaringan perceptron multilapis (\textit{multilayer perceptron}, MLP), yaitu jaringan saraf yang memproses masukan melalui lapisan-lapisan terhubung. MLP ini memiliki satu lapisan tersembunyi dan lima keluaran sigmoid. Setiap keluaran berpasangan dengan satu kelompok tengah dan diubah menjadi keputusan aktif atau lewati menggunakan ambang. Nilai ambang, jumlah unit pada lapisan tersembunyi, fungsi aktivasi lapisan tersebut, dan pengaturan optimisasi masih perlu ditetapkan. Saat inferensi, router hanya menerima representasi artikel dari prompt, bukan ringkasan acuannya.
+Router menggunakan jaringan perceptron multilapis (\textit{multilayer perceptron}, MLP), yaitu jaringan saraf yang memproses masukan melalui lapisan-lapisan terhubung. Masukan MLP adalah rata-rata representasi token artikel setelah $G_1$. MLP memiliki satu lapisan tersembunyi berisi 64 unit dengan fungsi aktivasi ReLU dan lima keluaran sigmoid. Setiap keluaran berpasangan dengan satu kelompok tengah. Nilai keluaran yang lebih besar atau sama dengan 0,5 diterjemahkan sebagai keputusan aktif, sedangkan nilai di bawah 0,5 diterjemahkan sebagai keputusan lewati. Saat inferensi, router hanya menerima representasi artikel dari prompt, bukan ringkasan acuannya.
 
 Lima keputusan biner memungkinkan 32 kombinasi secara matematis. Namun, router tidak mengklasifikasikan 32 nomor jalur, dan pelatihan tidak harus menilai semua kombinasi tersebut. Parameter Qwen tetap dibekukan, termasuk parameter kelompok pertama yang menghasilkan representasi router. LoRA belum termasuk dalam rancangan awal.
 
-Target, fungsi kerugian, dan cara mempelajari keputusan biner masih harus dirancang. Fungsi objektif perlu mempertimbangkan kualitas ringkasan dan biaya eksekusi agar pelatihan memiliki dorongan untuk menghemat komputasi. Pembentukan target secara luring (\textit{offline}) dan penambahan penalti biaya merupakan pilihan yang belum diputuskan. Biaya pelatihan akan dicatat terpisah dari biaya inferensi. Konfigurasi router dipilih menggunakan data validasi; manfaatnya dinilai dari ringkasan yang dihasilkan pada data uji.
+Target keputusan dibuat secara luring (\textit{offline}) dari data latih. Untuk sebuah artikel dengan ringkasan acuan, setiap kandidat jalur dinilai menggunakan kerugian prediksi token dengan \textit{teacher forcing}, yaitu proses yang memberikan token acuan sebelumnya ketika menghitung prediksi token berikutnya. Skor kandidat jalur dirumuskan sebagai
+\begin{equation}
+  J(m) = \operatorname{NLL}(m) + \lambda C(m),
+  \qquad C(m) = \frac{m_2+m_3+m_4+m_5+m_6}{5},
+  \label{eq:route-objective}
+\end{equation}
+\noindent dengan $\operatorname{NLL}(m)$ sebagai rata-rata kerugian prediksi token pada jalur $m$, $C(m)$ sebagai proporsi kelompok tengah yang aktif, dan $\lambda$ sebagai bobot penghematan komputasi. Karena kelima kelompok memiliki jumlah lapisan yang sama, $C(m)$ digunakan sebagai ukuran sederhana proporsi kelompok yang dijalankan. Waktu inferensi aktual tetap diukur secara terpisah pada tahap evaluasi.
+
+Pencarian target dimulai dari jalur penuh, yaitu semua kelompok tengah aktif. Pada setiap langkah, satu kelompok tengah yang masih aktif dicoba untuk dilewati. Kandidat dengan nilai $J(m)$ paling rendah dipilih jika nilainya lebih rendah daripada jalur saat ini. Proses berhenti ketika tidak ada penghapusan kelompok yang menurunkan nilai tersebut. Cara ini menghasilkan target biner untuk $G_2$ sampai $G_6$ tanpa kewajiban mengevaluasi seluruh 32 pola jalur.
+
+Router dilatih menggunakan \textit{binary cross-entropy with logits} pada lima target biner tersebut. Fungsi ini membandingkan keluaran router dengan target aktif atau lewati pada setiap kelompok. Penalti penghematan tidak ditambahkan lagi ke fungsi klasifikasi karena penghematan sudah digunakan saat membentuk target jalur. Konfigurasi awal router menggunakan optimizer AdamW dengan \textit{learning rate} $10^{-3}$, \textit{weight decay} $10^{-4}$, paling banyak 50 epoch, dan \textit{early stopping} dengan kesabaran lima epoch. Nilai $\lambda$ dan konfigurasi yang dipilih ditentukan menggunakan data validasi. Ringkasan acuan hanya digunakan untuk membentuk target pada pelatihan; saat inferensi, router hanya menggunakan representasi prompt. Data uji tidak digunakan untuk membentuk target atau memilih konfigurasi.
 
 \subsection{Bagan Alir Metodologi}
 
