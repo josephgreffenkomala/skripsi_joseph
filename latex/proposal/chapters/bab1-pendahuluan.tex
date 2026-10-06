@@ -2,73 +2,75 @@
 
 \section{Latar Belakang}
 
-% TODO: Tulis latar belakang penelitian Anda di sini.
-% Jelaskan konteks, urgensi, dan relevansi topik yang dipilih.
-% Rujuk pada penelitian terdahulu dan data sekunder jika ada.
+Model bahasa menghasilkan teks sedikit demi sedikit dalam satuan yang disebut token (potongan teks). Pada setiap langkah inferensi, yaitu saat model digunakan untuk menghasilkan keluaran, model menghitung representasi melalui lapisan-lapisan Transformer, sebuah arsitektur jaringan saraf, sebelum memilih token berikutnya. Penghitungan berulang ini dapat membuat proses inferensi memerlukan waktu dan komputasi yang besar. FiRST, misalnya, mengkaji pengurangan waktu inferensi dengan melewati sebagian lapisan berdasarkan masukan \citep{jain2025first}. Namun, pengurangan komputasi perlu dinilai bersama perubahan kualitas teks yang dihasilkan.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Salah satu cara mengurangi penghitungan tersebut adalah \textit{layer skipping}, yaitu melewati lapisan tertentu saat model menghasilkan keluaran. Pada strategi statis, lapisan yang dijalankan sama untuk semua masukan. Pada strategi adaptif, keputusan lapisan dapat bergantung pada isi masukan. PuDDing menggunakan router, yaitu komponen ringan yang memilih lapisan untuk dijalankan, berdasarkan prompt (teks masukan yang berisi instruksi dan bahan untuk diproses) \citep{wee2025pudding}. Hasil PuDDing pada tugas penalaran akal sehat yang diuji dalam penelitian tersebut menjadi bukti bagi pendekatan pemilihan adaptif pada tugas-tugas itu, tetapi tidak memastikan hasil yang sama pada peringkasan berita bahasa Indonesia.
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
+Penelitian ini akan mengkaji pemilihan jalur eksekusi pada tingkat urutan masukan dan keluaran (\textit{sequence-level routing}). Router akan membaca representasi prompt satu kali dan menentukan apakah setiap kelompok lapisan tengah dijalankan atau dilewati. Keputusan yang sama dipertahankan selama sisa pemrosesan prompt dan seluruh proses pembentukan token keluaran (\textit{decoding}). Dengan demikian, jalur eksekusi tidak ditentukan ulang untuk setiap token keluaran. Dalam rancangan awal, parameter model utama akan dibekukan dan hanya parameter router yang dilatih.
+
+Model utama (\textit{backbone}) yang digunakan adalah Qwen3-0.6B, yaitu model bahasa kausal yang memprediksi token berikutnya berdasarkan teks sebelumnya, dengan ukuran nominal 0,6 miliar parameter dan 28 lapisan \citep{qwen2025modelcard}. Tugas penelitian adalah peringkasan berita bahasa Indonesia menggunakan bagian berbahasa Indonesia dari XL-Sum. Dataset XL-Sum berisi pasangan artikel dan ringkasan yang disiapkan untuk penelitian peringkasan abstraktif, yaitu peringkasan yang merumuskan kembali informasi penting dengan kalimat baru \citep{hasan2021xlsum}. Ringkasan dalam dataset akan digunakan sebagai acuan untuk menilai keluaran model. Cara menggunakan ringkasan acuan untuk membentuk target pelatihan router masih perlu ditetapkan.
+
+Jumlah lapisan yang dilewati saja belum menunjukkan manfaat praktis. Router menambah pekerjaan komputasi untuk membaca representasi prompt dan menentukan jalur. Karena itu, penelitian ini akan mengukur waktu inferensi aktual, termasuk biaya tambahan router, dan menilai perubahan kualitas ringkasan. Analisis tersebut diperlukan untuk melihat apakah penghematan waktu sebanding dengan perubahan kualitas.
+
+Evaluasi akan membandingkan router terlatih dengan model penuh, pelompatan lapisan statis, dan routing acak. Model penuh menjadi acuan kualitas dan biaya tanpa pelompatan lapisan. Perbandingan di antara metode yang melewati lapisan akan mempertimbangkan kualitas dan waktu inferensi aktual; cara menyetarakan biaya antar-metode masih perlu ditetapkan. Penelitian tidak mengasumsikan router akan lebih unggul. Hasil evaluasi akan digunakan untuk menjelaskan kapan routing memberi manfaat dan kapan biaya tambahannya tidak diimbangi oleh penghematan. Kontribusi penelitian akan dirumuskan lebih lanjut setelah kajian literatur dilengkapi dan dibahas bersama dosen pembimbing.
 
 \section{Rumusan Masalah}
 
-% TODO: Tulis rumusan masalah dalam bentuk pertanyaan penelitian.
-% Rumusan masalah harus spesifik, terukur, dan dapat dijawab.
-
-Berdasarkan latar belakang di atas, rumusan masalah dalam penelitian ini adalah:
+Berdasarkan latar belakang tersebut, penelitian ini mengajukan pertanyaan berikut.
 
 \begin{enumerate}
-  \item Bagaimana ...?
-  \item Bagaimana ...?
-  \item Bagaimana ...?
+  \item Bagaimana pengaruh sequence-level routing terhadap kualitas ringkasan dan waktu inferensi Qwen3-0.6B pada XL-Sum Indonesia?
+  \item Apakah router terlatih memberikan trade-off kualitas--efisiensi yang lebih baik daripada pelompatan lapisan statis dan routing acak, jika kualitas ringkasan dan biaya inferensi dipertimbangkan bersama?
 \end{enumerate}
 
 \section{Batasan Masalah}
 
-% TODO: Tulis batasan masalah untuk memfokuskan penelitian.
-% Batasan dapat mencakup ruang lingkup, teknologi, atau aspek yang tidak diteliti.
+\subsection{Cakupan Penelitian}
 
-Agar penelitian ini tetap fokus dan terukur, batasan masalah yang ditetapkan adalah:
+Penelitian ini dibatasi pada aspek-aspek berikut.
 
 \begin{enumerate}
-  \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+  \item Model yang digunakan adalah Qwen3-0.6B, sebuah model bahasa kecil berbasis decoder (\textit{decoder-only small language model}, SLM).
+  \item Tugas penelitian adalah peringkasan berita berbahasa Indonesia menggunakan subset Indonesia dari XL-Sum.
+  \item Mekanisme yang ditambahkan terdiri atas router ringan dan pelaksanaan kelompok lapisan secara kondisional. Sebanyak 28 lapisan dibagi menjadi tujuh kelompok berurutan, masing-masing berisi empat lapisan. Kelompok pertama dan terakhir selalu dijalankan. Setiap kelompok tengah dapat dijalankan atau dilewati; jumlah lapisan aktif tidak ditetapkan sama untuk setiap artikel.
+  \item Router menggunakan rata-rata vektor representasi internal (\textit{hidden state}) token artikel setelah kelompok pertama. Token instruksi, token khusus, dan padding tidak disertakan dalam rata-rata. Sebuah jaringan perceptron multilapis (\textit{multilayer perceptron}, MLP) dengan satu lapisan tersembunyi dan lima keluaran sigmoid, yaitu nilai antara nol dan satu, menghasilkan keputusan untuk kelompok tengah. Ambang untuk mengubah keluaran sigmoid menjadi keputusan biner masih perlu ditetapkan. Jalur dipilih berdasarkan prompt dan dipertahankan selama sisa pemrosesan prompt serta seluruh pembentukan token keluaran.
+  \item Dalam rancangan pelatihan awal, hanya parameter router yang diperbarui; parameter Qwen dibekukan. Target pelatihan, fungsi kerugian (\textit{loss}), dan cara mendorong penghematan komputasi masih perlu ditetapkan. Penggunaan adapter seperti \textit{Low-Rank Adaptation} (LoRA) belum termasuk rancangan awal.
+  \item Metode pembanding adalah model penuh, pelompatan lapisan statis (\textit{static layer skipping}), dan routing acak (\textit{random routing}). Pola statis akan dipilih menggunakan data validasi. Distribusi keputusan acak dan cara menyetarakan biaya antar-metode yang melewati lapisan masih perlu ditetapkan.
+  \item Kualitas ringkasan dinilai sepenuhnya secara otomatis menggunakan skor F1 pada ROUGE-1, ROUGE-2, ROUGE-L, dan BERTScore. ROUGE mengukur kecocokan kata dan urutannya; BERTScore membandingkan representasi kontekstual teks. Skor F1 menggabungkan presisi dan cakupan. F1 dihitung untuk setiap artikel, lalu dirata-ratakan secara terpisah untuk tiap metrik; keempat skor dilaporkan sendiri-sendiri. Tidak dilakukan penilaian manual atau pemeriksaan faktualitas manual pada sampel. Efisiensi dinilai melalui waktu total per artikel, waktu pemrosesan prompt, waktu pembentukan keluaran, dan jumlah token keluaran. Pengukuran menggunakan ukuran batch satu, pemanasan eksekusi (\textit{warm-up}), dan pengulangan. Semua metode menggunakan mode non-thinking, yaitu mode yang mencegah Qwen menghasilkan teks penalaran sebelum jawaban akhir, dan konfigurasi \textit{greedy decoding} yang sama: \texttt{do\_sample=False} dan \texttt{num\_beams=1}. Perangkat dan presisi numerik juga akan disamakan.
+  \item Batas jendela konteks eksperimen adalah 4.096 token untuk masukan dan keluaran secara gabungan. Keluaran dibatasi hingga maksimum 256 token, sehingga masukan dapat memuat paling banyak 3.840 token, termasuk instruksi dan format chat. Generasi berhenti saat model mengeluarkan token akhir respons sesuai konfigurasi model atau mencapai 256 token. Token akhir respons termasuk dalam batas 256 token dan tidak ditetapkan panjang minimum. Batas dan aturan penghentian ini sama untuk seluruh metode.
 \end{enumerate}
+
+\subsection{Pengolahan dan Pemilihan Data}
+
+Sebelum pemrosesan, spasi dan baris kosong dihapus hanya dari awal dan akhir artikel serta ringkasan acuan. Huruf besar, tanda baca, spasi di antara kata, dan isi teks lainnya dipertahankan. Pasangan artikel--ringkasan dikeluarkan jika salah satu teks kosong setelah pembersihan ini. Aturan tersebut berlaku pada data latih (\textit{train}), validasi (\textit{validation}), dan uji (\textit{test}); jumlah pasangan kosong yang dikeluarkan akan dicatat.
+
+Artikel dianggap duplikat jika teksnya sama persis setelah pembersihan. Dalam satu bagian data (\textit{split}), kemunculan pertama menurut urutan asli dataset dipertahankan bersama ringkasan acuannya. Jika artikel yang sama muncul pada beberapa split, pasangan pada data uji diprioritaskan, diikuti data validasi lalu data latih. Salinan pada split lain dikeluarkan dan tidak dipindahkan. Identitas serta jumlah pasangan yang dikeluarkan akan dicatat.
+
+Artikel dikeluarkan jika prompt lengkap yang memuat artikel utuh melebihi 3.840 token menurut tokenizer Qwen3-0.6B. Prompt mencakup instruksi dan format chat; artikel tidak dipotong. Ringkasan acuan juga dikeluarkan jika melebihi 256 token, termasuk token akhir respons menurut tokenizer yang sama. Ringkasan tidak dipotong. Kedua batas diterapkan pada seluruh split. Himpunan artikel evaluasi akan sama untuk semua metode. Jumlah artikel yang dikeluarkan karena batas panjang dan jumlah yang tersisa pada setiap split akan dicatat.
+
+Jika eksperimen menggunakan sebagian data, sampel dipilih secara acak tanpa pengembalian pada setiap split setelah pembersihan, penyaringan, dan penghapusan duplikasi. Artinya, sebuah artikel tidak dapat terpilih lebih dari satu kali dalam split yang sama. Pemilihan memakai seed tetap 42. Identitas sampel terpilih akan disimpan, dan semua metode akan menggunakan subset evaluasi yang sama. Jumlah sampel per split masih menunggu pengukuran waktu dan penggunaan memori.
+
+\subsection{Lingkungan Awal dan Rincian yang Belum Ditetapkan}
+
+Pemeriksaan awal akan menggunakan laptop lokal dengan CPU AMD Ryzen 3 5300U. Sistem melaporkan sekitar 9,1 GiB RAM dan memiliki grafis Radeon terintegrasi. Konfigurasi awal menggunakan CPU, presisi FP32, dan ukuran batch satu. Skala data yang dapat digunakan akan ditentukan berdasarkan pengukuran waktu dan memori. Lingkungan evaluasi akhir belum ditetapkan; jika lingkungan berubah, seluruh metode akan diuji pada lingkungan akhir yang sama.
+
+Jumlah sampel, aturan penyaringan tambahan, target dan fungsi kerugian pelatihan, mekanisme pembelajaran keputusan biner, dorongan penghematan komputasi, ambang router, ukuran dan fungsi aktivasi lapisan tersembunyi, serta hiperparameter pelatihan masih perlu ditetapkan. Hal yang sama berlaku untuk protokol penyetaraan biaya, distribusi routing acak, kriteria pemilihan pola statis dan konfigurasi router, rincian implementasi metrik, jumlah pemanasan dan pengulangan, jumlah seed, lingkungan evaluasi akhir, versi perangkat lunak, serta jadwal. Rincian tersebut akan dipilih sebelum evaluasi akhir; keputusan dasar mekanisme penelitian di atas tetap menjadi acuan.
 
 \section{Tujuan Penelitian}
 
-% TODO: Tulis tujuan penelitian yang ingin dicapai.
-% Tujuan harus sesuai dengan rumusan masalah.
-
-Tujuan dari penelitian ini adalah:
+Penelitian ini bertujuan untuk:
 
 \begin{enumerate}
-  \item Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  \item Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-  \item Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+  \item menganalisis pengaruh sequence-level routing terhadap kualitas ringkasan dan waktu inferensi Qwen3-0.6B pada XL-Sum Indonesia; dan
+  \item membandingkan keseimbangan kualitas dan efisiensi (\textit{trade-off}) router terlatih dengan pelompatan lapisan statis serta routing acak, dengan model penuh sebagai acuan.
 \end{enumerate}
 
 \section{Manfaat Penelitian}
 
-% TODO: Tulis manfaat penelitian bagi akademik dan praktis.
+Secara akademik, penelitian ini diharapkan memberikan bukti empiris tentang perilaku routing adaptif pada Qwen3-0.6B untuk peringkasan berita bahasa Indonesia. Hasilnya akan menunjukkan hubungan antara kelompok lapisan yang dijalankan, kualitas ringkasan, dan waktu inferensi pada rancangan yang diuji. Temuan dan keterbatasannya dapat membantu merumuskan pertanyaan untuk penelitian lanjutan.
 
-Penelitian ini diharapkan memberikan manfaat berikut:
-
-\begin{enumerate}
-  \item \textbf{Teoritis:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  \item \textbf{Praktis:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-\end{enumerate}
+Secara praktis, dokumentasi implementasi dan protokol evaluasi diharapkan membantu peneliti lain menguji pelaksanaan lapisan secara kondisional pada model ini. Hasil penelitian dapat digunakan untuk menilai penghematan waktu inferensi beserta perubahan kualitas ringkasan, tanpa menganggap bahwa melewati lapisan selalu mempercepat proses.
 
 \section{Sistematika Penulisan}
 
-% TODO: Sesuaikan sistematika penulisan dengan struktur penelitian Anda.
-
-Sistematika penulisan proposal tugas akhir ini adalah sebagai berikut:
-
-\begin{itemize}
-  \item \textbf{Bab I:} Pendahuluan --- berisi latar belakang, rumusan masalah, batasan masalah, tujuan, manfaat, dan sistematika penulisan.
-  \item \textbf{Bab II:} Penelitian Terkait --- membahas state of the art dan hasil-hasil penelitian sebelumnya yang relevan.
-  \item \textbf{Bab III:} Metode dan Rancangan Penelitian --- menjelaskan metodologi, perancangan sistem, bagan alir, dan tahapan implementasi.
-  \item \textbf{Bab IV:} Jadwal Penelitian --- memuat Gantt Chart berbasis bulan untuk perencanaan waktu penelitian.
-\end{itemize}
+Proposal ini terdiri atas empat bab. Bab I menjelaskan latar belakang, rumusan masalah, batasan, tujuan, dan manfaat penelitian. Bab II mengulas penelitian terkait dan menjelaskan posisi penelitian ini. Bab III memaparkan metode, rancangan sistem, tahapan penelitian, dan rencana evaluasi. Bab IV menjelaskan rencana penyusunan jadwal penelitian; bagan jadwal berbasis bulan akan dilengkapi setelah alokasi waktunya ditetapkan.

@@ -1,34 +1,25 @@
 \chapter{PENELITIAN TERKAIT}
 
-\section{Topik Pertama}
+\section{Pemilihan Lapisan Berdasarkan Masukan}
 
-% TODO: Jelaskan teori atau konsep pertama yang relevan dengan penelitian Anda.
-% Gunakan referensi dari pustaka yang terpercaya.
+\citet{wee2025pudding} mengusulkan \textit{Prompt-routed Dynamic Depth Pruning} (PuDDing), yaitu metode untuk memilih kelompok Transformer yang akan dilewati berdasarkan prompt. PuDDing menyiapkan beberapa pola lapisan yang dapat dilewati, lalu melatih router ringan untuk memilih salah satunya. Pola-pola tersebut dibentuk berdasarkan data. Pada benchmark penalaran akal sehat yang diuji, penulis melaporkan bahwa PuDDing mempercepat inferensi dan menghasilkan kinerja tugas yang lebih baik daripada pembanding pelompatan lapisan statis.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi1}.
+PuDDing menunjukkan bahwa router dapat memilih pola eksekusi berdasarkan prompt. Namun, temuan pada benchmark penalaran tersebut tidak menetapkan hasil untuk peringkasan berita bahasa Indonesia. Penelitian ini juga tidak akan mereplikasi cara PuDDing memilih di antara pola-pola yang telah disiapkan. Router yang dikaji akan mengeluarkan keputusan aktif atau lewati secara terpisah untuk setiap kelompok tengah, tanpa menetapkan jumlah lapisan aktif yang sama bagi semua artikel. Target dan fungsi objektif untuk melatih keputusan ini masih perlu ditentukan. Rancangan lebih lengkap dijelaskan pada Bab III.
 
-\subsection{Subtopik Pertama}
+\section{Routing pada Tingkat Urutan}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+\citet{jain2025first} mengusulkan \textit{Finetuning Router-Selective Transformers} (FiRST). FiRST menggunakan router khusus untuk setiap lapisan. Router menentukan lapisan yang dilewati berdasarkan prompt pada tahap \textit{prefill}, yaitu pemrosesan awal prompt sebelum token keluaran dihasilkan. Keputusan tersebut kemudian digunakan selama pembentukan token keluaran. FiRST juga dirancang agar tetap menggunakan \textit{key-value cache} (KV cache), yakni penyimpanan nilai key dan value dari lapisan untuk digunakan kembali selama inferensi.
 
-\subsection{Subtopik Kedua}
+FiRST relevan karena menghubungkan keputusan berdasarkan prompt dengan pelaksanaan lapisan saat menghasilkan keluaran. Penelitian ini menggunakan satu router yang membuat keputusan biner untuk kelompok lapisan, bukan router terpisah untuk setiap lapisan. Kesamaan pada penggunaan informasi prompt tidak berarti arsitektur atau metode pelatihannya menyalin FiRST. Penanganan KV cache akan diperiksa sebagai bagian dari validasi implementasi agar pelompatan lapisan tetap konsisten selama inferensi.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+\section{Peringkasan Berita dengan XL-Sum}
 
-\section{Topik Kedua}
+\citet{hasan2021xlsum} memperkenalkan XL-Sum, dataset multibahasa berisi pasangan artikel berita BBC dan ringkasan yang ditulis oleh manusia. Dataset ini mencakup bahasa Indonesia dan mendukung tugas peringkasan abstraktif. Penelitian ini akan menggunakan bagian berbahasa Indonesia. Setiap pasangan artikel dan ringkasan acuan menyediakan contoh masukan serta keluaran rujukan untuk evaluasi. Versi dataset, pembagian data, dan langkah pengolahan yang digunakan akan dicatat agar eksperimen dapat ditelusuri.
 
-% TODO: Jelaskan teori atau konsep kedua yang relevan.
+\section{Posisi Penelitian}
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi2}.
+Kajian awal menunjukkan bahwa router berbasis prompt dan pemilihan lapisan adaptif telah diteliti. Karena itu, penelitian ini tidak akan mengklaim bahwa penggunaan router dengan sendirinya merupakan kebaruan. Fokus penelitian adalah menguji routing pada tingkat urutan dengan kelompok lapisan di Qwen3-0.6B untuk peringkasan berita Indonesia, dengan rancangan awal yang hanya melatih router.
 
-\section{Topik Ketiga}
+Perbandingan dengan model penuh akan mengukur perubahan kualitas dan biaya inferensi ketika lapisan dilewati. Pelompatan lapisan statis dan routing acak menjadi pembanding untuk menilai apakah keputusan router memberikan manfaat dibanding pola tetap atau acak. Penilaian akan mempertimbangkan kualitas ringkasan dan biaya inferensi aktual; protokol penyetaraan biaya antar-metode yang melewati lapisan masih perlu ditetapkan. Analisis juga akan mencatat pola yang dipilih pada berbagai artikel untuk menjelaskan perilaku routing berdasarkan hasil pengamatan.
 
-% TODO: Jelaskan teori atau konsep ketiga yang relevan.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat \citep{referensi3}.
-
-\section{Tinjauan Keamanan / Aspek Lain}
-
-% TODO: Sesuaikan dengan aspek spesifik penelitian Anda.
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+\noindent\textbf{Status kajian.} Bab ini merupakan tinjauan awal. Literatur akan diperluas, dan konfigurasi penelitian terdahulu akan dibandingkan secara lebih rinci sebelum kontribusi final dirumuskan. Belum ada klaim bahwa kombinasi model, dataset, dan metode yang dipilih merupakan penerapan pertama.

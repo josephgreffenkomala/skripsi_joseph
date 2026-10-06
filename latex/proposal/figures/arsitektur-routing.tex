@@ -1,0 +1,35 @@
+% Diagram arsitektur sequence-level routing.
+\begin{tikzpicture}[
+  node distance=0.68cm and 1.2cm,
+  block/.style={draw, rounded corners, align=center, text width=6.3cm,
+    minimum height=0.78cm, inner sep=6pt, font=\small},
+  fixed/.style={block, fill=gray!10},
+  conditional/.style={block, fill=blue!6},
+  router/.style={block, text width=5.1cm, fill=orange!10},
+  flow/.style={-{Latex}, thick},
+  control/.style={-{Latex}, dashed, thick}
+]
+  % Main model path
+  \node[block] (input) {Artikel dan instruksi peringkasan};
+  \node[fixed, below=of input] (g1) {$G_1$: lapisan 1--4\\Selalu dijalankan};
+  \node[conditional, below=of g1] (middle) {Kelompok tengah $G_2$--$G_6$\\Tiap kelompok dijalankan ($m_i=1$) atau dilewati ($m_i=0$)};
+  \node[fixed, below=of middle] (g7) {$G_7$: lapisan 25--28\\Selalu dijalankan};
+  \node[fixed, below=of g7] (head) {Normalisasi akhir dan kepala bahasa (LM head)};
+  \node[block, below=of head] (output) {Ringkasan keluaran};
+
+  \foreach \a/\b in {input/g1,g1/middle,middle/g7,g7/head,head/output}
+    \draw[flow] (\a.south) -- (\b.north);
+
+  % Sequence-level router branch
+  \node[router, right=of g1] (pool) {Rata-rata vektor representasi internal\\token artikel setelah $G_1$};
+  \node[router, below=of pool] (mlp) {Satu MLP\\1 lapisan tersembunyi, 5 keluaran sigmoid};
+  \node[router, below=of mlp] (mask) {Ambang mengubah keluaran sigmoid\\menjadi keputusan biner $G_2$--$G_6$};
+
+  \draw[flow] (g1.east) -- (pool.west);
+  \draw[flow] (pool.south) -- (mlp.north);
+  \draw[flow] (mlp.south) -- (mask.north);
+  \draw[control] (mask.west) -- ++(-0.6,0) |- (middle.east);
+
+  \node[align=left, text width=5.1cm, font=\footnotesize, below=0.8cm of mask] (note)
+    {Garis putus-putus menunjukkan keputusan router.\\Satu jalur dipilih per prompt untuk sisa prompt dan seluruh pembentukan keluaran.\\Bobot Qwen dibekukan; hanya router dilatih.\\Ambang dan objektif pelatihan masih perlu ditetapkan.};
+\end{tikzpicture}

@@ -2,80 +2,159 @@
 
 \section{Deskripsi Umum Penelitian}
 
-% TODO: Jelaskan gambaran besar penelitian yang akan dilakukan.
+Penelitian ini menggunakan pendekatan eksperimental untuk mengukur hubungan antara kualitas ringkasan dan efisiensi inferensi. Model yang diuji adalah Qwen3-0.6B dengan sebuah router ringan yang memilih kelompok lapisan untuk dijalankan berdasarkan prompt. Tugasnya adalah meringkas berita berbahasa Indonesia pada subset Indonesia dari XL-Sum. Hasil router akan dibandingkan dengan model penuh, pelompatan lapisan statis, dan routing acak.
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+Dalam rancangan awal, seluruh parameter Qwen dibekukan dan hanya parameter router yang dilatih. Router memilih satu pola kelompok lapisan untuk setiap prompt. Pola itu digunakan selama sisa pemrosesan prompt dan semua langkah pembentukan token keluaran. Dampaknya akan dinilai dari kualitas ringkasan dan waktu inferensi aktual, bukan hanya dari jumlah lapisan yang dilewati.
 
-\section{Metodologi}
+\section{Model dan Data Penelitian}
 
-% TODO: Jelaskan metode penelitian yang digunakan.
-% Contoh: Research and Development (R&D), Eksperimental, Studi Kasus, dll.
+\subsection{Model Qwen3-0.6B}
 
-Tahapan penelitian dilakukan secara sistematis sebagai berikut:
+Model utama yang digunakan adalah \texttt{Qwen/Qwen3-0.6B}. Dokumentasi model mencatat bahwa Qwen3-0.6B merupakan model bahasa kausal dengan 28 lapisan \citep{qwen2025modelcard}. Lapisan dibagi menjadi tujuh kelompok berurutan, masing-masing berisi empat lapisan. Jika lapisan diberi nomor dari satu, kelompok $G_i$ mencakup lapisan $4i-3$ hingga $4i$, untuk $i=1,\ldots,7$. Kelompok pertama ($G_1$) dan terakhir ($G_7$) selalu dijalankan. Router hanya menentukan apakah lima kelompok tengah ($G_2$ sampai $G_6$) dijalankan atau dilewati. Menjalankan $G_1$ dan $G_7$ merupakan asumsi rancangan; penelitian ini tidak menganggap keduanya telah terbukti sebagai kelompok terpenting.
+
+Revisi bobot model, tokenizer, dan versi perangkat lunak akan dicatat agar konfigurasi eksperimen dapat diketahui. Generasi dilakukan dalam mode non-thinking, yang mencegah Qwen menghasilkan teks penalaran sebelum jawaban akhir. Jendela konteks (\textit{context window}), yaitu kapasitas token gabungan prompt dan keluaran dalam satu urutan, dibatasi hingga 4.096 token. Batas ini adalah pengaturan eksperimen, bukan kapasitas maksimum bawaan model. Paling banyak 256 token digunakan untuk keluaran melalui parameter \texttt{max\_new\_tokens=256}; karena itu, prompt dibatasi hingga 3.840 token, termasuk instruksi dan token format chat. Panjang prompt dihitung dengan tokenizer Qwen3-0.6B setelah format chat diterapkan. Model dapat berhenti sebelum menghasilkan 256 token. Batas prompt dan keluaran yang sama berlaku bagi semua metode.
+
+Generasi menggunakan pemilihan token greedy (\textit{greedy decoding}): pada setiap langkah, model memilih token dengan skor tertinggi tanpa mengambil sampel secara acak. Pengaturan yang digunakan adalah \texttt{do\_sample=False} dan \texttt{num\_beams=1}. Generasi berhenti saat model menghasilkan token akhir respons sesuai konfigurasi model atau saat mencapai 256 token keluaran. Token akhir respons termasuk dalam batas tersebut; panjang minimum keluaran tidak ditetapkan. Aturan penghentian yang sama berlaku bagi semua metode. Identitas token akhir respons akan dicatat bersama revisi konfigurasi model. Pengaturan lain yang dapat mengubah skor token masih perlu ditentukan sebelum evaluasi.
+
+\subsection{XL-Sum Subset Indonesia}
+
+Data akan diambil dari dataset XL-Sum di Hugging Face dengan konfigurasi \texttt{indonesian} \citep{xlsumDatasetCard}. Repositori resmi XL-Sum mencantumkan 38.242 pasangan untuk data latih, 4.780 untuk data validasi, dan 4.780 untuk data uji \citep{xlsumRepository}. Jumlah tersebut adalah ukuran split yang tersedia sebelum penyaringan penelitian ini, bukan jumlah sampel akhir yang akan digunakan. Jumlah sampel eksperimen masih bergantung pada penyaringan dan pengukuran kemampuan perangkat.
+
+Artikel menjadi masukan untuk prompt peringkasan. Ringkasan acuan digunakan untuk menilai kualitas keluaran. Apakah ringkasan acuan juga digunakan untuk membentuk target pelatihan router belum ditetapkan karena target dan fungsi objektif pelatihan masih perlu dirancang. Data dipisahkan menjadi data latih (\textit{train}), validasi (\textit{validation}), dan uji (\textit{test}). Data uji tidak akan digunakan untuk menentukan target pelatihan ataupun memilih konfigurasi.
+
+\medskip
+\noindent\textbf{Pembersihan Teks dan Duplikasi}\par\smallskip
+
+Spasi dan baris kosong hanya dihapus dari awal dan akhir artikel serta ringkasan acuan. Huruf besar, tanda baca, spasi di antara kata, dan isi teks lainnya dipertahankan. Pasangan artikel--ringkasan dikeluarkan jika salah satu teks kosong setelah pembersihan. Aturan ini diterapkan pada semua split sebelum prompt disusun dan panjang token diperiksa. Jumlah pasangan kosong yang dikeluarkan akan dicatat. Pengolahan teks untuk metrik ROUGE akan ditentukan secara terpisah.
+
+Artikel dianggap duplikat jika teksnya sama persis setelah pembersihan. Dalam satu split, kemunculan pertama menurut urutan asli dataset dipertahankan bersama ringkasan acuannya. Jika artikel yang sama muncul pada beberapa split, pasangan yang dipertahankan berasal dari data uji jika tersedia; jika tidak, data validasi diprioritaskan daripada data latih. Salinan pada split lain dikeluarkan tanpa dipindahkan. Pemeriksaan dilakukan sebelum pemilihan subset. Identitas dan jumlah pasangan yang dikeluarkan karena duplikasi dalam satu split maupun antarsplit akan dicatat.
+
+\medskip
+\noindent\textbf{Batas Panjang dan Pemilihan Sampel}\par\smallskip
+
+Artikel dikeluarkan jika prompt lengkap yang berisi artikel utuh melebihi 3.840 token menurut tokenizer Qwen3-0.6B. Penghitungan mencakup instruksi dan format chat. Artikel tidak dipotong. Ringkasan acuan dikeluarkan jika panjangnya melebihi 256 token, termasuk token akhir respons. Ringkasan juga tidak dipotong. Penyaringan ini dilakukan pada data latih, validasi, dan uji; semua metode akan dievaluasi pada himpunan artikel uji yang sama. Jumlah pasangan yang dikeluarkan karena batas artikel, jumlah yang dikeluarkan karena batas ringkasan, dan jumlah akhir setiap split akan dicatat menggunakan format prompt final.
+
+Gabungan prompt dan ringkasan acuan yang diberikan sebagai contoh untuk memandu prediksi model selama pelatihan (\textit{teacher forcing}) juga akan diperiksa agar tidak melebihi 4.096 token. Jika hanya sebagian data digunakan, sampel dipilih secara acak tanpa pengembalian dari setiap split, setelah pembersihan, penyaringan panjang, dan penghapusan duplikasi. Pemilihan menggunakan seed, yaitu angka awal untuk mengatur urutan bilangan acak, dengan nilai tetap 42. Identitas sampel disimpan, dan semua metode menggunakan subset evaluasi yang sama. Jumlah sampel per split akan ditentukan setelah waktu eksekusi dan penggunaan memori diukur.
+
+\medskip
+\noindent\textbf{Format Prompt}\par\smallskip
+
+Instruksi dan artikel dimasukkan sebagai pesan pengguna dengan format chat Qwen dalam mode non-thinking. Isi pesan yang digunakan adalah berikut; teks \texttt{\{artikel\}} diganti dengan artikel utuh.
+
+\begin{quote}
+Ringkas artikel berita berikut dalam bahasa Indonesia. Pertahankan informasi utama dan jangan menambahkan informasi yang tidak terdapat dalam artikel.
+
+Artikel:\\
+\texttt{\{artikel\}}
+\end{quote}
+
+Format yang sama digunakan saat menyiapkan data pelatihan router dan saat menghasilkan ringkasan dengan seluruh metode pembanding. Batas masukan dihitung setelah format chat diterapkan, termasuk penanda awal respons asisten. Artikel dengan prompt lengkap lebih dari 3.840 token dikeluarkan tanpa dipotong.
+
+\section{Tahapan Penelitian}
+
+Penelitian direncanakan melalui tahapan berikut.
 
 \begin{enumerate}
-    \item \textbf{Tahap 1:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    \item \textbf{Tahap 2:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    \item \textbf{Tahap 3:} Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-    \item \textbf{Tahap 4:} Duis aute irure dolor in reprehenderit in voluptate velit esse.
-    \item \textbf{Tahap 5:} Excepteur sint occaecat cupidatat non proident.
+  \item \textbf{Perumusan rancangan.} Kajian literatur, batasan, dan protokol evaluasi akan dilengkapi. Luaran tahap ini adalah spesifikasi eksperimen yang membedakan keputusan yang telah ditetapkan dari parameter yang masih harus dipilih menggunakan data validasi.
+  \item \textbf{Persiapan data dan model.} Backbone dan split data akan disiapkan, prompt akan dibentuk, serta revisi model dan konfigurasi dicatat. Luaran tahap ini adalah proses masukan--keluaran model penuh yang dapat dijalankan ulang.
+  \item \textbf{Implementasi eksekusi kondisional.} Router, mekanisme pelompatan kelompok, dan metode pembanding akan diimplementasikan. Kebenaran eksekusi, konsistensi jalur, dan penanganan KV cache akan diperiksa.
+  \item \textbf{Pelatihan dan pemilihan konfigurasi router.} Sebelum pelatihan, target, fungsi kerugian, cara mempelajari keputusan biner, dan dorongan penghematan komputasi akan ditetapkan. Router akan dilatih pada data latih dengan parameter Qwen dibekukan. Konfigurasi dipilih menggunakan data validasi.
+  \item \textbf{Evaluasi dan analisis.} Konfigurasi terpilih akan diuji pada data uji. Kualitas ringkasan, waktu inferensi, dan pola jalur yang dipilih akan dianalisis dan dibandingkan. Luaran tahap ini adalah hasil perbandingan beserta keterbatasannya.
+  \item \textbf{Penulisan laporan.} Rancangan, implementasi, dan temuan akan didokumentasikan. Penulisan dilakukan sejalan dengan tahapan penelitian.
 \end{enumerate}
+
+Pemeriksaan awal implementasi merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Saat draf ini disusun, topik, model, dataset, dan metode pembanding telah ditetapkan. Skrip inferensi model penuh sudah tersedia; implementasi routing dan evaluasi penelitian masih akan dikerjakan.
 
 \section{Perancangan Sistem}
 
 \subsection{Arsitektur Umum}
 
-% TODO: Jelaskan komponen-komponen utama sistem yang dirancang.
-% Sertakan diagram arsitektur jika ada.
+Gambar~\ref{fig:arsitektur-routing} menunjukkan alur sistem. Prompt diproses terlebih dahulu melalui kelompok pertama. Dari keluaran kelompok ini, router menerima rata-rata vektor representasi internal (\textit{hidden state}) pada posisi token artikel. Posisi token instruksi, token khusus, dan padding tidak disertakan dalam rata-rata. Router kemudian menghasilkan lima keputusan biner, satu untuk setiap kelompok tengah. Kelompok yang dijalankan tetap mengikuti urutan lapisan pada Qwen.
 
-Arsitektur sistem yang dirancang terdiri dari beberapa komponen utama:
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{\input{figures/arsitektur-routing.tex}}
+  \caption{Arsitektur konseptual sequence-level routing pada Qwen3-0.6B.}
+  \label{fig:arsitektur-routing}
+\end{figure}
 
-\begin{itemize}
-    \item \textbf{Komponen A:} Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    \item \textbf{Komponen B:} Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    \item \textbf{Komponen C:} Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-\end{itemize}
+Hasil kelompok pertama yang digunakan untuk menghitung representasi router juga dipakai untuk melanjutkan pemrosesan prompt melalui kelompok yang dipilih. Dengan demikian, kelompok pertama tidak dihitung ulang hanya untuk menjalankan router. Jalur yang dipilih dipertahankan untuk sisa pemrosesan prompt dan semua langkah pembentukan keluaran. Cache key dan value (KV cache), yaitu penyimpanan representasi yang digunakan kembali pada langkah inferensi berikutnya, disiapkan untuk lapisan yang aktif. Pada setiap token keluaran baru, kelompok pertama tetap dijalankan, tetapi router tidak memilih ulang jalur. Waktu untuk memperoleh representasi dan menjalankan router akan dimasukkan dalam waktu inferensi total. Integrasi cache dan kesetaraan perilaku dengan model penuh akan diperiksa dalam implementasi.
 
-% TODO: Ganti dengan diagram arsitektur sistem Anda.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figures/arsitektur-sistem}
-%   \caption{Diagram Arsitektur Sistem}
-%   \label{fig:arsitektur}
-% \end{figure}
+\subsection{Pemilihan Jalur dan Pelatihan Router}
+
+Jalur adalah pola kelompok lapisan yang dijalankan untuk satu prompt. Router membuat keputusan berdasarkan prompt satu kali saja; keputusan itu tidak berubah untuk setiap token keluaran. Penelitian ini tidak menggunakan mekanisme penghentian lebih awal yang memutuskan pada setiap lapisan berdasarkan tingkat keyakinan model terhadap keluaran.
+
+\medskip
+\noindent\textbf{Kelompok Lapisan dan Keputusan Biner}\par\smallskip
+
+Kelompok $G_1$ dan $G_7$ selalu dijalankan. Untuk tiap kelompok $G_i$, dengan $i=2,\ldots,6$, router menentukan nilai $m_i\in\{0,1\}$. Nilai satu berarti kelompok dijalankan dan nilai nol berarti kelompok dilewati. Pola lengkap ditulis sebagai $(1,m_2,m_3,m_4,m_5,m_6,1)$. Jumlah lapisan aktif tidak dipatok dan dapat berubah antarartikel dari 8 hingga 28, dengan perubahan sebanyak empat lapisan. Urutan lapisan yang dijalankan selalu mengikuti urutan Qwen.
+
+\medskip
+\noindent\textbf{Arsitektur Router dan Rencana Pelatihan}\par\smallskip
+
+Router menggunakan jaringan perceptron multilapis (\textit{multilayer perceptron}, MLP), yaitu jaringan saraf yang memproses masukan melalui lapisan-lapisan terhubung. MLP ini memiliki satu lapisan tersembunyi dan lima keluaran sigmoid. Setiap keluaran berpasangan dengan satu kelompok tengah dan diubah menjadi keputusan aktif atau lewati menggunakan ambang. Nilai ambang, jumlah unit pada lapisan tersembunyi, fungsi aktivasi lapisan tersebut, dan pengaturan optimisasi masih perlu ditetapkan. Saat inferensi, router hanya menerima representasi artikel dari prompt, bukan ringkasan acuannya.
+
+Lima keputusan biner memungkinkan 32 kombinasi secara matematis. Namun, router tidak mengklasifikasikan 32 nomor jalur, dan pelatihan tidak harus menilai semua kombinasi tersebut. Parameter Qwen tetap dibekukan, termasuk parameter kelompok pertama yang menghasilkan representasi router. LoRA belum termasuk dalam rancangan awal.
+
+Target, fungsi kerugian, dan cara mempelajari keputusan biner masih harus dirancang. Fungsi objektif perlu mempertimbangkan kualitas ringkasan dan biaya eksekusi agar pelatihan memiliki dorongan untuk menghemat komputasi. Pembentukan target secara luring (\textit{offline}) dan penambahan penalti biaya merupakan pilihan yang belum diputuskan. Biaya pelatihan akan dicatat terpisah dari biaya inferensi. Konfigurasi router dipilih menggunakan data validasi; manfaatnya dinilai dari ringkasan yang dihasilkan pada data uji.
 
 \subsection{Bagan Alir Metodologi}
 
-% TODO: Tambahkan bagan alir (flowchart) metodologi penelitian.
+Gambar~\ref{fig:bagan-alir-routing} merangkum urutan penelitian. Bagan membedakan persiapan yang telah tersedia dari pekerjaan implementasi dan pengujian yang masih direncanakan.
 
-% TODO: Ganti dengan bagan alir metodologi Anda.
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.8\textwidth]{figures/bagan-alir}
-%   \caption{Bagan Alir Metodologi Penelitian}
-%   \label{fig:bagan-alir}
-% \end{figure}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.35cm,
+    block/.style={draw, rounded corners, align=center, text width=10.3cm, inner sep=6pt, font=\small},
+    arrow/.style={-{Latex}, thick}
+  ]
+    \node[block] (scope) {Sudah: penetapan topik, model, dataset,\\pertanyaan penelitian, dan pembanding};
+    \node[block, below=of scope] (basic) {Sudah: penyiapan skrip inferensi dasar\\Belum mengevaluasi metode routing};
+    \node[block, below=of basic] (design) {Rencana: pelengkapan literatur, pengaturan router,\\pengolahan data, dan protokol evaluasi};
+    \node[block, below=of design] (implementation) {Rencana: implementasi routing dan pembanding\\Luaran: eksekusi kondisional yang terverifikasi};
+    \node[block, below=of implementation] (training) {Rencana: pelatihan router dan pemilihan konfigurasi\\Data latih untuk pelatihan; data validasi untuk pemilihan};
+    \node[block, below=of training] (evaluation) {Rencana: evaluasi pada data uji\\Luaran: perbandingan kualitas, waktu, dan jalur};
+    \node[block, below=of evaluation] (report) {Rencana: analisis, kesimpulan, dan laporan\\Penulisan berlangsung sepanjang penelitian};
+    \draw[arrow] (scope) -- (basic);
+    \draw[arrow] (basic) -- (design);
+    \draw[arrow] (design) -- (implementation);
+    \draw[arrow] (implementation) -- (training);
+    \draw[arrow] (training) -- (evaluation);
+    \draw[arrow] (evaluation) -- (report);
+  \end{tikzpicture}
+  \caption{Bagan alir metodologi dan status pekerjaan saat draf disusun.}
+  \label{fig:bagan-alir-routing}
+\end{figure}
 
-\section{Lingkungan Pengembangan}
+\section{Rancangan Evaluasi}
 
-% TODO: Jelaskan spesifikasi perangkat keras dan lunak yang digunakan.
+\subsection{Metode Pembanding}
 
-Lingkungan pengembangan yang digunakan dalam penelitian ini adalah:
+Model penuh menjalankan seluruh 28 lapisan dan menjadi acuan kualitas serta biaya inferensi tanpa pelompatan. Pelompatan lapisan statis menggunakan satu pola tetap yang dipilih berdasarkan data validasi. Routing acak menggunakan keputusan biner acak yang dipertahankan untuk satu artikel. Router terlatih menentukan keputusannya berdasarkan representasi prompt. Pada semua metode yang melewati lapisan, pola yang dipilih tetap selama sisa pemrosesan prompt dan seluruh pembentukan keluaran. Data uji tidak digunakan untuk memilih pola statis atau konfigurasi router.
 
-\begin{itemize}
-    \item \textbf{Sistem Operasi:} Lorem ipsum dolor sit amet.
-    \item \textbf{Perangkat Lunak:} Sed do eiusmod tempor incididunt.
-    \item \textbf{Perangkat Keras:} Ut enim ad minim veniam.
-\end{itemize}
+Perbandingan akan mencakup router terhadap model penuh, pelompatan lapisan statis, dan routing acak. Kriteria pemilihan pola statis, distribusi keputusan acak, dan cara menyetarakan biaya antarmetode yang melewati lapisan masih perlu ditentukan. Jumlah lapisan aktif dan waktu inferensi aktual akan dicatat. Jumlah lapisan yang sama belum tentu menghasilkan biaya yang sama karena waktu routing dan panjang keluaran dapat berbeda. Jumlah lapisan aktif tidak akan digunakan sebagai pengganti pengukuran jumlah operasi aritmetika bilangan titik mengambang (\textit{floating-point operations}, FLOPs) ataupun sebagai bukti percepatan. Waktu total mencakup pekerjaan router yang benar-benar dijalankan; metode statis tidak dibebani biaya menjalankan router yang tidak digunakan.
 
-\section{Metode Pengujian}
+\subsection{Pemeriksaan Kebenaran Implementasi}
 
-% TODO: Jelaskan metode pengujian yang akan digunakan.
+Pemeriksaan awal akan memastikan bahwa ketika semua lapisan dijalankan, implementasi memberikan perilaku yang sesuai dengan model penuh pada kondisi yang sama. Pemeriksaan juga akan memastikan bahwa lapisan yang ditandai untuk dilewati memang tidak dieksekusi, jalur tidak berubah selama pembentukan keluaran, dan KV cache dikelola secara konsisten. Pemeriksaan ini dilakukan sebelum hasil kualitas dan waktu ditafsirkan.
 
-Pengujian dilakukan dengan beberapa pendekatan:
+\subsection{Kualitas Ringkasan dan Efisiensi Inferensi}
 
-\begin{enumerate}
-    \item \textbf{Pengujian Fungsional:} Lorem ipsum dolor sit amet.
-    \item \textbf{Pengujian Non-Fungsional:} Sed do eiusmod tempor incididunt.
-    \item \textbf{Pengujian Lainnya:} Ut enim ad minim veniam.
-\end{enumerate}
+Kualitas keluaran dibandingkan dengan ringkasan acuan menggunakan ROUGE-1, ROUGE-2, dan ROUGE-L. Metrik ini mengukur kecocokan kata tunggal (unigram), pasangan kata berurutan (bigram), dan subsekuens terpanjang yang sama. Penilaian dilakukan sepenuhnya secara otomatis; tidak ada penilaian manual atau pemeriksaan faktualitas manual pada sampel. F1 akan dilaporkan untuk ROUGE-1, ROUGE-2, ROUGE-L, dan BERTScore. Untuk setiap metrik, F1 dihitung per artikel lalu dirata-ratakan secara aritmetika dengan bobot yang sama bagi setiap artikel. Keempat rata-rata dilaporkan secara terpisah. F1 tidak dihitung dari presisi dan cakupan (\textit{recall}) yang terlebih dahulu dirata-ratakan. Implementasi metrik, tokenisasi, dan pengolahan teks untuk penilaian masih perlu dipilih.
+
+BERTScore melengkapi ROUGE dengan membandingkan representasi kontekstual token pada ringkasan keluaran dan ringkasan acuan menggunakan kemiripan kosinus \citep{zhang2020bertscore}. Model encoder, lapisan encoder, penggunaan pembobotan frekuensi dokumen terbalik (\textit{inverse document frequency}, IDF), penyesuaian skor terhadap baseline, dan penanganan batas panjang masukan encoder masih perlu ditetapkan. Konfigurasi evaluator akan sama untuk semua metode. Metrik kecocokan terhadap acuan tidak menjamin faktualitas atau kualitas ringkasan secara keseluruhan. Forde et al. menemukan bahwa metrik otomatis dapat menjadi ukuran kualitas yang tidak andal pada peringkasan multibahasa, dengan masalah yang lebih besar pada bahasa Indonesia; karena itu, hasil di sini akan ditafsirkan terbatas pada metrik yang digunakan \citep{forde2024multilingeval}.
+
+Selisih rata-rata F1 antar-metode akan disertai interval kepercayaan dua sisi 95\% menggunakan bootstrap berpasangan. Pada setiap pengambilan ulang (\textit{resampling}), artikel diambil dengan pengembalian sebanyak jumlah artikel uji semula. Indeks artikel yang sama digunakan untuk kedua metode dalam satu perbandingan, lalu selisih rata-rata F1 dihitung ulang. Penghitungan menggunakan skor per artikel yang telah disimpan, sehingga ringkasan tidak perlu dibuat ulang. Interval menggunakan metode persentil berdasarkan 10.000 pengambilan ulang dengan seed bootstrap 42; batas bawah dan atas adalah persentil 2,5\% dan 97,5\% dari distribusi selisih. Seed bootstrap ini terpisah dari seed pemilihan subset, pelatihan router, dan routing acak. Interval dihitung untuk perbandingan router dengan model penuh, pelompatan statis, dan routing acak, masing-masing untuk keempat metrik. Penanganan hasil dari beberapa seed pelatihan atau routing acak masih perlu ditentukan. Interval yang dihitung dari artikel mengukur variasi antarartikel dan tidak dengan sendirinya mencakup variasi antarseed.
+
+Waktu inferensi diukur per artikel dan mencakup waktu total, waktu pemrosesan prompt (\textit{prefill}), serta waktu pembentukan keluaran (\textit{decoding}). Batas awal dan akhir pengukuran setiap komponen akan ditetapkan agar biaya representasi serta router tercakup tanpa dihitung dua kali. Jumlah token keluaran juga dicatat: waktu yang lebih singkat dapat terjadi hanya karena model menghasilkan ringkasan yang lebih pendek. Pengukuran dilakukan dengan ukuran batch satu, setelah pemanasan eksekusi, dan diulang. Jumlah pengulangan dan pemanasan, jumlah seed untuk routing acak, serta statistik untuk melaporkan variasi pengukuran masih perlu ditetapkan.
+
+Semua metode akan menggunakan perangkat, presisi numerik, prompt, dan pengaturan generasi yang sama. Mode non-thinking dan greedy decoding digunakan dengan \texttt{do\_sample=False}, \texttt{num\_beams=1}, dan batas keluaran 256 token. Hasil kualitas akan dianalisis bersama biaya inferensi aktual. Frekuensi setiap pola jalur yang dipilih akan dicatat untuk mengetahui apakah router hampir selalu memilih pola yang sama. Kondisi ini disebut \textit{routing collapse}. Temuan tersebut akan dilaporkan sebagai perilaku yang diamati, bukan langsung dianggap sebagai keberhasilan atau kegagalan.
+
+\section{Lingkungan dan Rincian yang Belum Ditetapkan}
+
+Pemeriksaan awal akan dilakukan pada laptop lokal dengan CPU AMD Ryzen 3 5300U (empat inti dan delapan thread). Sistem melaporkan RAM sekitar 9,1 GiB; laptop juga memiliki grafis Radeon terintegrasi. Konfigurasi awal menggunakan CPU, presisi FP32 (bilangan titik mengambang 32-bit), dan ukuran batch satu. Konfigurasi ini menjadi titik awal, bukan jaminan bahwa seluruh eksperimen dapat dijalankan pada perangkat tersebut.
+
+Waktu eksekusi dan penggunaan memori akan diukur pada beberapa panjang masukan untuk menentukan skala data yang layak. Pengukuran ini merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Kebutuhan komputasi untuk metode pelatihan router akan diperhitungkan setelah mekanisme pelatihan ditetapkan. Versi perangkat lunak, pengaturan thread, revisi model, dan batas token akan dicatat sebelum evaluasi. Pengukuran waktu akan dilakukan dengan laptop terhubung ke daya, pengaturan daya yang sama, dan aktivitas latar belakang seminimal mungkin. Jika lingkungan akhir berubah, semua metode pembanding akan diukur kembali pada perangkat dan pengaturan yang sama. Kesimpulan efisiensi akan dibatasi pada lingkungan yang diuji.
+
+Sebelum evaluasi akhir, masih perlu ditetapkan jumlah sampel tiap split; aturan penyaringan tambahan; fungsi objektif, mekanisme pembelajaran, dan dorongan penghematan router; ambang dan hiperparameter router; distribusi routing acak dan protokol penyetaraan biaya; kriteria pemilihan pola statis; implementasi ROUGE dan konfigurasi BERTScore; penanganan beberapa seed; jumlah pemanasan dan pengulangan; lingkungan evaluasi akhir; versi perangkat lunak; serta jadwal penelitian. Keputusan yang telah menjadi dasar rancangan meliputi pembagian tujuh kelompok, keputusan biner untuk lima kelompok tengah, representasi prompt, arsitektur dasar router, mode non-thinking, jendela konteks 4.096 token, batas prompt 3.840 token, batas keluaran 256 token, dan empat metrik kualitas.
