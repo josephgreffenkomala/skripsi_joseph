@@ -48,13 +48,13 @@ Artikel dianggap duplikat jika teksnya sama persis setelah pembersihan. Dalam sa
 
 Artikel dikeluarkan jika prompt lengkap yang memuat artikel utuh melebihi 3.840 token menurut tokenizer Qwen3-0.6B. Prompt mencakup instruksi dan format chat; artikel tidak dipotong. Ringkasan acuan juga dikeluarkan jika melebihi 256 token, termasuk token akhir respons menurut tokenizer yang sama. Ringkasan tidak dipotong. Kedua batas diterapkan pada seluruh split. Himpunan artikel evaluasi akan sama untuk semua metode. Jumlah artikel yang dikeluarkan karena batas panjang dan jumlah yang tersisa pada setiap split akan dicatat.
 
-Jika eksperimen menggunakan sebagian data, sampel dipilih secara acak tanpa pengembalian pada setiap split setelah pembersihan, penyaringan, dan penghapusan duplikasi. Artinya, sebuah artikel tidak dapat terpilih lebih dari satu kali dalam split yang sama. Pemilihan memakai seed tetap 42. Identitas sampel terpilih akan disimpan, dan semua metode akan menggunakan subset evaluasi yang sama. Jumlah sampel per split masih menunggu pengukuran waktu dan penggunaan memori.
+Sampel dipilih secara acak tanpa pengembalian pada setiap split setelah pembersihan, penyaringan, dan penghapusan duplikasi. Sebanyak 1.000 artikel dipilih untuk data latih, 200 artikel untuk data validasi, dan 300 artikel untuk data uji. Pemilihan memakai seed tetap 42. Identitas sampel terpilih akan disimpan, dan semua metode akan menggunakan subset evaluasi yang sama.
 
-\subsection{Lingkungan Awal dan Rincian yang Belum Ditetapkan}
+\subsection{Lingkungan Penelitian}
 
-Pemeriksaan awal akan menggunakan laptop lokal dengan CPU AMD Ryzen 3 5300U. Sistem melaporkan sekitar 9,1 GiB RAM dan memiliki grafis Radeon terintegrasi. Konfigurasi awal menggunakan CPU, presisi FP32, dan ukuran batch satu. Skala data yang dapat digunakan akan ditentukan berdasarkan pengukuran waktu dan memori. Lingkungan evaluasi akhir belum ditetapkan; jika lingkungan berubah, seluruh metode akan diuji pada lingkungan akhir yang sama.
+Penelitian akan dilakukan pada laptop lokal dengan CPU AMD Ryzen 3 5300U (empat inti dan delapan thread). Sistem memiliki RAM sekitar 9,1 GiB dan grafis Radeon terintegrasi. Eksperimen menggunakan CPU, presisi FP32, dan ukuran batch satu. Semua metode pembanding akan diukur pada lingkungan dan pengaturan perangkat yang sama. Versi perangkat lunak dan revisi model yang digunakan akan dicatat pada pelaksanaan eksperimen.
 
-Jumlah sampel, aturan penyaringan tambahan, penanganan seed pelatihan tambahan, jumlah pemanasan dan pengulangan, lingkungan evaluasi akhir, versi perangkat lunak, serta jadwal masih perlu ditetapkan. Kandidat penalti komputasi, seed pemilihan subset, seed utama pelatihan router, serta konfigurasi operasional ROUGE dan BERTScore telah ditetapkan dalam rancangan. Rincian lain akan dipilih sebelum evaluasi akhir; rancangan pelatihan router dan keputusan dasar mekanisme penelitian di atas menjadi acuan.
+Eksperimen akan menggunakan 1.000 artikel latih, 200 artikel validasi, dan 300 artikel uji setelah pembersihan, penyaringan, dan penghapusan duplikasi. Pengukuran waktu menggunakan tiga kali pemanasan dan lima kali pengulangan; hasil utama dilaporkan sebagai median. Penelitian direncanakan berlangsung selama empat bulan. Versi perangkat lunak dan jumlah pasangan yang tersisa setelah penyaringan akan dicatat sebagai informasi reproduksi.
 
 \section{Tujuan Penelitian}
 
@@ -73,4 +73,4 @@ Secara praktis, dokumentasi implementasi dan protokol evaluasi diharapkan memban
 
 \section{Sistematika Penulisan}
 
-Proposal ini terdiri atas empat bab. Bab I menjelaskan latar belakang, rumusan masalah, batasan, tujuan, dan manfaat penelitian. Bab II mengulas penelitian terkait dan menjelaskan posisi penelitian ini. Bab III memaparkan metode, rancangan sistem, tahapan penelitian, dan rencana evaluasi. Bab IV menjelaskan rencana penyusunan jadwal penelitian; bagan jadwal berbasis bulan akan dilengkapi setelah alokasi waktunya ditetapkan.
+Proposal ini terdiri atas empat bab. Bab I menjelaskan latar belakang, rumusan masalah, batasan, tujuan, dan manfaat penelitian. Bab II mengulas penelitian terkait dan menjelaskan posisi penelitian ini. Bab III memaparkan metode, rancangan sistem, tahapan penelitian, dan rencana evaluasi. Bab IV menjelaskan jadwal penelitian selama empat bulan dalam bentuk bagan berbasis bulan.
