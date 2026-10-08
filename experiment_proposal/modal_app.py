@@ -13,7 +13,7 @@ import modal
 CONFIG_PATH = Path(__file__).with_name("config.json")
 IMAGE = (
     modal.Image.debian_slim(python_version="3.12")
-    .uv_pip_install_from_requirements(str(Path(__file__).with_name("requirements.txt")))
+    .uv_pip_install(requirements=[str(Path(__file__).with_name("requirements.txt"))])
     .add_local_python_source("experiment_proposal")
 )
 app = modal.App("qwen3-xlsum-sequence-routing", image=IMAGE)
