@@ -1,8 +1,10 @@
 {
+  "run_mode": "research",
   "model_id": "Qwen/Qwen3-0.6B",
   "dataset_dir": "/vol/xlsum/indonesian",
   "output_dir": "/vol/experiment_proposal",
   "counts": {"train": 500, "validation": 100, "test": 150},
+  "max_source_rows_per_split": null,
   "sample_seed": 42,
   "router_seed": 43,
   "bootstrap_seed": 42,

@@ -18,11 +18,13 @@ DATA_FILES = {
 DEDUP_PRIORITY = ("test", "validation", "train")
 
 
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
+def read_jsonl(path: Path, max_rows: int | None = None) -> list[dict[str, Any]]:
     """Read a JSON Lines file and reject malformed rows with file context."""
     rows: list[dict[str, Any]] = []
     with path.open(encoding="utf-8") as data_file:
         for line_number, line in enumerate(data_file, start=1):
+            if max_rows is not None and len(rows) >= max_rows:
+                break
             try:
                 row = json.loads(line)
             except json.JSONDecodeError as error:
@@ -133,6 +135,7 @@ def prepare_dataset(
     max_input_tokens: int,
     max_target_tokens: int,
     max_context_tokens: int,
+    max_source_rows_per_split: dict[str, int] | None = None,
 ) -> dict[str, Any]:
     """Filter all source splits, deduplicate, sample, and write JSONL artifacts."""
     accepted: dict[str, list[dict[str, Any]]] = {split: [] for split in SPLITS}
@@ -147,10 +150,18 @@ def prepare_dataset(
         }
         for split in SPLITS
     }
+    source_rows_scanned: dict[str, int] = {}
 
     for split in SPLITS:
         path = dataset_dir / DATA_FILES[split]
-        for row_index, row in enumerate(read_jsonl(path)):
+        row_limit = (
+            max_source_rows_per_split.get(split)
+            if max_source_rows_per_split is not None
+            else None
+        )
+        source_rows = read_jsonl(path, max_rows=row_limit)
+        source_rows_scanned[split] = len(source_rows)
+        for row_index, row in enumerate(source_rows):
             prepared, reason = _encode_row(
                 tokenizer,
                 instruction,
@@ -203,6 +214,7 @@ def prepare_dataset(
     manifest = {
         "counts_requested": counts,
         "counts_selected": {split: len(rows) for split, rows in selected.items()},
+        "source_rows_scanned": source_rows_scanned,
         "eligible_before_sampling": {
             split: len(rows) for split, rows in accepted.items()
         },

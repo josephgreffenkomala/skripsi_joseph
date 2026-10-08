@@ -48,6 +48,7 @@ def prepare_data(config_text: str) -> dict[str, Any]:
         max_input_tokens=config["max_input_tokens"],
         max_target_tokens=config["max_target_tokens"],
         max_context_tokens=config["max_context_tokens"],
+        max_source_rows_per_split=config.get("max_source_rows_per_split"),
     )
     revision = tokenizer.init_kwargs.get("_commit_hash")
     metadata = {
@@ -108,11 +109,14 @@ def execute_stage(stage: str, config_text: str) -> dict[str, Any]:
 
 
 @app.local_entrypoint()
-def main(stage: str = "prepare") -> None:
+def main(
+    stage: str = "prepare",
+    config_path: str = "experiment_proposal/config.json",
+) -> None:
     """Submit one experiment stage; the user starts this command manually."""
     if stage not in {"prepare", "router", "lora", "evaluate"}:
         raise ValueError("--stage must be prepare, router, lora, or evaluate.")
-    config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    config = json.loads(Path(config_path).read_text(encoding="utf-8"))
     config_text = json.dumps(config)
     if stage == "prepare":
         result = prepare_data.remote(config_text)

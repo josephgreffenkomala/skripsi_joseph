@@ -331,6 +331,12 @@ def evaluate(config: dict[str, Any]) -> dict[str, Any]:
         for comparator in ("full_lora", "static_lora", "router_only")
     }
     result = {
+        "run_mode": config.get("run_mode", "research"),
+        "interpretation": (
+            "Software smoke test only; do not use these scores or timings as research results."
+            if config.get("run_mode") == "smoke_test_only"
+            else "Research evaluation."
+        ),
         "summaries": summaries,
         "paired_bootstrap": comparisons,
         "bertscore_truncated_texts": bert_truncations,
