@@ -31,5 +31,5 @@
   \draw[control] (mask.west) -- ++(-0.6,0) |- (middle.east);
 
   \node[align=left, text width=5.1cm, font=\footnotesize, below=0.8cm of mask] (note)
-    {Garis putus-putus menunjukkan keputusan router.\\Satu jalur dipilih per prompt untuk sisa prompt dan seluruh pembentukan keluaran.\\Bobot Qwen dibekukan; hanya router dilatih.\\Target jalur dibuat dari kerugian prediksi token dan proporsi kelompok aktif.};
+    {Garis putus-putus menunjukkan keputusan router.\\Satu jalur dipilih per prompt untuk sisa prompt dan seluruh pembentukan keluaran.\\Tahap 1: Qwen dibekukan dan router dilatih.\\Tahap 2: router dibekukan dan LoRA dilatih pada attention serta FFN.};
 \end{tikzpicture}
