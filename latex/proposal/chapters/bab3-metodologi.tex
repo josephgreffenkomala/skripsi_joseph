@@ -95,17 +95,47 @@ Router berupa jaringan saraf dengan satu lapisan tersembunyi berisi 64 unit dan 
 \medskip
 \noindent\textbf{Pembentukan target pelatihan}\par\smallskip
 
-Sebelum router dilatih, data latih digunakan untuk menentukan keputusan yang menjadi contoh pelatihannya. Untuk setiap artikel dan ringkasan acuannya, model dinilai dengan beberapa pola keputusan kelompok. Penilaian menggunakan kerugian prediksi token, yaitu ukuran kesalahan model dalam memprediksi potongan teks pada ringkasan acuan. Dalam penilaian ini, token ringkasan acuan sebelumnya diberikan kepada model untuk membantu menghitung prediksi token berikutnya; cara tersebut disebut \textit{teacher forcing}.
+Sebelum router dilatih, perlu disiapkan contoh keputusan yang akan dipelajarinya. Contoh ini disebut \textit{training targets}. Target dibuat untuk setiap artikel pada data latih dengan menggunakan artikel dan ringkasan acuannya. Ringkasan acuan membantu menilai apakah suatu pola kelompok lapisan menghasilkan prediksi yang mendekati ringkasan tersebut. Untuk penilaian ini, model menerima token ringkasan acuan sebelumnya sebagai masukan saat memprediksi token berikutnya. Cara tersebut disebut \textit{teacher forcing}.
 
-Setiap pola diberi skor yang menggabungkan kerugian prediksi token dan banyaknya kelompok tengah yang dijalankan:
+Setiap pola kelompok lapisan disebut \textit{route}. Untuk menilai route, dihitung \textit{loss}, yaitu nilai yang menunjukkan kesalahan prediksi token. Nilai loss yang lebih rendah berarti prediksi model lebih sesuai dengan ringkasan acuan. Skor route juga memperhitungkan jumlah kelompok tengah yang dijalankan:
 \begin{equation}
   J(m) = \operatorname{NLL}(m) + \lambda C(m),
   \qquad C(m) = \frac{m_2+m_3+m_4+m_5+m_6}{5},
   \label{eq:route-objective}
 \end{equation}
-\noindent dengan $m$ sebagai pola keputusan, $\operatorname{NLL}(m)$ sebagai rata-rata kerugian prediksi token pada pola tersebut, $C(m)$ sebagai proporsi kelompok tengah yang dijalankan, dan $\lambda$ sebagai bobot penalti untuk jumlah kelompok yang aktif. Karena semua kelompok berisi empat lapisan, proporsi kelompok aktif juga menunjukkan proporsi lapisan tengah yang dijalankan. Skor ini digunakan untuk membentuk contoh keputusan router; waktu inferensi tetap diukur secara langsung pada tahap evaluasi.
+\noindent dengan $m$ sebagai route, $\operatorname{NLL}(m)$ sebagai rata-rata loss prediksi token (\textit{negative log-likelihood}) untuk route tersebut, dan $C(m)$ sebagai proporsi kelompok tengah yang dijalankan. Nilai $\lambda$ menentukan seberapa besar jumlah kelompok yang dijalankan memengaruhi skor. Karena semua kelompok berisi empat lapisan, pengurangan jumlah kelompok aktif juga mengurangi jumlah lapisan yang dijalankan. Route dengan skor lebih rendah dipilih karena memberikan keseimbangan antara ketepatan prediksi ringkasan dan jumlah kelompok aktif.
 
-Pencarian keputusan dimulai dari pola yang menjalankan seluruh kelompok tengah. Pada setiap langkah, satu kelompok yang masih dijalankan dicoba untuk dilewati. Dari pola hasil percobaan, pola dengan skor terendah dipilih jika skornya lebih rendah daripada skor pola saat ini. Langkah ini diulang sampai tidak ada lagi satu kelompok yang dapat dilewati dengan menurunkan skor. Keputusan akhir untuk lima kelompok tengah menjadi target pelatihan router. Cara bertahap ini tidak mengharuskan semua 32 pola keputusan dinilai.
+Gambar~\ref{fig:pembentukan-target} merangkum cara memilih route untuk satu artikel. Pencarian dimulai dari route yang menjalankan semua kelompok tengah. Pada setiap putaran, dibuat beberapa kandidat route dengan melewati satu kelompok aktif yang berbeda, lalu skor tiap kandidat dihitung. Jika skor terbaik lebih rendah daripada skor route saat ini, kandidat itu menjadi route baru dan pencarian diulangi. Jika tidak ada kandidat yang menurunkan skor, pencarian berhenti. Lima keputusan pada route terakhir—satu keputusan untuk setiap kelompok tengah—menjadi \textit{training targets}: nilai 1 berarti kelompok dijalankan dan nilai 0 berarti kelompok dilewati. Pencarian bertahap ini tidak mengharuskan seluruh 32 kemungkinan route dicoba.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.42cm,
+    block/.style={draw, rounded corners, align=center, text width=9.2cm, inner sep=6pt, font=\small},
+    decision/.style={draw, rounded corners, align=center, text width=9.2cm, inner sep=6pt, font=\small, fill=gray!10},
+    arrow/.style={-{Latex}, thick}
+  ]
+    \node[block] (input) {Satu artikel data latih dan ringkasan acuannya};
+    \node[block, below=of input] (initial) {Mulai dengan route yang menjalankan semua kelompok tengah};
+    \node[block, below=of initial] (try) {Untuk setiap kelompok yang masih aktif, buat kandidat route dengan melewati kelompok tersebut satu per satu};
+    \node[block, below=of try] (score) {Hitung skor setiap kandidat: loss prediksi ringkasan + penalti jumlah kelompok aktif};
+    \node[decision, below=of score] (check) {Apakah kandidat dengan skor terendah memiliki skor lebih rendah daripada route saat ini?};
+    \node[block, below=of check] (update) {Jadikan kandidat tersebut sebagai route saat ini};
+    \node[block, below=of update] (target) {Tetapkan lima keputusan route saat ini sebagai training targets};
+
+    \draw[arrow] (input) -- (initial);
+    \draw[arrow] (initial) -- (try);
+    \draw[arrow] (try) -- (score);
+    \draw[arrow] (score) -- (check);
+    \draw[arrow] (check) -- node[right, font=\footnotesize] {Ya} (update);
+    \draw[arrow] (update.east) -- ++(1.0,0) |- (try.east);
+    \draw[arrow] (check.west) -- node[above, font=\footnotesize] {Tidak} ++(-1.0,0) |- (target.west);
+  \end{tikzpicture}
+  \caption{Pembentukan target keputusan router untuk satu artikel.}
+  \label{fig:pembentukan-target}
+\end{figure}
+
+Setelah target untuk artikel data latih terbentuk, router dilatih untuk memprediksi lima keputusan tersebut berdasarkan representasi artikel. Dengan demikian, ringkasan acuan digunakan untuk menyiapkan target pelatihan, sedangkan router saat digunakan hanya menerima artikel pada prompt.
 
 \medskip
 \noindent\textbf{Pelatihan dan pemilihan nilai penalti}\par\smallskip
