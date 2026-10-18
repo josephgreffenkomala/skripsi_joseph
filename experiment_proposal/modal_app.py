@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tarfile
 from pathlib import Path
 from typing import Any
 
@@ -20,6 +21,46 @@ app = modal.App("qwen3-xlsum-sequence-routing", image=IMAGE)
 volume = modal.Volume.from_name("experiment-proposal-data", create_if_missing=False)
 
 
+def ensure_xlsum_data(dataset_dir: Path) -> None:
+    """Download the official Indonesian XL-Sum archive if source files are absent."""
+    expected_files = (
+        "indonesian_train.jsonl",
+        "indonesian_val.jsonl",
+        "indonesian_test.jsonl",
+    )
+    if all((dataset_dir / filename).is_file() for filename in expected_files):
+        return
+
+    from huggingface_hub import hf_hub_download
+
+    dataset_dir.mkdir(parents=True, exist_ok=True)
+    archive_path = hf_hub_download(
+        repo_id="csebuetnlp/xlsum",
+        repo_type="dataset",
+        filename="data/indonesian_XLSum_v2.0.tar.bz2",
+    )
+    with tarfile.open(archive_path, mode="r:bz2") as archive:
+        members = {
+            Path(member.name).name: member
+            for member in archive.getmembers()
+            if Path(member.name).name in expected_files and member.isfile()
+        }
+        missing = set(expected_files) - members.keys()
+        if missing:
+            raise FileNotFoundError(
+                "The XL-Sum Indonesian archive did not contain expected files: "
+                + ", ".join(sorted(missing))
+            )
+        for filename in expected_files:
+            source = archive.extractfile(members[filename])
+            if source is None:
+                raise FileNotFoundError(
+                    f"Could not read {filename} from the XL-Sum archive."
+                )
+            with source, (dataset_dir / filename).open("wb") as destination:
+                destination.write(source.read())
+
+
 @app.function(
     cpu=2,
     memory=16384,
@@ -31,6 +72,8 @@ def prepare_data(config_text: str) -> dict[str, Any]:
     """Filter and sample data without allocating a paid GPU."""
     os.environ["HF_HOME"] = "/vol/hf_cache"
     config = json.loads(config_text)
+    dataset_dir = Path(config["dataset_dir"])
+    ensure_xlsum_data(dataset_dir)
     from transformers import AutoTokenizer
 
     import transformers
@@ -40,7 +83,7 @@ def prepare_data(config_text: str) -> dict[str, Any]:
     tokenizer = AutoTokenizer.from_pretrained(config["model_id"])
     result = prepare_dataset(
         tokenizer=tokenizer,
-        dataset_dir=Path(config["dataset_dir"]),
+        dataset_dir=dataset_dir,
         output_dir=Path(config["output_dir"]) / "prepared",
         counts=config["counts"],
         seed=config["sample_seed"],
@@ -97,6 +140,7 @@ def execute_stage(stage: str, config_text: str) -> dict[str, Any]:
 
     manifest_path = Path(config["output_dir"]) / "run_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["config"] = config
     manifest["runtime"] = {
         "python_version": sys.version,
         "torch_version": torch.__version__,

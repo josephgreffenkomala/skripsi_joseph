@@ -384,6 +384,35 @@ def _loss_for_row(
     return loss
 
 
+def _backward_lora_row(
+    model: nn.Module,
+    row: dict[str, Any],
+    device: torch.device,
+    route: Route | None,
+    router: SequenceRouter | None,
+    beta: float,
+    loss_scale: float,
+) -> None:
+    """Run forward and backward while routed layers remain patched consistently."""
+    input_ids, labels = _labels(row, device)
+    article_mask = torch.tensor([row["article_mask"]], dtype=torch.bool, device=device)
+    controller = RouteController(
+        model,
+        article_mask,
+        router=router,
+        fixed_route=route,
+        beta=beta,
+    )
+    with controller:
+        output = model(
+            input_ids=input_ids, labels=labels, use_cache=False, return_dict=True
+        )
+        loss = output.loss.float()
+        if controller.regularizer is not None:
+            loss = loss + controller.regularizer.float()
+        (loss * loss_scale).backward()
+
+
 def _evaluate_lora(
     model: nn.Module,
     rows: list[dict[str, Any]],
@@ -469,7 +498,12 @@ def train_lora_variants(config: dict[str, Any]) -> dict[str, Any]:
         beta_results: list[dict[str, Any]] = []
         for beta in beta_values:
             model = _add_lora(
-                load_model(config["model_id"], trainable=True, revision=revision),
+                load_model(
+                    config["model_id"],
+                    trainable=True,
+                    revision=revision,
+                    gradient_checkpointing=config.get("gradient_checkpointing", False),
+                ),
                 config,
             )
             optimizer = torch.optim.AdamW(
@@ -489,11 +523,18 @@ def train_lora_variants(config: dict[str, Any]) -> dict[str, Any]:
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
                 for index, row in enumerate(train_rows, start=1):
-                    loss = _loss_for_row(model, row, device, route, active_router, beta)
                     accumulation = config["gradient_accumulation_steps"]
                     window_start = ((index - 1) // accumulation) * accumulation
                     window_size = min(accumulation, len(train_rows) - window_start)
-                    (loss / window_size).backward()
+                    _backward_lora_row(
+                        model,
+                        row,
+                        device,
+                        route,
+                        active_router,
+                        beta,
+                        1.0 / window_size,
+                    )
                     if index % config[
                         "gradient_accumulation_steps"
                     ] == 0 or index == len(train_rows):

@@ -195,6 +195,55 @@ def _bootstrap_differences(
     return result
 
 
+def _write_smoke_report(
+    records: list[dict[str, Any]],
+    results_path: Path,
+) -> None:
+    """Write side-by-side examples to a human-readable Markdown report."""
+    variants = ("full_lora", "static_lora", "router_lora", "router_only")
+    lines = [
+        "# Smoke test: contoh ringkasan",
+        "",
+        "> Hanya pemeriksaan perangkat lunak. Contoh dan skor ini bukan hasil penelitian.",
+        "",
+        f"Contoh test: {len(records)} artikel.",
+        "",
+    ]
+    for index, record in enumerate(records, start=1):
+        reference = " ".join(record["reference"].split())
+        lines.extend(
+            [
+                f"## Artikel {index}: `{record['id']}`",
+                "",
+                "**Ringkasan acuan**",
+                "",
+                f"> {reference}",
+                "",
+            ]
+        )
+        for variant in variants:
+            prediction = " ".join(record["predictions"][variant].split())
+            scores = record["scores"][variant]
+            timing = record["timings"][variant]
+            route = record["routes"][variant]
+            lines.extend(
+                [
+                    f"### {variant}",
+                    "",
+                    f"Route G2–G6: `{route}`  ",
+                    f"ROUGE-1: {scores['rouge1']:.3f} · "
+                    f"ROUGE-2: {scores['rouge2']:.3f} · "
+                    f"ROUGE-L: {scores['rougeL']:.3f} · "
+                    f"BERTScore: {scores['bertscore']:.3f} · "
+                    f"waktu: {timing['total_seconds']:.2f} dtk",
+                    "",
+                    prediction or "_(keluaran kosong)_",
+                    "",
+                ]
+            )
+    (results_path / "smoke_report.md").write_text("\n".join(lines), encoding="utf-8")
+
+
 def evaluate(config: dict[str, Any]) -> dict[str, Any]:
     """Generate all test outputs, score them, and write reproducible result files."""
     output_root = Path(config["output_dir"])
@@ -344,4 +393,6 @@ def evaluate(config: dict[str, Any]) -> dict[str, Any]:
     (results_path / "summary.json").write_text(
         json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
+    if config.get("run_mode") == "smoke_test_only":
+        _write_smoke_report(records, results_path)
     return result

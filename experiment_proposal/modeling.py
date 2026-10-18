@@ -55,6 +55,7 @@ def load_model(
     model_id: str,
     trainable: bool = False,
     revision: str | None = None,
+    gradient_checkpointing: bool = False,
 ) -> nn.Module:
     """Load Qwen in FP16 on the active CUDA device."""
     if not torch.cuda.is_available():
@@ -66,7 +67,7 @@ def load_model(
         low_cpu_mem_usage=True,
     ).to("cuda")
     model.config.use_cache = not trainable
-    if trainable:
+    if trainable and gradient_checkpointing:
         model.gradient_checkpointing_enable(
             gradient_checkpointing_kwargs={"use_reentrant": False}
         )
