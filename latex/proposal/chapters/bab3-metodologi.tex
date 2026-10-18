@@ -52,7 +52,7 @@ Format tersebut digunakan untuk menyiapkan masukan pelatihan dan menghasilkan ri
 
 \section{Tahapan Penelitian}
 
-Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router dan pemilihan konfigurasi, evaluasi, kemudian analisis dan penulisan. Urutan tahapan tersebut ditunjukkan pada Gambar~\ref{fig:bagan-alir-routing}. Konfigurasi metode ditetapkan menggunakan data validasi sebelum data uji digunakan untuk evaluasi akhir.
+Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router dan pemilihan konfigurasi, evaluasi, kemudian analisis dan penulisan. Konfigurasi metode ditetapkan menggunakan data validasi sebelum data uji digunakan untuk evaluasi akhir.
 
 \begin{figure}[H]
   \centering
@@ -79,13 +79,15 @@ Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi s
   \label{fig:bagan-alir-routing}
 \end{figure}
 
+Gambar~\ref{fig:bagan-alir-routing} merangkum urutan kerja tersebut, dari persiapan data dan pemeriksaan implementasi hingga evaluasi akhir pada data uji.
+
 Pemeriksaan kebenaran implementasi merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Implementasi routing dan evaluasinya merupakan pekerjaan yang direncanakan dalam proposal ini.
 
 \section{Perancangan Sistem}
 
 \subsection{Arsitektur Sistem}
 
-Gambar~\ref{fig:arsitektur-routing} memperlihatkan alur pemrosesan artikel. Model terlebih dahulu menjalankan kelompok pertama. Keluaran dari kelompok tersebut digunakan untuk menghitung representasi artikel yang menjadi masukan router. Router menghasilkan lima keputusan: satu keputusan untuk setiap kelompok $G_2$ sampai $G_6$. Kelompok yang dipilih kemudian dijalankan sesuai urutan lapisan model, diikuti kelompok terakhir dan kepala bahasa untuk menghasilkan ringkasan.
+Pemrosesan setiap artikel dimulai dengan menjalankan kelompok pertama. Representasi artikel dari kelompok tersebut menjadi masukan router untuk menentukan kelompok tengah yang dijalankan. Model kemudian melanjutkan pemrosesan melalui kelompok terpilih, kelompok terakhir, dan kepala bahasa untuk menghasilkan ringkasan.
 
 \begin{figure}[H]
   \centering
@@ -93,6 +95,8 @@ Gambar~\ref{fig:arsitektur-routing} memperlihatkan alur pemrosesan artikel. Mode
   \caption{Arsitektur sequence-level routing pada Qwen3-0.6B.}
   \label{fig:arsitektur-routing}
 \end{figure}
+
+Gambar~\ref{fig:arsitektur-routing} menunjukkan bahwa keluaran kelompok pertama digunakan untuk membentuk representasi artikel sekaligus melanjutkan pemrosesan prompt. Router menghasilkan lima keputusan—satu untuk setiap kelompok $G_2$ sampai $G_6$—yang menentukan jalur eksekusi berikutnya.
 
 Representasi artikel dihitung sebagai rata-rata representasi internal token artikel setelah kelompok pertama. Token instruksi, token khusus, dan padding tidak disertakan dalam perhitungan. Keluaran kelompok pertama yang telah dihitung untuk router digunakan kembali untuk melanjutkan pemrosesan prompt, sehingga kelompok tersebut tidak perlu dijalankan ulang. Setelah keputusan dibuat, pola kelompok yang dijalankan tetap sama selama sisa pemrosesan prompt dan seluruh pembentukan ringkasan. Penyimpanan nilai key dan value (KV cache), yang digunakan kembali saat model membentuk token berikutnya, disiapkan untuk lapisan yang dijalankan. Waktu untuk menghitung representasi dan menjalankan router termasuk dalam pengukuran waktu inferensi.
 
@@ -121,7 +125,7 @@ Setiap pola kelompok lapisan disebut \textit{route}. Untuk menilai route, dihitu
 \end{equation}
 \noindent dengan $m$ sebagai route yang sedang dinilai dan $J(m)$ sebagai skor total route tersebut. Nilai $\operatorname{NLL}(m)$ adalah rata-rata kerugian prediksi token atau \textit{negative log-likelihood} (NLL); nilai yang lebih rendah menunjukkan bahwa prediksi model lebih sesuai dengan ringkasan acuan. Nilai $C(m)$ menunjukkan proporsi kelompok tengah yang dijalankan. Sebagai contoh, jika tiga dari lima kelompok tengah dijalankan, maka $C(m)=3/5=0{,}6$. Nilai $\lambda$ adalah bobot yang mengatur pengaruh jumlah kelompok aktif terhadap skor. Karena semua kelompok berisi empat lapisan, proporsi kelompok aktif juga menunjukkan proporsi lapisan tengah yang dijalankan. Dengan demikian, $J(m)$ menggabungkan kerugian prediksi ringkasan dan jumlah kelompok aktif; route dengan skor $J(m)$ lebih rendah lebih dipilih.
 
-Gambar~\ref{fig:pembentukan-target} merangkum cara memilih route untuk satu artikel. Pencarian dimulai dari route yang menjalankan semua kelompok tengah. Pada setiap putaran, dibuat beberapa kandidat route dengan melewati satu kelompok aktif yang berbeda, lalu skor tiap kandidat dihitung. Jika skor terbaik lebih rendah daripada skor route saat ini, kandidat itu menjadi route baru dan pencarian diulangi. Jika tidak ada kandidat yang menurunkan skor, pencarian berhenti. Lima keputusan pada route terakhir—satu keputusan untuk setiap kelompok tengah—menjadi \textit{training targets}: nilai 1 berarti kelompok dijalankan dan nilai 0 berarti kelompok dilewati. Pencarian bertahap ini tidak mengharuskan seluruh 32 kemungkinan route dicoba.
+Pencarian target untuk setiap artikel dimulai dari route yang menjalankan semua kelompok tengah. Pada setiap putaran, dibuat beberapa kandidat dengan melewati satu kelompok aktif yang berbeda, lalu skor setiap kandidat dihitung. Kandidat dengan skor lebih rendah daripada route saat ini menjadi route baru dan pencarian dilanjutkan. Jika tidak ada kandidat yang menurunkan skor, pencarian berhenti dan route saat ini dipertahankan. Lima keputusan pada route akhir menjadi target pelatihan: nilai 1 berarti kelompok dijalankan, sedangkan nilai 0 berarti kelompok dilewati. Karena pencarian hanya bergerak dengan melewati kelompok aktif, metode ini tidak menjamin bahwa route yang ditemukan memiliki skor terendah di antara seluruh 32 kemungkinan.
 
 \begin{figure}[H]
   \centering
@@ -151,6 +155,8 @@ Gambar~\ref{fig:pembentukan-target} merangkum cara memilih route untuk satu arti
   \label{fig:pembentukan-target}
 \end{figure}
 
+Gambar~\ref{fig:pembentukan-target} merangkum pencarian bertahap tersebut. Pada setiap langkah, hanya penghapusan satu kelompok aktif yang dipertimbangkan; pencarian berhenti ketika tidak ada penghapusan tunggal yang menurunkan skor.
+
 Setelah target untuk artikel data latih terbentuk, router dilatih untuk memprediksi lima keputusan tersebut berdasarkan representasi artikel. Dengan demikian, ringkasan acuan digunakan untuk menyiapkan target pelatihan, sedangkan router saat digunakan hanya menerima artikel pada prompt.
 
 \medskip
@@ -158,15 +164,17 @@ Setelah target untuk artikel data latih terbentuk, router dilatih untuk mempredi
 
 Router dilatih untuk memprediksi lima keputusan hasil pembentukan target. Pelatihan menggunakan fungsi kerugian untuk mengukur kesalahan prediksi biner sebelum keluaran router diubah menjadi keputusan aktif atau lewati (\textit{binary cross-entropy with logits}). Bobot Qwen, termasuk bobot yang menghasilkan representasi artikel, dibekukan selama pelatihan router. Konfigurasi awal menggunakan metode pengoptimalan AdamW, laju pembelajaran $10^{-3}$, peluruhan bobot $10^{-4}$, paling banyak 50 epoch (putaran pelatihan atas seluruh data latih), dan penghentian awal jika kinerja validasi tidak membaik selama lima epoch berturut-turut.
 
-Pembentukan target bergantung pada nilai $\lambda$. Nilai yang akan dibandingkan adalah $\{0, 0{,}01, 0{,}05, 0{,}10, 0{,}20\}$. Data validasi digunakan untuk memilih satu nilai, yang kemudian dipakai pada konfigurasi router dan pemilihan pola pelompatan statis. Angka awal untuk pengacakan pemilihan sebagian data ditetapkan 42, sedangkan angka awal pelatihan router ditetapkan 43. Angka awal tambahan 44 dan 45 dapat digunakan untuk analisis ketahanan jika sumber daya mencukupi; hasilnya, apabila tersedia, dilaporkan terpisah dari hasil utama. Data uji tidak digunakan untuk membentuk target atau memilih konfigurasi.
+Setelah router dilatih, adapter LoRA dilatih pada modul attention dan FFN di seluruh lapisan Qwen. Karena kelompok pertama ikut diperbarui oleh LoRA dan keluarannya digunakan untuk membentuk masukan router, representasi yang diterima router dapat berubah setelah tahap ini. Prosedur untuk menjaga kesesuaian masukan router pada pelatihan dan inferensi akan ditetapkan serta diperiksa sebagai bagian implementasi eksperimen.
+
+Pembentukan target bergantung pada nilai $\lambda$. Kandidat yang dibandingkan adalah $\{0, 0{,}01, 0{,}05, 0{,}10, 0{,}20\}$. Satu nilai dipilih menggunakan data validasi dan digunakan dalam pembentukan target router serta pemilihan pola pelompatan statis. Kriteria operasional untuk memilih nilai tersebut akan ditetapkan sebelum evaluasi data uji. Seed pemilihan subset adalah 42, sedangkan seed utama pelatihan router adalah 43. Seed tambahan 44 dan 45 dapat digunakan untuk analisis ketahanan jika sumber daya mencukupi; hasilnya, apabila tersedia, dilaporkan terpisah dari hasil utama. Data uji tidak digunakan untuk membentuk target atau memilih konfigurasi.
 
 \section{Rancangan Evaluasi}
 
 \subsection{Metode Pembanding}
 
-Tiga metode akan dievaluasi. Metode pertama adalah Qwen3-0.6B dengan seluruh kelompok lapisan dijalankan. Metode kedua adalah pelompatan statis, yaitu penggunaan satu pola tetap untuk seluruh artikel. Metode ketiga adalah routing adaptif, yaitu penggunaan pola yang dipilih router berdasarkan masing-masing prompt. Model penuh menjadi acuan kualitas dan waktu inferensi tanpa pelompatan. Pelompatan statis dan routing adaptif dibandingkan untuk mengetahui apakah keputusan yang menyesuaikan artikel memberikan perbedaan pada kualitas dan waktu inferensi.
+Evaluasi membandingkan tiga pendekatan utama: model penuh, pelompatan statis, dan routing adaptif. Pada model penuh, seluruh kelompok lapisan dijalankan; pada pelompatan statis, satu pola kelompok digunakan untuk semua artikel; sedangkan pada routing adaptif, router memilih pola berdasarkan setiap prompt. LoRA dilatih secara terpisah pada data latih untuk masing-masing pendekatan utama, dengan pemilihan konfigurasi menggunakan data validasi. Routing adaptif tanpa LoRA menjadi kontrol tambahan untuk membandingkan kualitas dan efisiensi dengan konfigurasi routing yang menggunakan LoRA.
 
-Pola pelompatan statis dipilih dengan skor pada Persamaan~\ref{eq:route-objective} menggunakan data validasi dan nilai $\lambda$ yang telah dipilih. Jika beberapa pola memperoleh skor yang sama, dipilih pola dengan kelompok aktif lebih sedikit. Jika masih sama, pola dengan urutan leksikografis terkecil dipilih dengan nilai 0 didahulukan daripada 1. Pola yang terpilih kemudian digunakan untuk seluruh artikel dan seluruh proses pembentukan ringkasan. Data uji tidak digunakan dalam pemilihan tersebut.
+Pola pelompatan statis dipilih menggunakan objective pada Persamaan~\ref{eq:route-objective}, nilai $\lambda$ terpilih, dan data validasi. Cara mengagregasikan skor antarartikel validasi untuk membandingkan pola akan ditetapkan sebelum evaluasi data uji. Jika beberapa pola memperoleh skor yang sama, dipilih pola dengan kelompok aktif lebih sedikit. Jika skor tetap sama, dipilih pola dengan urutan leksikografis terkecil, dengan nilai 0 didahulukan daripada 1. Pola terpilih kemudian digunakan untuk seluruh artikel dan proses pembentukan ringkasan. Data uji tidak digunakan dalam pemilihan.
 
 \subsection{Pemeriksaan Implementasi}
 
