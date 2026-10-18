@@ -1,4 +1,6 @@
 .venv/
 .cache/
+data/
+outputs/
 __pycache__/
 .ruff_cache/
