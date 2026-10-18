@@ -54,6 +54,31 @@ Format tersebut digunakan untuk menyiapkan masukan pelatihan dan menghasilkan ri
 
 Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router dan pemilihan konfigurasi, evaluasi, kemudian analisis dan penulisan. Urutan tahapan tersebut ditunjukkan pada Gambar~\ref{fig:bagan-alir-routing}. Konfigurasi metode ditetapkan menggunakan data validasi sebelum data uji digunakan untuk evaluasi akhir.
 
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.35cm,
+    block/.style={draw, rounded corners, align=center, text width=10.3cm, inner sep=6pt, font=\small},
+    arrow/.style={-{Latex}, thick}
+  ]
+    \node[block] (protocol) {Menyusun protokol dan melengkapi kajian pustaka};
+    \node[block, below=of protocol] (data) {Menyiapkan model, data, prompt, dan pemeriksaan batas panjang};
+    \node[block, below=of data] (implementation) {Mengimplementasikan model penuh, pelompatan statis, dan routing};
+    \node[block, below=of implementation] (targets) {Membentuk target keputusan dari data latih dan melatih router};
+    \node[block, below=of targets] (validation) {Memilih nilai penalti dan pola statis menggunakan data validasi};
+    \node[block, below=of validation] (evaluation) {Mengevaluasi metode pada data uji yang sama};
+    \node[block, below=of evaluation] (report) {Menganalisis hasil dan menyusun laporan};
+    \draw[arrow] (protocol) -- (data);
+    \draw[arrow] (data) -- (implementation);
+    \draw[arrow] (implementation) -- (targets);
+    \draw[arrow] (targets) -- (validation);
+    \draw[arrow] (validation) -- (evaluation);
+    \draw[arrow] (evaluation) -- (report);
+  \end{tikzpicture}
+  \caption{Bagan alir penelitian.}
+  \label{fig:bagan-alir-routing}
+\end{figure}
+
 Pemeriksaan kebenaran implementasi merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Implementasi routing dan evaluasinya merupakan pekerjaan yang direncanakan dalam proposal ini.
 
 \section{Perancangan Sistem}
@@ -134,35 +159,6 @@ Setelah target untuk artikel data latih terbentuk, router dilatih untuk mempredi
 Router dilatih untuk memprediksi lima keputusan hasil pembentukan target. Pelatihan menggunakan fungsi kerugian untuk mengukur kesalahan prediksi biner sebelum keluaran router diubah menjadi keputusan aktif atau lewati (\textit{binary cross-entropy with logits}). Bobot Qwen, termasuk bobot yang menghasilkan representasi artikel, dibekukan selama pelatihan router. Konfigurasi awal menggunakan metode pengoptimalan AdamW, laju pembelajaran $10^{-3}$, peluruhan bobot $10^{-4}$, paling banyak 50 epoch (putaran pelatihan atas seluruh data latih), dan penghentian awal jika kinerja validasi tidak membaik selama lima epoch berturut-turut.
 
 Pembentukan target bergantung pada nilai $\lambda$. Nilai yang akan dibandingkan adalah $\{0, 0{,}01, 0{,}05, 0{,}10, 0{,}20\}$. Data validasi digunakan untuk memilih satu nilai, yang kemudian dipakai pada konfigurasi router dan pemilihan pola pelompatan statis. Angka awal untuk pengacakan pemilihan sebagian data ditetapkan 42, sedangkan angka awal pelatihan router ditetapkan 43. Angka awal tambahan 44 dan 45 dapat digunakan untuk analisis ketahanan jika sumber daya mencukupi; hasilnya, apabila tersedia, dilaporkan terpisah dari hasil utama. Data uji tidak digunakan untuk membentuk target atau memilih konfigurasi.
-
-\subsection{Bagan Alir Metodologi}
-
-Urutan penelitian ditunjukkan pada Gambar~\ref{fig:bagan-alir-routing}. Tahap persiapan, implementasi, pelatihan, pemilihan konfigurasi, dan evaluasi dilakukan secara berurutan. Data uji digunakan setelah konfigurasi metode ditetapkan melalui data validasi.
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[
-    node distance=0.35cm,
-    block/.style={draw, rounded corners, align=center, text width=10.3cm, inner sep=6pt, font=\small},
-    arrow/.style={-{Latex}, thick}
-  ]
-    \node[block] (protocol) {Menyusun protokol dan melengkapi kajian pustaka};
-    \node[block, below=of protocol] (data) {Menyiapkan model, data, prompt, dan pemeriksaan batas panjang};
-    \node[block, below=of data] (implementation) {Mengimplementasikan model penuh, pelompatan statis, dan routing};
-    \node[block, below=of implementation] (targets) {Membentuk target keputusan dari data latih dan melatih router};
-    \node[block, below=of targets] (validation) {Memilih nilai penalti dan pola statis menggunakan data validasi};
-    \node[block, below=of validation] (evaluation) {Mengevaluasi metode pada data uji yang sama};
-    \node[block, below=of evaluation] (report) {Menganalisis hasil dan menyusun laporan};
-    \draw[arrow] (protocol) -- (data);
-    \draw[arrow] (data) -- (implementation);
-    \draw[arrow] (implementation) -- (targets);
-    \draw[arrow] (targets) -- (validation);
-    \draw[arrow] (validation) -- (evaluation);
-    \draw[arrow] (evaluation) -- (report);
-  \end{tikzpicture}
-  \caption{Bagan alir penelitian.}
-  \label{fig:bagan-alir-routing}
-\end{figure}
 
 \section{Rancangan Evaluasi}
 
