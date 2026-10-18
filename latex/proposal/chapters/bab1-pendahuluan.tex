@@ -50,12 +50,6 @@ Artikel dikeluarkan jika prompt lengkap yang memuat artikel utuh melebihi 3.840 
 
 Sampel dipilih secara acak tanpa pengembalian pada setiap split setelah pembersihan, penyaringan, dan penghapusan duplikasi. Sebanyak 1.000 artikel dipilih untuk data latih, 200 artikel untuk data validasi, dan 300 artikel untuk data uji. Pemilihan memakai seed tetap 42. Identitas sampel terpilih akan disimpan, dan semua metode akan menggunakan subset evaluasi yang sama.
 
-\subsection{Lingkungan Penelitian}
-
-Penelitian akan dilakukan pada laptop lokal dengan CPU AMD Ryzen 3 5300U (empat inti dan delapan thread). Sistem memiliki RAM sekitar 9,1 GiB dan grafis Radeon terintegrasi. Eksperimen menggunakan CPU, presisi FP32, dan ukuran batch satu. Semua metode pembanding akan diukur pada lingkungan dan pengaturan perangkat yang sama. Versi perangkat lunak dan revisi model yang digunakan akan dicatat pada pelaksanaan eksperimen.
-
-Eksperimen akan menggunakan 1.000 artikel latih, 200 artikel validasi, dan 300 artikel uji setelah pembersihan, penyaringan, dan penghapusan duplikasi. Pengukuran waktu menggunakan tiga kali pemanasan dan lima kali pengulangan; hasil utama dilaporkan sebagai median. Penelitian direncanakan berlangsung selama empat bulan. Versi perangkat lunak dan jumlah pasangan yang tersisa setelah penyaringan akan dicatat sebagai informasi reproduksi.
-
 \section{Tujuan Penelitian}
 
 Penelitian ini bertujuan untuk:

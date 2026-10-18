@@ -198,9 +198,3 @@ Perbedaan rata-rata F1 antara routing adaptif dan setiap metode pembanding akan 
 Efisiensi utama dinilai menggunakan waktu inferensi aktual pada perangkat dan pengaturan yang sama. Waktu total per artikel mencakup waktu untuk menghitung representasi artikel dan menjalankan router, memproses sisa prompt, serta membentuk ringkasan. Waktu pemrosesan prompt (\textit{prefill}) dan waktu pembentukan ringkasan (\textit{decoding}) juga dicatat secara terpisah. Jumlah token keluaran dicatat agar perbedaan waktu dapat ditafsirkan bersama panjang ringkasan yang dihasilkan. Jumlah kelompok aktif dilaporkan sebagai informasi tambahan.
 
 Seluruh metode menggunakan prompt, batas token, mode non-thinking, dan pengaturan pembentukan ringkasan yang sama. Pengukuran menggunakan ukuran batch satu serta mencakup pemanasan dan pengulangan. Jumlah pemanasan, jumlah pengulangan, dan statistik ringkasan waktu akan ditetapkan sebelum evaluasi. Perangkat, presisi, versi perangkat lunak, serta pengaturan lain yang memengaruhi waktu juga akan dicatat. Pola kelompok yang dipilih router akan dirangkum untuk melihat seberapa sering setiap pola digunakan.
-
-\section{Lingkungan Penelitian}
-
-Pemeriksaan awal implementasi direncanakan pada laptop lokal dengan prosesor AMD Ryzen 3 5300U, memori terbaca sekitar 9,1 GiB, dan grafis Radeon terintegrasi. Konfigurasi awal menggunakan CPU, presisi FP32, dan ukuran batch satu. Lingkungan evaluasi akhir belum ditetapkan. Setelah waktu dan kebutuhan memori terukur, perangkat, presisi, serta jumlah artikel pada setiap bagian data ditetapkan untuk eksperimen utama. Seluruh metode akan dievaluasi pada lingkungan akhir yang sama.
-
-Versi perangkat lunak, revisi model, pengaturan thread, dan pengaturan evaluasi akan dicatat. Kesimpulan mengenai efisiensi dibatasi pada lingkungan dan konfigurasi yang digunakan dalam penelitian.
