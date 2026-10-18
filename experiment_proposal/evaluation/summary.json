@@ -1,0 +1,120 @@
+{
+  "run_mode": "research",
+  "interpretation": "Research evaluation.",
+  "summaries": {
+    "full_lora": {
+      "rouge1": 0.26025488108659417,
+      "rouge2": 0.07516455441926113,
+      "rougeL": 0.20255456941657865,
+      "bertscore": 0.7374980000654856,
+      "median_total_seconds": 2.6006809194999505,
+      "median_prefill_seconds": 0.07799105549997876,
+      "median_decoding_seconds": 2.5121431950000215,
+      "median_output_tokens": 42.0
+    },
+    "static_lora": {
+      "rouge1": 0.24072784864317168,
+      "rouge2": 0.05971876480990028,
+      "rougeL": 0.19073681765483644,
+      "bertscore": 0.7275983748833338,
+      "median_total_seconds": 2.240308823499845,
+      "median_prefill_seconds": 0.06685892949985828,
+      "median_decoding_seconds": 2.156668616000161,
+      "median_output_tokens": 41.0
+    },
+    "router_lora": {
+      "rouge1": 0.24706171751356434,
+      "rouge2": 0.06295983027932593,
+      "rougeL": 0.1932871679524074,
+      "bertscore": 0.7313944472869237,
+      "median_total_seconds": 2.2275516615000015,
+      "median_prefill_seconds": 0.07603087850020529,
+      "median_decoding_seconds": 2.130982066499655,
+      "median_output_tokens": 41.0
+    },
+    "router_only": {
+      "rouge1": 0.2174220972200113,
+      "rouge2": 0.05896956354386202,
+      "rougeL": 0.15863438955758666,
+      "bertscore": 0.7053023449579875,
+      "median_total_seconds": 2.6030927429997064,
+      "median_prefill_seconds": 0.03867626499959442,
+      "median_decoding_seconds": 2.557731370000056,
+      "median_output_tokens": 93.5
+    }
+  },
+  "paired_bootstrap": {
+    "router_lora_vs_full_lora": {
+      "rouge1": {
+        "mean_difference": -0.013193163573029866,
+        "ci95_low": -0.03149833646843933,
+        "ci95_high": 0.004468815470907516
+      },
+      "rouge2": {
+        "mean_difference": -0.0122047241399352,
+        "ci95_low": -0.023396691248152773,
+        "ci95_high": -0.0011408381606570178
+      },
+      "rougeL": {
+        "mean_difference": -0.009267401464171215,
+        "ci95_low": -0.023407298536686657,
+        "ci95_high": 0.0050139849781577605
+      },
+      "bertscore": {
+        "mean_difference": -0.00610355277856191,
+        "ci95_low": -0.014643107235431671,
+        "ci95_high": 0.002290491114060084
+      }
+    },
+    "router_lora_vs_static_lora": {
+      "rouge1": {
+        "mean_difference": 0.006333868870392653,
+        "ci95_low": -0.010700380983887016,
+        "ci95_high": 0.02340916581709306
+      },
+      "rouge2": {
+        "mean_difference": 0.0032410654694256485,
+        "ci95_low": -0.007802836680161256,
+        "ci95_high": 0.014148738705264273
+      },
+      "rougeL": {
+        "mean_difference": 0.002550350297570998,
+        "ci95_low": -0.012235212019090719,
+        "ci95_high": 0.017632552335216642
+      },
+      "bertscore": {
+        "mean_difference": 0.0037960724035898843,
+        "ci95_low": -0.005585809702674548,
+        "ci95_high": 0.013562453652421633
+      }
+    },
+    "router_lora_vs_router_only": {
+      "rouge1": {
+        "mean_difference": 0.029639620293553028,
+        "ci95_low": 0.010353984492900066,
+        "ci95_high": 0.04910669568199667
+      },
+      "rouge2": {
+        "mean_difference": 0.0039902667354639095,
+        "ci95_low": -0.007893832236587215,
+        "ci95_high": 0.015945850908300103
+      },
+      "rougeL": {
+        "mean_difference": 0.03465277839482076,
+        "ci95_low": 0.019364961079797453,
+        "ci95_high": 0.05003470535059451
+      },
+      "bertscore": {
+        "mean_difference": 0.02609210232893626,
+        "ci95_low": 0.01786122701068719,
+        "ci95_high": 0.03405332028369109
+      }
+    }
+  },
+  "bertscore_truncated_texts": {
+    "full_lora": 0,
+    "static_lora": 0,
+    "router_lora": 0,
+    "router_only": 0
+  }
+}
