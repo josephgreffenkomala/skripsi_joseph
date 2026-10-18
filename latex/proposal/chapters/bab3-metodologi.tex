@@ -90,7 +90,7 @@ Untuk setiap kelompok tengah $G_i$, dengan $i=2,\ldots,6$, router menghasilkan k
 \medskip
 \noindent\textbf{Bentuk dan masukan router}\par\smallskip
 
-Router berupa jaringan saraf dengan satu lapisan tersembunyi berisi 64 unit dan fungsi aktivasi ReLU. Masukannya adalah representasi artikel berdimensi 1.024 setelah kelompok pertama, dan keluarannya terdiri atas lima nilai yang masing-masing mewakili satu kelompok tengah. Fungsi sigmoid mengubah setiap nilai keluaran menjadi angka antara nol dan satu. Nilai yang sama dengan atau lebih besar dari 0,5 menjadi keputusan untuk menjalankan kelompok; nilai di bawah 0,5 menjadi keputusan untuk melewatinya. Pada saat digunakan untuk membuat ringkasan, router hanya menerima representasi artikel dari prompt dan tidak menggunakan ringkasan acuan.
+Router menggunakan MLP ringan dengan masukan berupa representasi artikel setelah kelompok pertama dan menghasilkan keputusan biner untuk masing-masing kelompok tengah. Rincian arsitektur internal dan konfigurasi router, termasuk bentuk lapisan dan aturan operasional untuk menghasilkan keputusan, akan ditetapkan pada tahap implementasi dan pemilihan konfigurasi menggunakan data validasi. Pada saat digunakan untuk membuat ringkasan, router hanya menerima representasi artikel dari prompt dan tidak menggunakan ringkasan acuan.
 
 \medskip
 \noindent\textbf{Pembentukan target pelatihan}\par\smallskip
