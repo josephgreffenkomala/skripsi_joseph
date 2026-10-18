@@ -52,16 +52,7 @@ Format tersebut digunakan untuk menyiapkan masukan pelatihan dan menghasilkan ri
 
 \section{Tahapan Penelitian}
 
-Penelitian akan dilaksanakan melalui tahapan berikut.
-
-\begin{enumerate}
-  \item \textbf{Penyusunan protokol penelitian.} Kajian pustaka dan rancangan eksperimen dilengkapi. Parameter yang sudah ditetapkan dipisahkan dari parameter yang masih harus dipilih menggunakan data validasi atau ditetapkan sebelum evaluasi.
-  \item \textbf{Persiapan data dan model.} Data dibersihkan, diperiksa terhadap duplikasi dan batas panjang, lalu dibagi untuk pelatihan, validasi, dan pengujian. Prompt disusun dengan format yang telah ditetapkan. Versi model, tokenizer, dan perangkat lunak dicatat.
-  \item \textbf{Implementasi metode.} Router, eksekusi kelompok lapisan secara kondisional, model penuh, dan pelompatan statis diimplementasikan. Kesesuaian hasil ketika seluruh lapisan dijalankan serta konsistensi eksekusi saat kelompok dilewati akan diperiksa.
-  \item \textbf{Pelatihan dan pemilihan konfigurasi.} Target keputusan untuk router dibentuk dari data latih dengan membandingkan kerugian prediksi token dan proporsi kelompok tengah yang dijalankan. Selanjutnya, router dilatih dengan bobot Qwen dibekukan. Data validasi digunakan untuk memilih nilai penalti dan pola pelompatan statis.
-  \item \textbf{Evaluasi.} Metode dengan konfigurasi terpilih dijalankan pada data uji yang sama. Kualitas ringkasan, waktu inferensi, jumlah token keluaran, dan pola kelompok yang dipilih dicatat serta dibandingkan.
-  \item \textbf{Analisis dan penulisan.} Hasil perbandingan ditafsirkan sesuai metrik dan lingkungan pengujian. Rancangan, implementasi, hasil, serta keterbatasan penelitian didokumentasikan.
-\end{enumerate}
+Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router dan pemilihan konfigurasi, evaluasi, kemudian analisis dan penulisan. Urutan tahapan tersebut ditunjukkan pada Gambar~\ref{fig:bagan-alir-routing}. Konfigurasi metode ditetapkan menggunakan data validasi sebelum data uji digunakan untuk evaluasi akhir.
 
 Pemeriksaan kebenaran implementasi merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Implementasi routing dan evaluasinya merupakan pekerjaan yang direncanakan dalam proposal ini.
 
