@@ -2,9 +2,9 @@
 
 \section{Deskripsi Umum Penelitian}
 
-Penelitian ini dirancang sebagai eksperimen untuk mengukur pengaruh pelompatan kelompok lapisan terhadap kualitas ringkasan dan waktu inferensi Qwen3-0.6B. Model menerima artikel berita berbahasa Indonesia dan menghasilkan ringkasan. Sebuah router ringan akan menentukan kelompok lapisan yang dijalankan berdasarkan representasi artikel pada prompt. Keputusan tersebut dibuat satu kali untuk setiap artikel, lalu digunakan selama pemrosesan prompt dan pembentukan seluruh token ringkasan.
+Penelitian ini dirancang sebagai eksperimen yang mengukur pengaruh pelompatan kelompok lapisan terhadap kualitas ringkasan dan waktu inferensi Qwen3-0.6B. Untuk setiap artikel berita berbahasa Indonesia, model akan menghasilkan ringkasan, sementara router ringan menentukan kelompok lapisan yang perlu dijalankan berdasarkan representasi artikel dalam prompt. Keputusan routing dibuat satu kali per artikel dan dipertahankan selama pemrosesan prompt serta pembentukan seluruh token ringkasan.
 
-Kinerja metode routing akan dibandingkan dengan dua acuan. Acuan pertama adalah Qwen3-0.6B yang menjalankan seluruh lapisannya. Acuan kedua adalah pelompatan statis, yaitu penggunaan satu pola kelompok lapisan yang sama untuk semua artikel. Kualitas keluaran akan dinilai menggunakan ROUGE-1, ROUGE-2, ROUGE-L, dan BERTScore. Efisiensi utama akan dinilai dari waktu inferensi yang diukur pada perangkat dan pengaturan yang sama. Jumlah lapisan aktif dilaporkan sebagai informasi tambahan.
+Untuk menilai kinerja routing, hasilnya akan dibandingkan dengan dua acuan: Qwen3-0.6B yang menjalankan seluruh lapisan dan metode pelompatan statis yang menggunakan pola kelompok lapisan tetap untuk semua artikel. Kualitas ringkasan akan dinilai menggunakan ROUGE-1, ROUGE-2, ROUGE-L, dan BERTScore. Efisiensi utama diukur berdasarkan waktu inferensi pada perangkat dan pengaturan yang sama, sedangkan jumlah lapisan aktif dicatat sebagai informasi pendukung.
 
 \section{Model dan Data Penelitian}
 
@@ -20,7 +20,7 @@ Versi bobot model, tokenizer, dan perangkat lunak yang digunakan akan dicatat se
 
 \subsection{Dataset XL-Sum Bahasa Indonesia}
 
-Data penelitian berasal dari XL-Sum konfigurasi bahasa Indonesia \citep{xlsumDatasetCard}. Dataset ini berisi artikel berita dan ringkasan acuannya. Artikel digunakan sebagai masukan model, sedangkan ringkasan acuan digunakan untuk menilai hasil dan menyiapkan data pelatihan router. Data dibagi menjadi bagian pelatihan, validasi, dan pengujian sesuai pembagian yang tersedia pada dataset \citep{xlsumRepository}. Data pengujian hanya digunakan untuk evaluasi akhir, bukan untuk melatih router atau memilih konfigurasi.
+Data penelitian berasal dari konfigurasi bahasa Indonesia pada XL-Sum \citep{xlsumDatasetCard}, yang menyediakan pasangan artikel berita dan ringkasan acuan. Artikel menjadi masukan model; ringkasan acuan digunakan untuk menyiapkan target pelatihan router dan menilai hasil generasi. Data mengikuti pembagian pelatihan, validasi, dan pengujian yang tersedia pada dataset \citep{xlsumRepository}. Untuk mencegah kebocoran informasi, data uji hanya digunakan pada evaluasi akhir, bukan untuk melatih router atau memilih konfigurasi.
 
 Jumlah artikel yang digunakan pada setiap bagian belum ditetapkan. Jumlah tersebut akan dipilih setelah waktu pemrosesan dan kebutuhan memori diukur. Jika hanya sebagian data digunakan, artikel dipilih secara acak tanpa pengembalian pada setiap bagian dengan seed 42. Identitas artikel yang terpilih akan disimpan, dan himpunan data uji yang sama akan digunakan untuk semua metode.
 
@@ -52,7 +52,7 @@ Format tersebut digunakan untuk menyiapkan masukan pelatihan dan menghasilkan ri
 
 \section{Tahapan Penelitian}
 
-Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router dan pemilihan konfigurasi, evaluasi, kemudian analisis dan penulisan. Konfigurasi metode ditetapkan menggunakan data validasi sebelum data uji digunakan untuk evaluasi akhir.
+Pelaksanaan penelitian disusun berurutan agar data uji tetap terpisah dari proses pengembangan dan pemilihan metode. Tahapannya meliputi penyusunan protokol, persiapan data dan model, implementasi serta pemeriksaan metode, pelatihan router, pemilihan konfigurasi menggunakan data validasi, dan evaluasi akhir. Setelah itu, hasil dianalisis dan dilaporkan.
 
 \begin{figure}[H]
   \centering
@@ -79,15 +79,15 @@ Penelitian mencakup persiapan protokol, persiapan data dan model, implementasi s
   \label{fig:bagan-alir-routing}
 \end{figure}
 
-Gambar~\ref{fig:bagan-alir-routing} merangkum urutan kerja tersebut, dari persiapan data dan pemeriksaan implementasi hingga evaluasi akhir pada data uji.
+Gambar~\ref{fig:bagan-alir-routing} merangkum tahapan tersebut, dari persiapan penelitian hingga evaluasi pada data uji yang hanya dilakukan setelah konfigurasi ditetapkan.
 
-Pemeriksaan kebenaran implementasi merupakan bagian dari eksperimen utama, bukan tahap pilot yang terpisah. Implementasi routing dan evaluasinya merupakan pekerjaan yang direncanakan dalam proposal ini.
+Pemeriksaan kebenaran implementasi dilakukan sebagai bagian dari eksperimen utama untuk memastikan setiap metode berjalan sesuai rancangan. Dengan demikian, pemeriksaan ini bukan evaluasi awal yang menggantikan pengujian utama; implementasi routing dan pengukurannya sendiri merupakan pekerjaan yang direncanakan dalam penelitian ini.
 
 \section{Perancangan Sistem}
 
 \subsection{Arsitektur Sistem}
 
-Pemrosesan setiap artikel dimulai dengan menjalankan kelompok pertama. Representasi artikel dari kelompok tersebut menjadi masukan router untuk menentukan kelompok tengah yang dijalankan. Model kemudian melanjutkan pemrosesan melalui kelompok terpilih, kelompok terakhir, dan kepala bahasa untuk menghasilkan ringkasan.
+Untuk setiap artikel, pemrosesan dimulai dengan menjalankan kelompok lapisan pertama. Representasi artikel yang dihasilkan pada tahap ini menjadi masukan router, yang kemudian menentukan kelompok tengah mana yang akan dijalankan. Setelah keputusan dibuat, model meneruskan pemrosesan melalui kelompok terpilih dan kelompok terakhir sebelum kepala bahasa menghasilkan ringkasan.
 
 \begin{figure}[H]
   \centering
@@ -96,7 +96,7 @@ Pemrosesan setiap artikel dimulai dengan menjalankan kelompok pertama. Represent
   \label{fig:arsitektur-routing}
 \end{figure}
 
-Gambar~\ref{fig:arsitektur-routing} menunjukkan bahwa keluaran kelompok pertama digunakan untuk membentuk representasi artikel sekaligus melanjutkan pemrosesan prompt. Router menghasilkan lima keputusan—satu untuk setiap kelompok $G_2$ sampai $G_6$—yang menentukan jalur eksekusi berikutnya.
+Sebagaimana ditunjukkan pada Gambar~\ref{fig:arsitektur-routing}, keluaran kelompok pertama memiliki dua fungsi: membentuk representasi artikel untuk router dan meneruskan pemrosesan prompt. Berdasarkan representasi tersebut, router menghasilkan lima keputusan, masing-masing untuk kelompok $G_2$ hingga $G_6$, yang menentukan jalur eksekusi selanjutnya.
 
 Representasi artikel dihitung sebagai rata-rata representasi internal token artikel setelah kelompok pertama. Token instruksi, token khusus, dan padding tidak disertakan dalam perhitungan. Keluaran kelompok pertama yang telah dihitung untuk router digunakan kembali untuk melanjutkan pemrosesan prompt, sehingga kelompok tersebut tidak perlu dijalankan ulang. Setelah keputusan dibuat, pola kelompok yang dijalankan tetap sama selama sisa pemrosesan prompt dan seluruh pembentukan ringkasan. Penyimpanan nilai key dan value (KV cache), yang digunakan kembali saat model membentuk token berikutnya, disiapkan untuk lapisan yang dijalankan. Waktu untuk menghitung representasi dan menjalankan router termasuk dalam pengukuran waktu inferensi.
 
