@@ -37,8 +37,8 @@ Analisis perubahan kualitas dan waktu inferensi
 
 ### 3.3 Model, Data, dan Persiapan Masukan
 
-1. **Model dan pembagian data:** gunakan Qwen3-0.6B dengan 28 lapisan serta split resmi train, validation, dan test XL-Sum Indonesia. Data uji hanya untuk evaluasi akhir.
-2. **Alur pengolahan:** pembersihan tepi teks dan penghapusan pasangan kosong → deduplikasi → penyaringan panjang → sampling jika diperlukan. Deduplikasi antar-split memprioritaskan test, validation, lalu train; sampling menggunakan seed 42. Catat jumlah dan identitas data yang tersaring atau dipilih.
+1. **Model dan pembagian data:** gunakan Qwen3-0.6B dengan 28 lapisan serta subset dari split resmi XL-Sum Indonesia: 1.000 train, 200 validation, dan 500 test setelah penyaringan. Data uji hanya untuk evaluasi akhir. Pilot 50 artikel dari train digunakan untuk estimasi kebutuhan komputasi.
+2. **Alur pengolahan:** pembersihan tepi teks dan penghapusan pasangan kosong → deduplikasi → penyaringan panjang → sampling tanpa pengembalian. Deduplikasi antar-split memprioritaskan test, validation, lalu train; sampling menggunakan seed 42. Catat jumlah dan identitas data yang tersaring atau dipilih.
 3. **Prompt dan panjang:** gunakan instruksi dari dokumen induk dengan format chat non-thinking. Prompt lengkap maksimal 3.840 token dan target maksimal 256 token, dalam konteks gabungan 4.096 token. Artikel dan target yang melampaui batas dikeluarkan, tanpa pemotongan.
 
 ### 3.4 Perancangan Routing dan Pelatihan
@@ -63,7 +63,7 @@ Analisis perubahan kualitas dan waktu inferensi
 
 ## Hal yang Masih Perlu Ditetapkan
 
-- Jumlah data; arsitektur dan aturan keputusan router; konsistensi fiturnya setelah adaptasi G1; konfigurasi dan objective LoRA.
+- Arsitektur dan aturan keputusan router; konsistensi fiturnya setelah adaptasi G1; konfigurasi dan objective LoRA.
 - Kriteria pemilihan λ serta agregasi skor pemilihan route statis; implementasi ROUGE dan konfigurasi BERTScore.
 - Perangkat, presisi, versi model dan perangkat lunak, jumlah warm-up/pengulangan, serta statistik ringkasan waktu.
 

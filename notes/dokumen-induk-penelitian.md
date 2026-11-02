@@ -84,9 +84,10 @@ Setelah `G1`, fitur router adalah rata-rata hidden state token artikel. Token in
 - Bersihkan hanya spasi dan baris kosong di awal/akhir artikel serta ringkasan. Pertahankan kapitalisasi, tanda baca, spasi internal, dan isi lainnya. Buang pasangan jika salah satu teks kosong.
 - Duplikat artikel berarti teks sama persis setelah pembersihan. Dalam split sama, pertahankan kemunculan pertama. Antar-split, prioritaskan test, lalu validation, lalu train; hapus salinan dari split lain tanpa memindahkannya. Catat jumlah/identitas yang dihapus.
 - Artikel tidak dipotong. Rancangan menetapkan prompt lengkap maksimum 3.840 token menurut tokenizer Qwen3; artikel dengan prompt melebihi batas dikeluarkan. Ringkasan acuan lebih dari 256 token (termasuk token akhir respons) dikeluarkan, tidak dipotong. Gabungan prompt + target pelatihan harus muat dalam 4.096 token. Catat jumlah yang tersaring dan ukuran akhir setiap split.
-- Jika memakai subset, sampling acak tanpa pengembalian dilakukan setelah pembersihan, deduplikasi, dan penyaringan; seed 42. Simpan identitas sampel yang dipilih dan gunakan test yang sama untuk semua metode.
+- Sampling acak tanpa pengembalian dilakukan pada masing-masing split resmi setelah pembersihan, deduplikasi, dan penyaringan; seed 42. Simpan identitas sampel yang dipilih dan gunakan test yang sama untuk semua metode.
 - Prompt: `Ringkas artikel berita berikut dalam bahasa Indonesia. Pertahankan informasi utama dan jangan menambahkan informasi yang tidak terdapat dalam artikel.\n\nArtikel:\n{artikel}`. Artikel utuh disisipkan sebagai pesan pengguna dengan format chat Qwen non-thinking; batas input dihitung setelah format chat dan penanda awal respons asisten.
-- Jumlah sampel final per split **belum ditetapkan**; keputusan menunggu estimasi waktu dan memori.
+- **Jumlah data yang ditetapkan:** 1.000 artikel train, 200 validation, dan 500 test, total 1.700 pasangan artikel–ringkasan setelah pembersihan, deduplikasi, dan penyaringan. Ukuran ini dipilih untuk membatasi skala komputasi sambil menyediakan data bagi pelatihan, pemilihan konfigurasi, dan evaluasi akhir.
+- **Pilot komputasi:** rencanakan penggunaan 50 artikel dari 1.000 artikel train yang mencakup variasi panjang untuk memperkirakan waktu dan kebutuhan memori pembentukan target, pelatihan, serta inferensi. Artikel pilot tetap termasuk dalam data train, bukan tambahan di luar 1.700 pasangan. Jenis GPU masih akan ditentukan.
 
 ### 5.4 Pelatihan router dan pembentukan target
 
@@ -144,6 +145,7 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 | Keputusan | Alasan |
 |---|---|
 | Qwen3-0.6B dan XL-Sum Indonesia | Membatasi studi pada backbone kecil tertentu dan tugas peringkasan berita Indonesia dengan pasangan acuan. |
+| 1.000 train, 200 validation, dan 500 test setelah penyaringan | Menetapkan skala eksperimen yang terkendali untuk pelatihan, pemilihan konfigurasi, dan perbandingan akhir; pilot 50 artikel train digunakan untuk estimasi kebutuhan komputasi. |
 | Satu route per sequence, bukan per token | Jalur ditentukan dari artikel dan dipertahankan selama sisa prompt serta seluruh generasi. |
 | Tujuh kelompok berurutan, masing-masing empat lapisan; G1 dan G7 tetap aktif | Membatasi keputusan routing pada lima kelompok tengah; ini keputusan desain, bukan klaim kepentingan empiris kedua kelompok ujung. |
 | Representasi rata-rata token artikel selepas G1; abaikan instruksi/token khusus/padding | Membuat fitur router merepresentasikan artikel; reference tidak dipakai pada inferensi. |
@@ -158,7 +160,6 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 
 ### Belum ditetapkan
 
-- Jumlah artikel untuk split train, validation, dan test; penetapan menunggu estimasi waktu pemrosesan dan kebutuhan memori.
 - Detail arsitektur MLP router dan aturan operasional konversi keluarannya menjadi keputusan biner.
 - Prosedur menjaga kesesuaian fitur router ketika LoRA memperbarui kelompok `G1`.
 - Bentuk penalti/objective LoRA untuk routing adaptif dan konfigurasi LoRA final.
@@ -169,7 +170,7 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 
 ### Perbedaan konfigurasi yang perlu diputuskan
 
-Rancangan yang didokumentasikan menetapkan prompt lengkap maksimum 3.840 token dan belum menetapkan jumlah data per split. Konfigurasi implementasi eksperimen yang tercatat menggunakan batas prompt 1.024 token serta 500/100/150 artikel untuk train/validation/test. Konfigurasi implementasi itu juga mencantumkan hidden dimension router 64; LoRA rank/alpha/dropout 8/32/0.1, learning rate `2e-4`, weight decay `0.01`, maksimum 3 epoch; warm-up 3 kali dan pengukuran waktu 5 kali. Konfigurasi adaptive LoRA mencantumkan kandidat beta `{0, 0.01, 0.05, 0.1, 0.2}`. Nilai tersebut belum ditetapkan sebagai keputusan penelitian apabila tidak tercantum dalam rancangan utama.
+Rancangan penelitian menetapkan prompt lengkap maksimum 3.840 token serta 1.000/200/500 artikel untuk train/validation/test setelah penyaringan. Konfigurasi implementasi eksperimen yang tercatat masih menggunakan batas prompt 1.024 token serta 500/100/150 artikel; konfigurasi tersebut perlu disesuaikan dengan keputusan penelitian. Konfigurasi implementasi itu juga mencantumkan hidden dimension router 64; LoRA rank/alpha/dropout 8/32/0.1, learning rate `2e-4`, weight decay `0.01`, maksimum 3 epoch; warm-up 3 kali dan pengukuran waktu 5 kali. Konfigurasi adaptive LoRA mencantumkan kandidat beta `{0, 0.01, 0.05, 0.1, 0.2}`. Nilai tersebut belum ditetapkan sebagai keputusan penelitian apabila tidak tercantum dalam rancangan utama.
 
 Terdapat hasil dari satu run berlabel `research` pada 150 artikel, tetapi statusnya sebagai hasil final atau run implementasi belum dipastikan. Hasil run tersebut tidak mengubah pertanyaan penelitian, tujuan, maupun rancangan yang ditetapkan. Smoke test hanya digunakan untuk memeriksa alur perangkat lunak dan bukan hasil penelitian.
 
