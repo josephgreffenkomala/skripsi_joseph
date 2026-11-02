@@ -1,0 +1,9 @@
+{
+  "source_root": "/vol/experiment_proposal",
+  "output_root": "/vol/routing_diagnostics",
+  "seed": 20261103,
+  "baseline_articles": 20,
+  "route_articles": 8,
+  "max_new_tokens": 256,
+  "parity_tokens": 16
+}
