@@ -127,7 +127,14 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 
 **Ketidakpastian skor:** selisih rata-rata F1 routing adaptif terhadap setiap pembanding dilengkapi interval kepercayaan dua sisi 95% melalui paired bootstrap 10.000 pengambilan ulang artikel uji dengan pengembalian. Gunakan indeks artikel sama bagi kedua metode dalam satu ulangan; persentil 2,5 dan 97,5 sebagai batas; seed 42. Hitung per metrik dan per pasangan. Interval menggambarkan variasi antarartikel, bukan antar-seed pelatihan.
 
-**Waktu:** ukur waktu aktual per artikel pada perangkat/pengaturan sama. Waktu total meliputi representasi artikel + router, sisa prefill, dan decoding; catat waktu prefill dan decoding terpisah. Ukuran tambahan: token keluaran, jumlah lapisan aktif, dan frekuensi route. Gunakan batch 1, warm-up, dan pengulangan. Jumlah warm-up/pengulangan/statistik ringkasan waktu, perangkat, presisi, versi perangkat lunak, dan pengaturan yang memengaruhi waktu harus dicatat sebelum evaluasi.
+**Waktu:** ukur waktu aktual per artikel pada perangkat/pengaturan sama dengan batch size 1. Waktu total meliputi representasi artikel + router, sisa prefill, dan decoding; catat waktu prefill dan decoding terpisah. Ukuran tambahan: token keluaran, jumlah lapisan aktif, dan frekuensi route. Perangkat, presisi, versi perangkat lunak, dan pengaturan yang memengaruhi waktu harus dicatat sebelum evaluasi.
+
+**Protokol pengukuran waktu yang ditetapkan:**
+
+- Lakukan 3 kali inferensi pemanasan (warm-up) pada setiap metode sebelum pencatatan waktu; pemanasan tidak masuk statistik.
+- Ukur setiap artikel test sebanyak 5 kali pada setiap metode.
+- Gunakan median dari 5 pengukuran waktu total sebagai waktu inferensi artikel tersebut.
+- Laporkan rata-rata waktu per artikel pada 500 artikel test sebagai ringkasan waktu total setiap metode.
 
 **Pemeriksaan implementasi:** (a) semua lapisan aktif setara perilakunya dengan model penuh, (b) kelompok yang dilewati benar-benar tidak dieksekusi, (c) route tidak berubah selama ringkasan dibentuk, dan (d) KV cache konsisten. Pemeriksaan ini bagian dari validasi implementasi eksperimen.
 
@@ -135,7 +142,7 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 
 1. Laporkan skor rata-rata F1 tiap metrik dan tiap metode, tanpa menggabungkan metrik.
 2. Bandingkan routing adaptif+LoRA dengan model penuh+LoRA, static skipping+LoRA, dan kontrol routing tanpa LoRA menggunakan selisih F1 berpasangan serta interval bootstrap 95%.
-3. Sajikan waktu total sebagai ukuran efisiensi utama; tampilkan prefill dan decoding terpisah. Baca perbedaan waktu bersama jumlah token keluaran karena panjang output dapat memengaruhi durasi.
+3. Sajikan rata-rata median waktu total per artikel pada 500 artikel test sebagai ukuran efisiensi utama; tampilkan prefill dan decoding terpisah. Baca perbedaan waktu bersama jumlah token keluaran karena panjang output dapat memengaruhi durasi.
 4. Laporkan jumlah lapisan aktif serta distribusi route agar dapat menilai pola pemakaian routing; penelitian menetapkan ini sebagai informasi pendukung.
 5. Tafsirkan perubahan kualitas bersama perubahan waktu sebagai trade-off. Jangan menyimpulkan bahwa jumlah lapisan yang dilewati otomatis mempercepat atau bahwa metrik otomatis menunjukkan faktualitas.
 6. Data validation untuk memilih λ, route statis, dan konfigurasi; data test hanya satu evaluasi akhir setelah pilihan ditetapkan.
@@ -153,6 +160,7 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 | Dua tahap: latih router saat backbone beku, lalu LoRA saat router beku | Mengikuti pola FiRST dan menguji apakah LoRA dapat mengompensasi dampak skipping. |
 | Full+LoRA, static+LoRA, adaptive+LoRA, dan adaptive tanpa LoRA | Membandingkan strategi utama pada penggunaan LoRA sepadan, dengan kontrol kontribusi LoRA pada routing. |
 | Waktu nyata termasuk overhead router sebagai efisiensi utama | Jumlah layer aktif saja tidak cukup membuktikan percepatan aktual. |
+| 3 kali warm-up per metode; 5 pengukuran per artikel; median per artikel lalu rata-rata pada 500 artikel test | Menggunakan protokol yang sama untuk setiap metode dan mengurangi pengaruh lonjakan waktu sesaat melalui median pengulangan. |
 | Metrik otomatis multi-metrik dilaporkan terpisah; tanpa penilaian manual | Desain evaluasi; keterbatasan metrik untuk bahasa Indonesia diakui melalui literatur. |
 | Tidak ada klaim arah hasil | Penelitian bertujuan mengukur, bukan mengasumsikan routing lebih baik. |
 
@@ -165,7 +173,7 @@ Static route dipilih dengan data validation menggunakan objective `J`, λ terpil
 - Bentuk penalti/objective LoRA untuk routing adaptif dan konfigurasi LoRA final.
 - Kriteria operasional pemilihan λ serta cara mengagregasi objective antarartikel validation untuk memilih pola static.
 - Implementasi ROUGE dan konfigurasi BERTScore.
-- Perangkat, presisi numerik, versi bobot/tokenizer/perangkat lunak, jumlah warm-up dan pengulangan, serta statistik ringkasan waktu.
+- Perangkat, presisi numerik, versi bobot/tokenizer/perangkat lunak, dan pengaturan teknis pengukuran waktu lainnya.
 - Periode dan durasi kalender penelitian; seed tambahan 44/45 hanya digunakan jika sumber daya mencukupi.
 
 ### Perbedaan konfigurasi yang perlu diputuskan

@@ -53,7 +53,7 @@ Analisis perubahan kualitas dan waktu inferensi
 1. **Pemeriksaan implementasi:** pastikan route penuh setara dengan model penuh, kelompok yang dilewati tidak dieksekusi, route tetap selama generasi, dan KV cache konsisten.
 2. **Generasi yang sebanding:** gunakan greedy decoding, mode non-thinking, batch size 1, dan batas keluaran 256 token. Generasi berhenti pada token akhir respons atau batas keluaran; token akhir termasuk dalam batas.
 3. **Kualitas:** hitung F1 ROUGE-1, ROUGE-2, ROUGE-L, dan BERTScore per artikel, kemudian rata-ratakan dengan bobot sama dan laporkan terpisah. Penilaian manual berada di luar lingkup.
-4. **Waktu:** ukur waktu total, termasuk representasi artikel dan router; catat prefill dan decoding terpisah. Gunakan warm-up dan pengulangan pada kondisi sama. Catat panjang keluaran, lapisan aktif, serta frekuensi route sebagai informasi pendukung.
+4. **Waktu:** ukur waktu total, termasuk representasi artikel dan router; catat prefill dan decoding terpisah. Gunakan 3 kali warm-up per metode dan 5 pengukuran per artikel. Ambil median waktu total per artikel, lalu rata-ratakan pada 500 artikel test. Catat panjang keluaran, lapisan aktif, serta frekuensi route sebagai informasi pendukung.
 
 ### 3.6 Rencana Analisis dan Keluaran yang Diharapkan
 
@@ -65,6 +65,6 @@ Analisis perubahan kualitas dan waktu inferensi
 
 - Arsitektur dan aturan keputusan router; konsistensi fiturnya setelah adaptasi G1; konfigurasi dan objective LoRA.
 - Kriteria pemilihan λ serta agregasi skor pemilihan route statis; implementasi ROUGE dan konfigurasi BERTScore.
-- Perangkat, presisi, versi model dan perangkat lunak, jumlah warm-up/pengulangan, serta statistik ringkasan waktu.
+- Perangkat, presisi, versi model dan perangkat lunak, serta pengaturan teknis pengukuran waktu lainnya.
 
 Gunakan status keputusan pada dokumen induk. Konfigurasi implementasi yang belum disahkan dan hasil run yang belum dipastikan statusnya tidak dijadikan keputusan atau hasil final penelitian.
