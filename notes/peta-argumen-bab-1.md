@@ -5,24 +5,20 @@
 ## Alur besar Bab 1
 
 ```text
-Peringkasan autoregresif menjalankan komputasi Transformer berulang
+Peringkasan berita bahasa Indonesia dengan model bahasa kausal
         ↓
-Pelompatan lapisan berpotensi mengurangi komputasi,
-tetapi dapat memengaruhi kualitas ringkasan
+Generasi autoregresif menjalankan komputasi lapisan berulang,
+sehingga efisiensi inferensi menjadi fokus kajian
         ↓
-Routing adaptif memilih jalur lapisan berdasarkan artikel;
-router sendiri menambah overhead
+Pelompatan lapisan sebagai pendekatan pengurangan komputasi:
+pola statis dan routing adaptif
         ↓
-Jumlah lapisan yang dilewati belum cukup untuk menyimpulkan percepatan:
-kualitas dan waktu inferensi aktual perlu diukur bersama
+Sequence-level routing memilih satu jalur lapisan per artikel
+dan mempertahankannya selama generasi
         ↓
-Penelitian menguji sequence-level routing pada Qwen3-0.6B
-untuk peringkasan berita Indonesia dengan XL-Sum
+Fokus penelitian: Qwen3-0.6B dan XL-Sum bahasa Indonesia
         ↓
-Hasil routing adaptif dibandingkan dengan model penuh dan
-pelompatan statis; kontrol tanpa LoRA mengukur perubahan terkait LoRA
-        ↓
-Rumusan masalah, tujuan, batasan, dan manfaat penelitian
+Rumusan masalah → batasan masalah → tujuan → manfaat penelitian
 ```
 
 ## Urutan argumen per subbab
@@ -31,13 +27,12 @@ Rumusan masalah, tujuan, batasan, dan manfaat penelitian
 
 Susun dari konteks umum menuju fokus penelitian:
 
-1. Jelaskan bahwa model bahasa kausal membentuk ringkasan secara autoregresif dan menjalankan komputasi lapisan berulang selama generasi.
-2. Kenalkan *layer skipping* sebagai cara potensial untuk mengurangi komputasi, dengan dua pola: statis (lapisan yang dilewati tetap) dan adaptif (jalur menyesuaikan artikel).
-3. Paparkan trade-off: melewati lapisan dapat memengaruhi kualitas ringkasan, sedangkan router adaptif menambah overhead.
-4. Tarik implikasi bahwa jumlah lapisan yang dilewati tidak cukup untuk menyatakan inferensi lebih cepat; kualitas dan waktu aktual perlu diukur bersama.
-5. Perkenalkan fokus penelitian: *sequence-level routing*, yaitu satu route dipilih per artikel dan dipertahankan selama sisa pemrosesan prompt serta generasi.
-6. Batasi konteks studi pada Qwen3-0.6B dan peringkasan berita bahasa Indonesia menggunakan XL-Sum.
-7. Tutup dengan rancangan perbandingan: model penuh, *static skipping*, dan routing adaptif dengan LoRA, serta kontrol routing adaptif tanpa LoRA. Arahkan ke pertanyaan tentang pengaruh pada kualitas dan waktu serta trade-off antarmetode, tanpa mendahului hasil.
+1. **Konteks tugas:** awali dengan peringkasan berita bahasa Indonesia menggunakan model bahasa kausal.
+2. **Masalah komputasi:** jelaskan bahwa ringkasan dibentuk secara autoregresif, sehingga komputasi lapisan berulang selama generasi. Hubungkan dengan kebutuhan efisiensi inferensi.
+3. **Pendekatan yang relevan:** kenalkan *layer skipping* sebagai cara potensial mengurangi komputasi. Bedakan pola statis yang tetap untuk semua artikel dan routing adaptif yang menyesuaikan artikel.
+4. **Fokus pendekatan:** perkenalkan *sequence-level routing*, yaitu pemilihan satu route per artikel yang dipertahankan selama sisa pemrosesan prompt dan generasi.
+5. **Posisi penelitian:** gunakan FiRST dan PuDDing yang dirangkum dalam dokumen induk sebagai landasan pendekatan, lalu arahkan pada konteks yang dikaji: Qwen3-0.6B dan XL-Sum bahasa Indonesia.
+6. **Penutup latar belakang:** nyatakan perlunya mengkaji penerapan routing tersebut pada konteks penelitian ini, lalu hubungkan dengan rumusan masalah.
 
 ### 1.2 Rumusan Masalah
 
