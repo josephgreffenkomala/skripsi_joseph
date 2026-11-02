@@ -14,12 +14,12 @@
 
 Skor kualitas adalah nilai F1 agregat yang tercantum pada `summary.json`. Waktu, jumlah token keluaran, dan layer aktif dihitung sebagai median dari data per artikel.
 
-| Metode | ROUGE-1 | ROUGE-2 | ROUGE-L | BERTScore | Median waktu (detik) | Prefill (detik) | Decoding (detik) | Token keluaran | Layer aktif |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| Model penuh + LoRA | 0.260 | 0.075 | 0.203 | 0.737 | 2.60 | 0.08 | 2.51 | 42.00 | 28.00 |
-| Static skipping + LoRA | 0.241 | 0.060 | 0.191 | 0.728 | 2.24 | 0.07 | 2.16 | 41.00 | 24.00 |
-| Router + LoRA | 0.247 | 0.063 | 0.193 | 0.731 | 2.23 | 0.08 | 2.13 | 41.00 | 24.00 |
-| Router saja (tanpa LoRA) | 0.217 | 0.059 | 0.159 | 0.705 | 2.60 | 0.04 | 2.56 | 93.50 | 24.00 |
+| Metode                   | ROUGE-1 | ROUGE-2 | ROUGE-L | BERTScore | Median waktu (detik) | Prefill (detik) | Decoding (detik) | Token keluaran | Layer aktif |
+| ------------------------ | ------: | ------: | ------: | --------: | -------------------: | --------------: | ---------------: | -------------: | ----------: |
+| Model penuh + LoRA       |   0.260 |   0.075 |   0.203 |     0.737 |                 2.60 |            0.08 |             2.51 |          42.00 |       28.00 |
+| Static skipping + LoRA   |   0.241 |   0.060 |   0.191 |     0.728 |                 2.24 |            0.07 |             2.16 |          41.00 |       24.00 |
+| Router + LoRA            |   0.247 |   0.063 |   0.193 |     0.731 |                 2.23 |            0.08 |             2.13 |          41.00 |       24.00 |
+| Router saja (tanpa LoRA) |   0.217 |   0.059 |   0.159 |     0.705 |                 2.60 |            0.04 |             2.56 |          93.50 |       24.00 |
 
 ## Perbandingan bootstrap berpasangan
 

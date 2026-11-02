@@ -1,0 +1,31 @@
+{"id": "olahraga-44585435",
+"reference": "Neymar mencetak gol kedua Brasil di menit-menit terakhir dalam laga melawan Kosta Rika di Piala Dunia 2018, tetapi yang menjadi sorotan bukanlah gol tersebut.",
+"predictions": 
+    {"full_lora": "Seorang pemain sepak bola Brasil, Neymar Ronaldo, mengatakan ia merasa sangat kesal karena aksi diving di lapangan setelah bermain di menit-menit terakhir laga di Stadion Olahraga Brasil.",
+    "static_lora": "Seorang pemain sepak bola Brasil, Neymar, mengatakan ia tidak berhenti di situasi ini.",
+    "router_lora": "Seorang pemain berusia 26 tahun, Neymar, yang berlaga di Prancis, mengatakan ia tidak pernah berhenti berjuang di lapangan.", 
+    "router_only": "Pengguna media sosial yang mengomentari aksi diving di laga berpura-pura terjatuh, serta para pengguna media sosial justru mengomentari aksi tersebut, tetapi tidak ada informasi tambahan."},
+"scores": {
+    "full_lora": {
+        "rouge1": 0.30188679245283023, 
+        "rouge2": 0.11764705882352941, 
+        "rougeL": 0.2641509433962264, 
+        "bertscore": 0.7201454043388367}, 
+    "static_lora": {
+        "rouge1": 0.15789473684210525, 
+        "rouge2": 0.0, 
+        "rougeL": 0.10526315789473685, 
+        "bertscore": 0.675010621547699}, 
+    "router_lora": {
+        "rouge1": 0.18604651162790697, 
+        "rouge2": 0.0, 
+        "rougeL": 0.13953488372093023, 
+        "bertscore": 0.6634772419929504}, 
+    "router_only": {
+        "rouge1": 0.19607843137254902, 
+        "rouge2": 0.0, 
+        "rougeL": 0.11764705882352941, 
+        "bertscore": 0.6581239700317383}}, 
+"timings": {
+    "full_lora": {"total_seconds": 3.286782262999999, "prefill_seconds": 0.143711267999997, "decoding_seconds": 3.1428863950000014, "output_tokens": 53, "active_layers": 28}, "static_lora": {"total_seconds": 1.4627012710002418, "prefill_seconds": 0.12165340599995034, "decoding_seconds": 1.3407894909996685, "output_tokens": 26, "active_layers": 24}, "router_lora": {"total_seconds": 2.2595503499996994, "prefill_seconds": 0.14292984599978809, "decoding_seconds": 2.1156985150000764, "output_tokens": 42, "active_layers": 24}, "router_only": {"total_seconds": 1.4772375259999535, "prefill_seconds": 0.08534423499986588, "decoding_seconds": 1.3917328859997724, "output_tokens": 53, "active_layers": 24}}, "routes": {"full_lora": [1, 1, 1, 1, 1], "static_lora": [1, 1, 0, 1, 1], "router_lora": [1, 1, 0, 1, 1], "router_only": [1, 1, 0, 1, 1]}}
+
